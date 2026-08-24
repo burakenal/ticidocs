@@ -201,6 +201,11 @@ export interface SidebarGroup {
   title: string;
   icon?: string;
   children: SidebarNode[];
+  /**
+   * When false, the sidebar renders a static section label (no chevron).
+   * Used for OpenAPI root groups nested under a product section.
+   */
+  collapsible?: boolean;
 }
 
 export type SidebarItem = SidebarGroup | SidebarExternalLink;
@@ -329,6 +334,7 @@ function openApiSidebarGroup(
     title: item.group,
     icon: item.icon,
     children: groupOpenApiLinksByTag(matched),
+    collapsible: false,
   };
 }
 

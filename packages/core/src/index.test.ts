@@ -117,6 +117,7 @@ describe("buildSidebar", () => {
     expect(sidebar[0]).toMatchObject({
       type: "group",
       title: "Marketplace API",
+      collapsible: false,
     });
     if (sidebar[0]?.type !== "group") return;
     expect(sidebar[0].children).toHaveLength(2);
@@ -124,6 +125,7 @@ describe("buildSidebar", () => {
       type: "group",
       title: "Kargo İşlemleri",
     });
+    expect(sidebar[0].children[0]).not.toHaveProperty("collapsible", false);
     expect(sidebar[0].children[1]).toMatchObject({
       type: "group",
       title: "Ürün İşlemleri",
@@ -175,6 +177,7 @@ describe("buildSidebar", () => {
     expect(sidebar[0].children[1]).toMatchObject({
       type: "group",
       title: "Marketplace API",
+      collapsible: false,
     });
     const apiGroup = sidebar[0].children[1];
     if (apiGroup?.type !== "group") return;
@@ -182,6 +185,7 @@ describe("buildSidebar", () => {
       type: "group",
       title: "Products",
     });
+    expect(apiGroup.children[0]).not.toHaveProperty("collapsible", false);
 
     const tabs = buildSectionTabs(sidebar, "/en/hub/api/marketplace/list-products");
     expect(tabs).toHaveLength(1);

@@ -86,6 +86,16 @@ function SidebarNodeList({
     <ul className={styles.list} data-depth={depth}>
       {nodes.map((node) => {
         if (node.type === "group") {
+          if (node.collapsible === false) {
+            return (
+              <StaticSectionGroup
+                key={`group:${node.title}`}
+                node={node}
+                currentPath={currentPath}
+                depth={depth}
+              />
+            );
+          }
           return (
             <CollapsibleGroup
               key={`group:${node.title}`}
@@ -117,6 +127,35 @@ function SidebarNodeList({
         );
       })}
     </ul>
+  );
+}
+
+/** OpenAPI root label — same visual weight as the product section title. */
+function StaticSectionGroup({
+  node,
+  currentPath,
+  depth,
+}: {
+  node: SidebarGroup;
+  currentPath: string;
+  depth: number;
+}) {
+  return (
+    <li className={styles.staticSection}>
+      <div className={styles.staticSectionTitle}>
+        {node.icon ? (
+          <span className={styles.icon} aria-hidden>
+            {node.icon}
+          </span>
+        ) : null}
+        {node.title}
+      </div>
+      <SidebarNodeList
+        nodes={node.children}
+        currentPath={currentPath}
+        depth={depth + 1}
+      />
+    </li>
   );
 }
 
