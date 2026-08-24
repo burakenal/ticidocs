@@ -1,6 +1,7 @@
 "use client";
 
-import type { SidebarItem, SidebarNode } from "@ticidocs/core";
+import { useEffect, useId, useState } from "react";
+import type { SidebarGroup, SidebarItem, SidebarNode } from "@ticidocs/core";
 import { MethodBadge } from "./method-badge";
 import styles from "./sidebar.module.css";
 
@@ -61,6 +62,17 @@ export function Sidebar({ items, currentPath, sectionTitle }: SidebarProps) {
   );
 }
 
+function groupContainsPath(node: SidebarGroup, currentPath: string): boolean {
+  return node.children.some((child) => nodeContainsPath(child, currentPath));
+}
+
+function nodeContainsPath(node: SidebarNode, currentPath: string): boolean {
+  if (node.type === "page") {
+    return node.href === currentPath;
+  }
+  return groupContainsPath(node, currentPath);
+}
+
 function SidebarNodeList({
   nodes,
   currentPath,
@@ -75,21 +87,12 @@ function SidebarNodeList({
       {nodes.map((node) => {
         if (node.type === "group") {
           return (
-            <li key={`group:${node.title}`} className={styles.subGroup}>
-              <div className={styles.subGroupTitle}>
-                {node.icon ? (
-                  <span className={styles.icon} aria-hidden>
-                    {node.icon}
-                  </span>
-                ) : null}
-                {node.title}
-              </div>
-              <SidebarNodeList
-                nodes={node.children}
-                currentPath={currentPath}
-                depth={depth + 1}
-              />
-            </li>
+            <CollapsibleGroup
+              key={`group:${node.title}`}
+              node={node}
+              currentPath={currentPath}
+              depth={depth}
+            />
           );
         }
 
@@ -114,5 +117,68 @@ function SidebarNodeList({
         );
       })}
     </ul>
+  );
+}
+
+function CollapsibleGroup({
+  node,
+  currentPath,
+  depth,
+}: {
+  node: SidebarGroup;
+  currentPath: string;
+  depth: number;
+}) {
+  const containsActive = groupContainsPath(node, currentPath);
+  const [open, setOpen] = useState(containsActive);
+  const panelId = useId();
+
+  useEffect(() => {
+    if (containsActive) {
+      setOpen(true);
+    }
+  }, [containsActive]);
+
+  return (
+    <li className={styles.subGroup} data-open={open ? "true" : "false"}>
+      <button
+        type="button"
+        className={styles.subGroupTrigger}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((value) => !value)}
+      >
+        {node.icon ? (
+          <span className={styles.icon} aria-hidden>
+            {node.icon}
+          </span>
+        ) : null}
+        <span className={styles.subGroupLabel}>{node.title}</span>
+        <span className={styles.chevron} aria-hidden="true">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 4.5L6 7.5L9 4.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </button>
+      <div id={panelId} hidden={!open} className={styles.subGroupPanel}>
+        <SidebarNodeList
+          nodes={node.children}
+          currentPath={currentPath}
+          depth={depth + 1}
+        />
+      </div>
+    </li>
   );
 }
