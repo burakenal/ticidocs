@@ -1,4 +1,9 @@
-import type { ReactNode } from "react";
+import {
+  Children,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import styles from "./hero.module.css";
 
 function renderTitle(title: string, highlight?: string) {
@@ -78,17 +83,95 @@ export function HeroAction({
   href,
   children,
   primary,
+  arrow,
 }: {
   href: string;
   children: ReactNode;
   primary?: boolean;
+  /** Renders a trailing arrow icon (preferred over embedding → in label text). */
+  arrow?: boolean;
 }) {
+  const label = normalizeActionLabel(children);
+
   return (
     <a
       className={primary ? styles.actionPrimary : styles.actionSecondary}
       href={href}
     >
-      {children}
+      <span className={styles.actionLabel}>{label}</span>
+      {arrow ? (
+        <svg
+          className={styles.actionArrow}
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M3.5 8h8.2M8.2 4.5 11.7 8 8.2 11.5"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ) : null}
     </a>
   );
+}
+
+function cleanLabelText(value: string): string {
+  return value.replace(/\s*→\s*$/u, "").replace(/\s+/g, " ").trim();
+}
+
+/** MDX often wraps multiline JSX children in a `<p>`; flatten to plain text. */
+function normalizeActionLabel(children: ReactNode): ReactNode {
+  if (typeof children === "string" || typeof children === "number") {
+    return cleanLabelText(String(children));
+  }
+
+  if (isValidElement(children)) {
+    const el = children as ReactElement<{ children?: ReactNode }>;
+    if (el.type === "p" || el.type === "span") {
+      return normalizeActionLabel(el.props.children);
+    }
+  }
+
+  const parts = Children.toArray(children).filter((child) => {
+    if (typeof child === "string") return child.trim().length > 0;
+    return child != null && child !== false && child !== true;
+  });
+
+  if (parts.length === 0) return "";
+  if (parts.length === 1) {
+    const only = parts[0];
+    if (only !== children) return normalizeActionLabel(only);
+    if (isValidElement(only)) {
+      const nested = (only as ReactElement<{ children?: ReactNode }>).props
+        .children;
+      if (nested != null) return normalizeActionLabel(nested);
+    }
+    return children;
+  }
+
+  const text = parts
+    .map((child) => {
+      if (typeof child === "string" || typeof child === "number") {
+        return String(child);
+      }
+      if (isValidElement(child)) {
+        const nested = normalizeActionLabel(
+          (child as ReactElement<{ children?: ReactNode }>).props.children,
+        );
+        return typeof nested === "string" || typeof nested === "number"
+          ? String(nested)
+          : "";
+      }
+      return "";
+    })
+    .join("");
+
+  const cleaned = cleanLabelText(text);
+  return cleaned || children;
 }

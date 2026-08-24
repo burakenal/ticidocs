@@ -94,8 +94,16 @@
 .prose :global([class*="actionSecondary"]) {
   color: inherit;
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.2;
+  padding: 0.7rem 1.45rem;
   text-decoration: none;
+}
+
+.prose :global([class*="actionPrimary"]) p,
+.prose :global([class*="actionSecondary"]) p {
+  display: inline;
+  margin: 0;
+  padding: 0;
 }
 
 .prose :global([class*="actionPrimary"]):hover,

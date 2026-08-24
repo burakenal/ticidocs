@@ -99,7 +99,9 @@ export function DocsShell({
 
   const hasTabs = sectionTabs.length > 1 && !isHome;
   const showToc = variant === "docs" && !isHome;
-  const showSidebar = !isHome;
+  const showDesktopSidebar = !isHome;
+  const showMobileNav = sidebar.length > 0;
+  const mobileNavItems = isHome ? sidebar : scopedSidebar;
 
   const shellClass = [
     styles.shell,
@@ -152,26 +154,26 @@ export function DocsShell({
           githubUrl={githubUrl}
           onMenuClick={() => setMobileOpen((open) => !open)}
           menuOpen={mobileOpen}
-          showMenu={showSidebar}
+          showMenu={showMobileNav}
           searchDocuments={searchDocuments}
           versions={versions}
           version={version}
         />
         {hasTabs ? <SectionTabs tabs={sectionTabs} /> : null}
         <div className={bodyClass}>
-          {showSidebar ? (
+          {showDesktopSidebar || showMobileNav ? (
             <aside
-              className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ""}`}
+              className={`${styles.sidebar} ${isHome ? styles.sidebarHomeMobile : ""} ${mobileOpen ? styles.sidebarOpen : ""}`}
               aria-label="Documentation navigation"
             >
               <Sidebar
-                items={scopedSidebar}
+                items={mobileNavItems}
                 currentPath={currentPath}
                 sectionTitle={hasTabs ? activeSection?.title : undefined}
               />
             </aside>
           ) : null}
-          {showSidebar && mobileOpen ? (
+          {showMobileNav && mobileOpen ? (
             <button
               type="button"
               className={styles.backdrop}

@@ -58,6 +58,13 @@
   scrollbar-width: thin;
 }
 
+/* Home keeps a full-width layout on desktop; drawer only on small screens. */
+@media (min-width: 861px) {
+  .sidebarHomeMobile {
+    display: none;
+  }
+}
+
 .mainColumn {
   grid-area: main;
   display: grid;
