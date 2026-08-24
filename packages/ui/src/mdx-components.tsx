@@ -6,6 +6,7 @@ import { Card, CardGroup } from "./cards";
 import { Accordion, AccordionGroup } from "./accordion";
 import { CodeGroup } from "./code-group";
 import { CodeBlock } from "./code-block";
+import { Hero, HeroAction } from "./hero";
 import styles from "./markdown-body.module.css";
 
 export const mdxComponents: MDXComponents = {
@@ -19,6 +20,8 @@ export const mdxComponents: MDXComponents = {
   Accordion,
   AccordionGroup,
   CodeGroup,
+  Hero,
+  HeroAction,
   wrapper: ({ children }) => <div className={styles.prose}>{children}</div>,
   pre: (props) => <CodeBlock {...props} />,
 };

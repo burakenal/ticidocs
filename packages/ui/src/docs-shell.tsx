@@ -55,6 +55,7 @@ export function DocsShell({
   children,
 }: DocsShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isHome = variant === "docs" && (!slug || slug === "index");
 
   useEffect(() => {
     setMobileOpen(false);
@@ -91,6 +92,31 @@ export function DocsShell({
   );
 
   const hasTabs = sectionTabs.length > 1;
+  const showToc = variant === "docs" && !isHome;
+
+  const mainColumnClass = [
+    styles.mainColumn,
+    variant === "api" ? styles.mainColumnApi : "",
+    isHome ? styles.mainColumnHome : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const mainClass = [
+    styles.main,
+    variant === "api" ? styles.mainApi : "",
+    isHome ? styles.mainHome : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const articleClass = [
+    styles.article,
+    variant === "api" ? styles.articleApi : "",
+    isHome ? styles.articleHome : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div
@@ -130,21 +156,17 @@ export function DocsShell({
               onClick={() => setMobileOpen(false)}
             />
           ) : null}
-          <div
-            className={`${styles.mainColumn} ${variant === "api" ? styles.mainColumnApi : ""}`}
-          >
-            <main
-              className={`${styles.main} ${variant === "api" ? styles.mainApi : ""}`}
-            >
+          <div className={mainColumnClass}>
+            <main className={mainClass}>
               {isFallback ? <FallbackBanner locale={locale} /> : null}
-              <article
-                className={`${styles.article} ${variant === "api" ? styles.articleApi : ""}`}
-              >
-                {variant === "docs" ? <Breadcrumbs items={crumbs} /> : null}
+              <article className={articleClass}>
+                {variant === "docs" && !isHome ? (
+                  <Breadcrumbs items={crumbs} />
+                ) : null}
                 {children}
               </article>
             </main>
-            {variant === "docs" ? (
+            {showToc ? (
               <aside className={styles.toc} aria-label="On this page">
                 <TableOfContents headings={headings} />
               </aside>

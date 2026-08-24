@@ -8,6 +8,7 @@ import type {
   JsonSchema,
   ParsedOpenApi,
 } from "@ticidocs/openapi/types";
+import { apiCopy } from "./api-copy";
 import { MethodBadge } from "./method-badge";
 import { SchemaViewer } from "./schema-viewer";
 import { ApiCodeRail } from "./api-code-rail";
@@ -65,7 +66,7 @@ export function EndpointView({
             <p className={styles.description}>{operation.description}</p>
           ) : null}
           {operation.deprecated ? (
-            <div className={styles.deprecated}>Deprecated</div>
+            <div className={styles.deprecated}>{apiCopy.deprecated}</div>
           ) : null}
         </header>
 
@@ -79,7 +80,7 @@ export function EndpointView({
             className={styles.tryIt}
             onClick={() => setTryItOpen(true)}
           >
-            Try it
+            {apiCopy.tryIt}
             <span className={styles.tryItIcon} aria-hidden>
               ▶
             </span>
@@ -100,9 +101,11 @@ export function EndpointView({
 
         {operation.requestBody ? (
           <section className={styles.section} id="request-body">
-            <h2>Request body</h2>
+            <h2>{apiCopy.requestBody}</h2>
             <p className={styles.meta}>
-              {operation.requestBody.required ? "Required" : "Optional"}
+              {operation.requestBody.required
+                ? apiCopy.required
+                : apiCopy.optional}
               {operation.requestBody.content[0]
                 ? ` · ${operation.requestBody.content[0].contentType}`
                 : null}
@@ -110,12 +113,12 @@ export function EndpointView({
             {operation.requestBody.description ? (
               <p>{operation.requestBody.description}</p>
             ) : null}
-            <SchemaViewer schema={requestSchema} name="Request" />
+            <SchemaViewer schema={requestSchema} name={apiCopy.request} />
           </section>
         ) : null}
 
         <section className={styles.section} id="responses">
-          <h2>Response</h2>
+          <h2>{apiCopy.response}</h2>
           {success ? (
             <>
               <p className={styles.responseMeta}>
@@ -130,12 +133,12 @@ export function EndpointView({
               <SchemaPropertyList schema={success.content[0]?.schema} />
             </>
           ) : (
-            <p className={styles.meta}>No success response documented.</p>
+            <p className={styles.meta}>{apiCopy.noSuccessResponse}</p>
           )}
 
           {operation.responses.filter((r) => r !== success).length > 0 ? (
             <div className={styles.otherResponses}>
-              <h3>Other responses</h3>
+              <h3>{apiCopy.otherResponses}</h3>
               {operation.responses
                 .filter((response) => response !== success)
                 .map((response) => (
@@ -147,7 +150,7 @@ export function EndpointView({
                     {response.content[0]?.schema ? (
                       <SchemaViewer
                         schema={response.content[0].schema}
-                        name="Schema"
+                        name={apiCopy.schema}
                       />
                     ) : null}
                   </div>
@@ -166,7 +169,7 @@ export function EndpointView({
           <button
             type="button"
             className={styles.drawerBackdrop}
-            aria-label="Close Try it"
+            aria-label={apiCopy.tryItClose}
             onClick={() => setTryItOpen(false)}
           />
           <div
@@ -178,7 +181,7 @@ export function EndpointView({
             <div className={styles.drawerHead}>
               <div>
                 <h2 id="try-it-title" className={styles.drawerTitle}>
-                  Try it
+                  {apiCopy.tryIt}
                 </h2>
                 <div className={styles.drawerSignature}>
                   <MethodBadge method={operation.method} compact />
@@ -190,7 +193,7 @@ export function EndpointView({
                 className={styles.drawerClose}
                 onClick={() => setTryItOpen(false)}
               >
-                Close
+                {apiCopy.tryItClose}
               </button>
             </div>
             <div className={styles.drawerBody}>
@@ -218,8 +221,8 @@ function SecuritySection({
   if (requirements.length === 0) {
     return (
       <section className={styles.section} id="authentication">
-        <h2>Authorizations</h2>
-        <p className={styles.meta}>No authentication required.</p>
+        <h2>{apiCopy.authorization}</h2>
+        <p className={styles.meta}>{apiCopy.noAuthRequired}</p>
       </section>
     );
   }
@@ -227,7 +230,7 @@ function SecuritySection({
   const ids = [...new Set(requirements.flatMap((req) => Object.keys(req)))];
 
   return (
-    <ApiFieldGroup title="Authorizations" id="authentication">
+    <ApiFieldGroup title={apiCopy.authorization} id="authentication">
       {ids.map((id) => {
         const scheme = schemes[id];
         const typeLabel = scheme
@@ -258,7 +261,7 @@ function SecuritySection({
             description={
               scheme?.description ??
               (scheme?.type === "http" && scheme.scheme === "bearer"
-                ? "Bearer token authentication."
+                ? apiCopy.bearerAuth
                 : undefined)
             }
           />
@@ -285,7 +288,7 @@ function ParameterSections({
   }
 
   return (
-    <ApiFieldGroup title="Parameters" id="parameters">
+    <ApiFieldGroup title={apiCopy.parameters} id="parameters">
       {all.map((param) => (
         <ApiField
           key={`${param.in}-${param.name}`}
@@ -306,7 +309,7 @@ function SchemaPropertyList({ schema }: { schema?: JsonSchema }) {
     if (!schema) {
       return null;
     }
-    return <SchemaViewer schema={schema} name="Response" />;
+    return <SchemaViewer schema={schema} name={apiCopy.responseSchema} />;
   }
 
   return (

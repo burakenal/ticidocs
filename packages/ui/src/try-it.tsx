@@ -8,6 +8,7 @@ import {
   generateCodeSamples,
 } from "@ticidocs/openapi/codegen";
 import type { ApiOperation, ParsedOpenApi } from "@ticidocs/openapi/types";
+import { apiCopy } from "./api-copy";
 import { Tabs, Tab } from "./tabs";
 import { CodeBlock } from "./code-block";
 import styles from "./try-it.module.css";
@@ -127,7 +128,7 @@ export function TryItPanel({
       className={embedded ? styles.embedded : styles.panel}
       id={embedded ? undefined : "try-it"}
     >
-      {!embedded ? <h2>Try it</h2> : null}
+      {!embedded ? <h2>{apiCopy.tryIt}</h2> : null}
       {!tryItEnabled ? (
         <p className={styles.hint}>
           Try It is disabled until you set <code>api.allowedOrigins</code> in{" "}
@@ -142,7 +143,7 @@ export function TryItPanel({
 
       <div className={styles.grid}>
         <label className={styles.field}>
-          <span>Base URL</span>
+          <span>{apiCopy.baseUrl}</span>
           <input
             value={baseUrl}
             onChange={(event) => setBaseUrl(event.target.value)}
@@ -155,7 +156,7 @@ export function TryItPanel({
           const label =
             scheme?.type === "apiKey"
               ? `${id} (${scheme.name})`
-              : `${id} (Bearer token)`;
+              : `${id} (${apiCopy.bearerToken})`;
           return (
             <label key={id} className={styles.field}>
               <span>{label}</span>
@@ -213,7 +214,7 @@ export function TryItPanel({
 
       {operation.requestBody ? (
         <label className={styles.field}>
-          <span>Request body</span>
+          <span>{apiCopy.requestBodyLabel}</span>
           <textarea
             rows={8}
             value={body}
@@ -229,7 +230,7 @@ export function TryItPanel({
         onClick={onSend}
         disabled={!tryItEnabled || busy}
       >
-        {busy ? "Sending…" : "Send request"}
+        {busy ? apiCopy.sending : apiCopy.sendRequest}
       </button>
 
       {error ? <div className={styles.error}>{error}</div> : null}
@@ -245,7 +246,9 @@ export function TryItPanel({
             </CodeBlock>
           ) : null}
           <CodeBlock className="language-json">
-            <code className="language-json">{result.body || "(empty)"}</code>
+            <code className="language-json">
+              {result.body || apiCopy.empty}
+            </code>
           </CodeBlock>
         </div>
       ) : null}

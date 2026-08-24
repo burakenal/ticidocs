@@ -1,0 +1,125 @@
+.hero {
+  position: relative;
+  margin: 0 0 2rem;
+  padding: 2.25rem 0 2rem;
+  overflow: hidden;
+}
+
+.plane {
+  position: absolute;
+  inset: -1rem -2rem auto;
+  height: min(22rem, 55vw);
+  pointer-events: none;
+  background:
+    radial-gradient(
+      70% 80% at 12% 20%,
+      color-mix(in srgb, var(--docs-primary) 18%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      55% 70% at 88% 10%,
+      color-mix(in srgb, var(--docs-primary) 10%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--docs-background-accent) 80%, transparent),
+      transparent 88%
+    );
+}
+
+.inner {
+  position: relative;
+  max-width: 40rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--docs-primary-strong);
+}
+
+.title {
+  margin: 0 0 0.85rem;
+  font-family: var(--docs-font-display);
+  font-size: clamp(2.15rem, 4.2vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+  text-wrap: balance;
+  color: var(--docs-foreground);
+}
+
+.description {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--docs-muted);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.35rem;
+}
+
+.actionPrimary,
+.actionSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.55rem 1.05rem;
+  border-radius: var(--docs-radius-sm);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.actionPrimary {
+  background: var(--docs-primary);
+  color: var(--docs-primary-foreground);
+  border: 1px solid transparent;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--docs-primary) 30%, transparent);
+}
+
+.actionPrimary:hover {
+  filter: brightness(0.97);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.actionSecondary {
+  background: var(--docs-surface);
+  color: var(--docs-foreground);
+  border: 1px solid var(--docs-border);
+}
+
+.actionSecondary:hover {
+  border-color: color-mix(in srgb, var(--docs-primary) 35%, var(--docs-border));
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 1.5rem 0 1.25rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

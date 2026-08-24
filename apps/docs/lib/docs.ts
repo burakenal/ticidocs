@@ -107,7 +107,9 @@ export function getOpenApiSidebarLinks(
 ): SidebarPageLink[] {
   return getAllApiOperations().map((operation) => ({
     type: "page" as const,
-    title: operation.path,
+    title:
+      operation.summary ??
+      `${operation.method.toUpperCase()} ${operation.path}`,
     slug: operation.slug,
     href: localePath(locale, operation.slug, version),
     method: operation.method,

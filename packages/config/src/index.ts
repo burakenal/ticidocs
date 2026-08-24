@@ -53,6 +53,23 @@ const docsConfigSchema = z
     theme: z
       .object({
         primaryColor: z.string().optional(),
+        fonts: z
+          .object({
+            sans: z.string().min(1).optional(),
+            display: z.string().min(1).optional(),
+            mono: z.string().min(1).optional(),
+            googleFontsUrl: z.string().url().optional(),
+          })
+          .optional(),
+        layout: z
+          .object({
+            shellMaxWidth: z.string().min(1).optional(),
+            maxContent: z.string().min(1).optional(),
+            sidebarWidth: z.string().min(1).optional(),
+            tocWidth: z.string().min(1).optional(),
+            apiRailWidth: z.string().min(1).optional(),
+          })
+          .optional(),
       })
       .optional(),
     github: z

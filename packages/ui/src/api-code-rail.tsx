@@ -18,6 +18,7 @@ import type {
   JsonSchema,
   ParsedOpenApi,
 } from "@ticidocs/openapi/types";
+import { apiCopy } from "./api-copy";
 import { CodeBlock } from "./code-block";
 import styles from "./api-code-rail.module.css";
 
@@ -261,8 +262,8 @@ function CopyIconButton({ code }: { code: string }) {
       type="button"
       className={styles.iconBtn}
       onClick={onCopy}
-      title={copied ? "Copied" : "Copy"}
-      aria-label={copied ? "Copied" : "Copy"}
+      title={copied ? apiCopy.copied : apiCopy.copy}
+      aria-label={copied ? apiCopy.copied : apiCopy.copy}
     >
       {copied ? <CheckIcon /> : <ClipboardIcon />}
     </button>

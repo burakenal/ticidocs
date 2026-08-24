@@ -5,11 +5,18 @@ sidebarTitle: Overview
 order: 1
 ---
 
-# Ticidocs
+<Hero
+  eyebrow="Ticidocs"
+  title="Self-hosted docs for APIs and products"
+  description="Git-backed MDX, locale-first routing, and OpenAPI reference pages in one Next.js site — no mandatory SaaS."
+>
+  <HeroAction href="/en/getting-started" primary>
+    Getting started
+  </HeroAction>
+  <HeroAction href="/en/api/listproducts">API reference</HeroAction>
+</Hero>
 
-Ticidocs is an open-source, self-hosted documentation platform for APIs, SDKs, and product docs. It aims for a Mintlify-like modern experience with an independent architecture, UI, and codebase.
-
-It combines Git-backed MDX content, locale-first routing, built-in SEO, and OpenAPI reference pages in a single Next.js site. There is no mandatory SaaS, cloud database, or external auth service.
+Ticidocs combines Git-backed MDX content, locale-first routing, built-in SEO, and OpenAPI reference pages in a single Next.js site. There is no mandatory SaaS, cloud database, or external auth service.
 
 <Callout type="info">
 This site is the `@ticidocs/docs` dogfood app inside the monorepo. The same content model is used by `examples/full` and the `create-ticidocs` templates.
@@ -22,7 +29,7 @@ This site is the `@ticidocs/docs` dogfood app inside the monorepo. The same cont
     Same slug set under `content/{locale}`; the language switcher keeps the page
   </Card>
   <Card title="MDX components" href="/en/getting-started">
-    Callout, Tabs, Steps, Card, and syntax-highlighted code blocks
+    Callout, Tabs, Steps, Card, Hero, and syntax-highlighted code blocks
   </Card>
   <Card title="SEO foundations" href="/en/advanced">
     Canonical, hreflang, Open Graph, sitemap.xml, and robots.txt

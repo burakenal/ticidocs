@@ -22,6 +22,28 @@
   letter-spacing: -0.03em;
 }
 
+.prose :global([class*="hero"]) :global([class*="title"]) {
+  font-size: clamp(2.15rem, 4.2vw, 3rem);
+  margin: 0 0 0.85rem;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.prose :global([class*="hero"]) :global([class*="eyebrow"]),
+.prose :global([class*="hero"]) :global([class*="description"]) {
+  margin: 0;
+  color: inherit;
+}
+
+.prose :global([class*="hero"]) :global([class*="eyebrow"]) {
+  margin: 0 0 0.75rem;
+}
+
+.prose :global([class*="hero"]) :global([class*="description"]) {
+  margin: 0;
+  color: var(--docs-muted);
+}
+
 .prose h2 {
   font-size: 1.25rem;
   margin: 2.1rem 0 0.7rem;
@@ -51,6 +73,17 @@
 .prose a {
   color: var(--docs-primary-strong);
   font-weight: 600;
+}
+
+.prose :global([class*="actionPrimary"]),
+.prose :global([class*="actionSecondary"]) {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.prose :global([class*="actionPrimary"]) {
+  color: var(--docs-primary-foreground);
 }
 
 .prose code {

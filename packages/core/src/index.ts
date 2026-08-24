@@ -5,8 +5,37 @@ export interface DocsLogo {
   dark: string;
 }
 
+export interface DocsThemeFonts {
+  /** UI body font family name, e.g. "Plus Jakarta Sans" */
+  sans?: string;
+  /** Heading / display font; defaults to `sans` when omitted */
+  display?: string;
+  /** Monospace font for code, e.g. "JetBrains Mono" */
+  mono?: string;
+  /**
+   * Optional Google Fonts (or other) CSS URL. When omitted and custom
+   * family names are set, a Google Fonts URL is generated automatically.
+   */
+  googleFontsUrl?: string;
+}
+
+export interface DocsThemeLayout {
+  /** Outer shell max width (CSS length). Default: 92rem */
+  shellMaxWidth?: string;
+  /** Docs article max width. Default: 42rem */
+  maxContent?: string;
+  /** Left sidebar width. Default: 17.5rem */
+  sidebarWidth?: string;
+  /** Right TOC width. Default: 14rem */
+  tocWidth?: string;
+  /** API samples rail width. Default: 27rem */
+  apiRailWidth?: string;
+}
+
 export interface DocsThemeConfig {
   primaryColor?: string;
+  fonts?: DocsThemeFonts;
+  layout?: DocsThemeLayout;
 }
 
 export interface DocsGithubConfig {

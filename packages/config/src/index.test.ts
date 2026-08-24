@@ -82,4 +82,27 @@ describe("defineConfig", () => {
       });
     }
   });
+
+  it("accepts theme fonts and layout", () => {
+    const config = defineConfig({
+      name: "Ticidocs",
+      siteUrl: "https://docs.example.com",
+      locales: ["en"],
+      defaultLocale: "en",
+      navigation: [{ group: "Start", pages: ["index"] }],
+      theme: {
+        primaryColor: "#0B6BCB",
+        fonts: {
+          sans: "Plus Jakarta Sans",
+          mono: "JetBrains Mono",
+        },
+        layout: {
+          sidebarWidth: "16rem",
+          apiRailWidth: "26rem",
+        },
+      },
+    });
+    expect(config.theme?.fonts?.sans).toBe("Plus Jakarta Sans");
+    expect(config.theme?.layout?.sidebarWidth).toBe("16rem");
+  });
 });

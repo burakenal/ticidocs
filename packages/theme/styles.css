@@ -40,16 +40,18 @@
   --docs-shadow-lg: 0 12px 40px rgb(15 23 42 / 10%),
     0 4px 12px rgb(15 23 42 / 4%);
 
-  /* Column system (Mintlify max-w-8xl = 92rem) */
-  --docs-shell-max-width: 92rem;
-  --docs-max-content: 42rem;
+  /* Column system — override via theme.layout in docs.config.ts */
+  --docs-shell-max-width: 90rem;
+  --docs-max-content: 44rem;
+  --docs-max-content-home: 56rem;
   --docs-nav-height: 3.5rem;
   --docs-tabs-height: 2.625rem;
   --docs-header-height: calc(var(--docs-nav-height) + var(--docs-tabs-height));
-  --docs-sidebar-width: 17.5rem;
-  --docs-toc-width: 14rem;
-  --docs-api-rail-width: 27rem;
-  --docs-page-pad: 1.5rem;
+  --docs-sidebar-width: 16.5rem;
+  --docs-toc-width: 13.5rem;
+  --docs-api-rail-width: 26rem;
+  --docs-page-pad: 1.75rem;
+  --docs-grid-gap: 0;
 }
 
 html[data-theme="dark"] {

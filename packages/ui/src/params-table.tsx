@@ -1,4 +1,5 @@
 import type { ApiParameter } from "@ticidocs/openapi/types";
+import { apiCopy } from "./api-copy";
 import styles from "./params-table.module.css";
 
 export function ParamsTable({
@@ -19,10 +20,10 @@ export function ParamsTable({
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Required</th>
-              <th>Description</th>
+              <th>{apiCopy.paramName}</th>
+              <th>{apiCopy.paramType}</th>
+              <th>{apiCopy.paramRequired}</th>
+              <th>{apiCopy.paramDescription}</th>
             </tr>
           </thead>
           <tbody>
@@ -40,7 +41,7 @@ export function ParamsTable({
                   <td>
                     <code>{type}</code>
                   </td>
-                  <td>{param.required ? "Yes" : "No"}</td>
+                  <td>{param.required ? apiCopy.yes : apiCopy.no}</td>
                   <td>{param.description ?? "—"}</td>
                 </tr>
               );
