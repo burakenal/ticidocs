@@ -17,6 +17,8 @@ export { Callout } from "./callout";
 export { Tabs, Tab } from "./tabs";
 export { Steps, Step } from "./steps";
 export { Card, CardGroup } from "./cards";
+export { Accordion, AccordionGroup } from "./accordion";
+export { CodeGroup } from "./code-group";
 export { CodeBlock } from "./code-block";
 export { SearchDialog, useSearchHotkey } from "./search-dialog";
 export { mdxComponents } from "./mdx-components";

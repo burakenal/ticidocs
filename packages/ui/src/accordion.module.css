@@ -1,0 +1,51 @@
+.group {
+  margin: 1.25rem 0;
+  border: 1px solid var(--docs-border);
+  border-radius: var(--docs-radius);
+  overflow: hidden;
+  background: var(--docs-surface);
+}
+
+.item + .item {
+  border-top: 1px solid var(--docs-border);
+}
+
+.trigger {
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--docs-foreground);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  background: var(--docs-hover);
+}
+
+.chevron {
+  color: var(--docs-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.panel {
+  padding: 0 1rem 1rem;
+  color: var(--docs-muted);
+}
+
+.panel > :first-child {
+  margin-top: 0;
+}
+
+.panel > :last-child {
+  margin-bottom: 0;
+}

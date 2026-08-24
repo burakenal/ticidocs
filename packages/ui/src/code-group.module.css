@@ -1,0 +1,49 @@
+.group {
+  margin: 1.25rem 0;
+  border: 1px solid var(--docs-border);
+  border-radius: var(--docs-radius);
+  overflow: hidden;
+  background: var(--docs-surface);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--docs-border);
+  background: color-mix(in srgb, var(--docs-hover) 70%, transparent);
+}
+
+.tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--docs-muted);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--docs-foreground);
+  background: var(--docs-hover);
+}
+
+.active {
+  color: var(--docs-primary);
+  background: color-mix(in srgb, var(--docs-primary) 12%, transparent);
+}
+
+.panel {
+  padding: 0;
+}
+
+.panel :global(pre) {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}

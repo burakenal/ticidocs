@@ -48,10 +48,13 @@ Ticidocs/
 ## Scripts
 
 ```bash
-pnpm dev        # start docs app
-pnpm build      # build all packages + apps
-pnpm lint       # ESLint
-pnpm test       # Vitest (+ example validation)
+pnpm dev           # dogfood docs app
+pnpm dev:packages  # watch @ticidocs/* packages
+pnpm dev:all       # packages watch + dogfood docs
+pnpm dev:enal      # Enal.TiciDocs (lib watch + site on :3001)
+pnpm build         # build all packages + apps
+pnpm lint          # ESLint
+pnpm test          # Vitest (+ example validation)
 ```
 
 ## Scaffold a new site
@@ -117,5 +120,4 @@ See [DEPLOY.md](./DEPLOY.md) for VPS, Nginx, and Kubernetes notes.
 ## Later leftovers
 
 - JSON-LD Article schema
-- Accordion / CodeGroup extras
 - Publish `@ticidocs/*` to npm

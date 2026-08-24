@@ -106,9 +106,29 @@ See the repo root `DEPLOY.md` for VPS, Nginx, and Kubernetes notes. Docker uses 
 ## What’s intentionally later
 
 - JSON-LD Article schema
-- Accordion / CodeGroup extras
 - Managed translation CMS / auto-translate
 - Angular adapter / IntegrationHub embed
+
+## Accordion and CodeGroup
+
+<AccordionGroup>
+  <Accordion title="Accordion" defaultOpen>
+    Use `AccordionGroup` + `Accordion` for FAQs and progressive disclosure.
+  </Accordion>
+  <Accordion title="CodeGroup">
+    Wrap adjacent fenced blocks in `CodeGroup` to switch languages by tab.
+  </Accordion>
+</AccordionGroup>
+
+<CodeGroup>
+```ts
+export const greeting = "hello";
+```
+
+```python
+greeting = "hello"
+```
+</CodeGroup>
 
 ## Next step
 

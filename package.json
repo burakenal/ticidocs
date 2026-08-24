@@ -7,6 +7,9 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "turbo run dev --filter=@ticidocs/docs",
+    "dev:packages": "turbo run dev --filter=./packages/*",
+    "dev:all": "turbo run dev --filter=./packages/* --filter=@ticidocs/docs",
+    "dev:enal": "pnpm --dir ../Enal.TiciDocs run dev:all",
     "build": "turbo run build",
     "lint": "eslint \"packages/*/src/**/*.{ts,tsx}\" \"apps/docs/**/*.{ts,tsx}\" \"create-ticidocs/src/**/*.{ts,tsx}\" --max-warnings 0",
     "test": "turbo run test",

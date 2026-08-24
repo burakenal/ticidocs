@@ -22,6 +22,7 @@ export function SearchDialog({
   const [activeIndex, setActiveIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const hits = useMemo(
     () => searchDocuments(documents, query, { locale, limit: 10 }),
@@ -60,6 +61,28 @@ export function SearchDialog({
         onOpenChange(false);
         return;
       }
+      if (event.key === "Tab") {
+        const root = dialogRef.current;
+        if (!root) {
+          return;
+        }
+        const focusable = getFocusable(root);
+        if (focusable.length === 0) {
+          event.preventDefault();
+          return;
+        }
+        const first = focusable[0]!;
+        const last = focusable[focusable.length - 1]!;
+        const active = document.activeElement as HTMLElement | null;
+        if (event.shiftKey && active === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && active === last) {
+          event.preventDefault();
+          first.focus();
+        }
+        return;
+      }
       if (event.key === "ArrowDown") {
         event.preventDefault();
         setActiveIndex((value) => Math.min(value + 1, Math.max(hits.length - 1, 0)));
@@ -86,6 +109,7 @@ export function SearchDialog({
   return createPortal(
     <div className={styles.overlay} role="presentation" onClick={() => onOpenChange(false)}>
       <div
+        ref={dialogRef}
         className={styles.dialog}
         role="dialog"
         aria-modal="true"
@@ -163,4 +187,13 @@ export function useSearchHotkey(onOpen: () => void): void {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onOpen]);
+}
+
+function getFocusable(root: HTMLElement): HTMLElement[] {
+  const nodes = root.querySelectorAll<HTMLElement>(
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+  );
+  return [...nodes].filter(
+    (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true",
+  );
 }
