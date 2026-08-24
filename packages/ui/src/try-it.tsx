@@ -16,6 +16,7 @@ import type {
 } from "@ticidocs/openapi/types";
 import { apiCopy } from "./api-copy";
 import { MethodBadge } from "./method-badge";
+import { MarkdownBody } from "./markdown-body";
 import { CodeBlock } from "./code-block";
 import {
   CopyIconButton,
@@ -52,9 +53,9 @@ export function TryItModal({
   >({});
   const [body, setBody] = useState(defaults.body ?? "");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{
-    status: number;
+    /** HTTP status when the server responded; null for network/client failures. */
+    status: number | null;
     statusText: string;
     headers: string;
     body: string;
@@ -130,12 +131,10 @@ export function TryItModal({
     setBody(defaults.body ?? "");
     setAuthValues({});
     setBasicAuth({});
-    setError(null);
     setResult(null);
   }, [open, defaults]);
 
   async function onSend(): Promise<void> {
-    setError(null);
     setResult(null);
     setBusy(true);
     try {
@@ -193,10 +192,16 @@ export function TryItModal({
         status: response.status,
         statusText: response.statusText,
         headers: responseHeaders,
-        body: text,
+        body: formatResponseBody(text),
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      const message = err instanceof Error ? err.message : String(err);
+      setResult({
+        status: null,
+        statusText: "Network Error",
+        headers: "",
+        body: message,
+      });
     } finally {
       setBusy(false);
     }
@@ -206,12 +211,14 @@ export function TryItModal({
     return null;
   }
 
-  const responseStatus = error
-    ? "Error"
-    : result
+  const hasResult = result !== null;
+  const isErrorResult =
+    hasResult && (result.status === null || result.status >= 400);
+  const responseStatus = hasResult
+    ? result.status !== null
       ? String(result.status)
-      : (operation.responses.find((r) => r.status.startsWith("2"))?.status ??
-        "200");
+      : "—"
+    : "—";
   const responseBody = result?.body ?? "";
 
   return (
@@ -266,7 +273,9 @@ export function TryItModal({
                 {title}
               </h2>
               {operation.description ? (
-                <p className={styles.introDesc}>{operation.description}</p>
+                <div className={styles.introDesc}>
+                  <MarkdownBody source={operation.description} />
+                </div>
               ) : null}
               {!tryItEnabled ? (
                 <p className={styles.hint}>
@@ -422,18 +431,22 @@ export function TryItModal({
                 <StatusPill
                   status={responseStatus}
                   className={
-                    error || (result && result.status >= 400)
+                    isErrorResult
                       ? styles.statusError
-                      : undefined
+                      : hasResult
+                        ? styles.statusOk
+                        : styles.statusIdle
                   }
                 />
               }
               actions={
-                result ? <CopyIconButton code={responseBody} /> : undefined
+                hasResult && responseBody ? (
+                  <CopyIconButton code={responseBody} />
+                ) : undefined
               }
               bodyClassName={styles.responseBody}
             >
-              {result ? (
+              {hasResult ? (
                 <>
                   {result.headers ? (
                     <CodeBlock bare className="language-http">
@@ -446,10 +459,6 @@ export function TryItModal({
                     </code>
                   </CodeBlock>
                 </>
-              ) : error ? (
-                <div className={styles.responseError} role="alert">
-                  {error}
-                </div>
               ) : (
                 <div className={styles.responseEmpty}>
                   Send a request to see the response here.
@@ -660,6 +669,18 @@ function encodeBasic(username: string, password: string): string {
     return btoa(raw);
   } catch {
     return btoa(unescape(encodeURIComponent(raw)));
+  }
+}
+
+function formatResponseBody(text: string): string {
+  const trimmed = text.trim();
+  if (!trimmed) {
+    return text;
+  }
+  try {
+    return JSON.stringify(JSON.parse(trimmed), null, 2);
+  } catch {
+    return text;
   }
 }
 

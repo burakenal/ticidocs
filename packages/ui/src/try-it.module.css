@@ -193,6 +193,39 @@
   line-height: 1.55;
 }
 
+.introDesc :global([class*="prose"]) {
+  font-size: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+
+.introDesc :global(h1),
+.introDesc :global(h2),
+.introDesc :global(h3) {
+  margin-top: 0.7rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.95rem;
+  color: var(--docs-foreground);
+}
+
+.introDesc :global(h1):first-child,
+.introDesc :global(h2):first-child,
+.introDesc :global(h3):first-child {
+  margin-top: 0;
+}
+
+.introDesc :global(p),
+.introDesc :global(ul),
+.introDesc :global(ol) {
+  margin-bottom: 0.45rem;
+}
+
+.introDesc :global(p):last-child,
+.introDesc :global(ul):last-child,
+.introDesc :global(ol):last-child {
+  margin-bottom: 0;
+}
+
 .hint {
   margin: 0;
   color: var(--docs-muted);
@@ -358,13 +391,10 @@
   line-height: 1.5;
 }
 
-.responseError {
+.responseEmpty {
   padding: 1.1rem 1rem;
-  color: #fecaca;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-break: break-word;
+  color: color-mix(in srgb, var(--docs-code-foreground) 45%, transparent);
+  font-size: 0.8rem;
 }
 
 .codeBody {
@@ -376,10 +406,14 @@
   min-height: 5rem;
 }
 
-.responseEmpty {
-  padding: 1.1rem 1rem;
-  color: color-mix(in srgb, var(--docs-code-foreground) 45%, transparent);
-  font-size: 0.8rem;
+.statusIdle {
+  color: color-mix(in srgb, var(--docs-code-foreground) 55%, transparent) !important;
+  background: rgb(148 163 184 / 16%) !important;
+}
+
+.statusOk {
+  color: #6ee7b7 !important;
+  background: rgb(16 185 129 / 18%) !important;
 }
 
 .statusError {

@@ -10,6 +10,7 @@ import type {
 } from "@ticidocs/openapi/types";
 import { apiCopy } from "./api-copy";
 import { MethodBadge } from "./method-badge";
+import { MarkdownBody } from "./markdown-body";
 import { SchemaViewer } from "./schema-viewer";
 import { ApiCodeRail } from "./api-code-rail";
 import { ApiField, ApiFieldGroup } from "./api-field";
@@ -45,7 +46,9 @@ export function EndpointView({
           {category ? <div className={styles.category}>{category}</div> : null}
           <h1 className={styles.title}>{title}</h1>
           {operation.description ? (
-            <p className={styles.description}>{operation.description}</p>
+            <div className={styles.description}>
+              <MarkdownBody source={operation.description} />
+            </div>
           ) : null}
           {operation.deprecated ? (
             <div className={styles.deprecated}>{apiCopy.deprecated}</div>
@@ -93,7 +96,7 @@ export function EndpointView({
                 : null}
             </p>
             {operation.requestBody.description ? (
-              <p>{operation.requestBody.description}</p>
+              <MarkdownBody source={operation.requestBody.description} />
             ) : null}
             <SchemaViewer schema={requestSchema} name={apiCopy.request} />
           </section>

@@ -1,73 +1,109 @@
 import type { ReactNode } from "react";
 import styles from "./markdown-body.module.css";
 
-/** Lightweight markdown-ish renderer for Phase 1 (headings, paragraphs, lists, code). */
+/** Lightweight markdown renderer for OpenAPI descriptions and MDX-adjacent prose. */
 export function MarkdownBody({ source }: { source: string }): ReactNode {
-  const blocks = source.trim().split(/\n{2,}/);
-  return (
-    <div className={styles.prose}>
-      {blocks.map((block, index) => {
-        const lines = block.split(/\n/);
-        const first = lines[0] ?? "";
+  const lines = source.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const nodes: ReactNode[] = [];
+  let i = 0;
+  let key = 0;
 
-        if (/^###\s+/.test(first)) {
-          const text = first.replace(/^###\s+/, "");
-          return (
-            <h3 key={index} id={slugify(text)}>
-              {text}
-            </h3>
-          );
-        }
-        if (/^##\s+/.test(first)) {
-          const text = first.replace(/^##\s+/, "");
-          return (
-            <h2 key={index} id={slugify(text)}>
-              {text}
-            </h2>
-          );
-        }
-        if (/^#\s+/.test(first)) {
-          const text = first.replace(/^#\s+/, "");
-          return (
-            <h1 key={index} id={slugify(text)}>
-              {text}
-            </h1>
-          );
-        }
-        if (first.startsWith("```")) {
-          const lang = first.slice(3).trim();
-          const codeLines = lines.slice(1);
-          if (codeLines[codeLines.length - 1]?.trim() === "```") {
-            codeLines.pop();
-          }
-          return (
-            <pre key={index} className={styles.code} data-language={lang || undefined}>
-              <code>{codeLines.join("\n")}</code>
-            </pre>
-          );
-        }
-        if (lines.every((line) => /^[-*]\s+/.test(line))) {
-          return (
-            <ul key={index}>
-              {lines.map((line, i) => (
-                <li key={i}>{inline(line.replace(/^[-*]\s+/, ""))}</li>
-              ))}
-            </ul>
-          );
-        }
-        return (
-          <p key={index}>
-            {lines.map((line, i) => (
-              <span key={i}>
-                {i > 0 ? <br /> : null}
-                {inline(line)}
-              </span>
-            ))}
-          </p>
-        );
-      })}
-    </div>
-  );
+  while (i < lines.length) {
+    const line = lines[i] ?? "";
+
+    if (line.trim() === "") {
+      i += 1;
+      continue;
+    }
+
+    if (/^###\s+/.test(line)) {
+      const text = line.replace(/^###\s+/, "").trim();
+      nodes.push(
+        <h3 key={key++} id={slugify(text)}>
+          {inline(text)}
+        </h3>,
+      );
+      i += 1;
+      continue;
+    }
+    if (/^##\s+/.test(line)) {
+      const text = line.replace(/^##\s+/, "").trim();
+      nodes.push(
+        <h2 key={key++} id={slugify(text)}>
+          {inline(text)}
+        </h2>,
+      );
+      i += 1;
+      continue;
+    }
+    if (/^#\s+/.test(line)) {
+      const text = line.replace(/^#\s+/, "").trim();
+      nodes.push(
+        <h1 key={key++} id={slugify(text)}>
+          {inline(text)}
+        </h1>,
+      );
+      i += 1;
+      continue;
+    }
+
+    if (line.trimStart().startsWith("```")) {
+      const lang = line.trimStart().slice(3).trim();
+      const codeLines: string[] = [];
+      i += 1;
+      while (i < lines.length && !lines[i]!.trimStart().startsWith("```")) {
+        codeLines.push(lines[i]!);
+        i += 1;
+      }
+      if (i < lines.length) i += 1;
+      nodes.push(
+        <pre key={key++} className={styles.code} data-language={lang || undefined}>
+          <code>{codeLines.join("\n")}</code>
+        </pre>,
+      );
+      continue;
+    }
+
+    if (/^[-*]\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^[-*]\s+/.test(lines[i] ?? "")) {
+        items.push((lines[i] ?? "").replace(/^[-*]\s+/, ""));
+        i += 1;
+      }
+      nodes.push(
+        <ul key={key++}>
+          {items.map((item, itemIndex) => (
+            <li key={itemIndex}>{inline(item)}</li>
+          ))}
+        </ul>,
+      );
+      continue;
+    }
+
+    const paragraphLines: string[] = [];
+    while (
+      i < lines.length &&
+      (lines[i] ?? "").trim() !== "" &&
+      !/^#{1,3}\s+/.test(lines[i] ?? "") &&
+      !(lines[i] ?? "").trimStart().startsWith("```") &&
+      !/^[-*]\s+/.test(lines[i] ?? "")
+    ) {
+      paragraphLines.push(lines[i] ?? "");
+      i += 1;
+    }
+    nodes.push(
+      <p key={key++}>
+        {paragraphLines.map((paragraphLine, lineIndex) => (
+          <span key={lineIndex}>
+            {lineIndex > 0 ? <br /> : null}
+            {inline(paragraphLine)}
+          </span>
+        ))}
+      </p>,
+    );
+  }
+
+  return <div className={styles.prose}>{nodes}</div>;
 }
 
 function slugify(text: string): string {

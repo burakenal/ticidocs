@@ -50,6 +50,39 @@
   max-width: 40rem;
 }
 
+.description :global([class*="prose"]) {
+  font-size: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+
+.description :global(h1),
+.description :global(h2),
+.description :global(h3) {
+  margin-top: 0.85rem;
+  margin-bottom: 0.45rem;
+  font-size: 1rem;
+  color: var(--docs-foreground);
+}
+
+.description :global(h1):first-child,
+.description :global(h2):first-child,
+.description :global(h3):first-child {
+  margin-top: 0;
+}
+
+.description :global(p),
+.description :global(ul),
+.description :global(ol) {
+  margin-bottom: 0.55rem;
+}
+
+.description :global(p):last-child,
+.description :global(ul):last-child,
+.description :global(ol):last-child {
+  margin-bottom: 0;
+}
+
 .deprecated {
   display: inline-block;
   margin-top: 0.75rem;

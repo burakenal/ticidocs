@@ -577,7 +577,11 @@ export function buildSidebar(
     const children: SidebarNode[] = [];
     for (const entry of item.pages) {
       if (isNavOpenApiEntry(entry)) {
-        children.push(openApiSidebarGroup(entry, openApiLinks));
+        const apiGroup = openApiSidebarGroup(entry, openApiLinks);
+        // Empty specs (coming-soon) stay in config but hide until paths exist.
+        if (apiGroup.children.length > 0) {
+          children.push(apiGroup);
+        }
         continue;
       }
       const ref = normalizePageEntry(entry);
@@ -602,6 +606,9 @@ export function buildSidebar(
       icon: item.icon,
       children,
     };
+  }).filter((item) => {
+    if (item.type === "external") return true;
+    return item.children.length > 0;
   });
 }
 
