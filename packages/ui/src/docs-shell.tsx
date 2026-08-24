@@ -206,6 +206,7 @@ export function DocsShell({
             version={version}
             logo={logo}
             footer={footer}
+            home={isHome}
           />
         ) : null}
       </div>

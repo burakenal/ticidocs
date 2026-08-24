@@ -13,6 +13,8 @@ export interface FooterProps {
   version?: string;
   logo?: DocsLogo;
   footer: DocsFooterConfig;
+  /** Match home content column (hero / cards) instead of shell width. */
+  home?: boolean;
 }
 
 function resolveHref(href: string, locale: string, version?: string) {
@@ -33,6 +35,7 @@ export function Footer({
   version,
   logo,
   footer,
+  home = false,
 }: FooterProps) {
   const description = resolveLocalized(
     footer.description,
@@ -45,7 +48,7 @@ export function Footer({
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.inner}>
+      <div className={`${styles.inner} ${home ? styles.innerHome : ""}`}>
         <div className={styles.top}>
           <div className={styles.brand}>
             {logo ? (

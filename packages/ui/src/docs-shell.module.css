@@ -94,10 +94,11 @@
 }
 
 .mainHome {
-  padding: 0 var(--docs-page-pad) 4rem;
-  margin-inline: auto;
+  /* Same horizontal measure as hero layout (not inset by page-pad twice). */
+  padding: 0 max(var(--docs-page-pad), calc((100% - var(--docs-max-content-home)) / 2))
+    4rem;
   width: 100%;
-  max-width: var(--docs-max-content-home);
+  max-width: none;
 }
 
 .article {

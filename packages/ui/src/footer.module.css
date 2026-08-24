@@ -7,7 +7,17 @@
 
 .inner {
   width: 100%;
+  max-width: var(--docs-shell-max-width);
+  margin-inline: auto;
   padding: 2.75rem var(--docs-page-pad) 1.75rem;
+}
+
+.innerHome {
+  max-width: none;
+  padding-inline: max(
+    var(--docs-page-pad),
+    calc((100% - var(--docs-max-content-home)) / 2)
+  );
 }
 
 .top {
@@ -132,7 +142,8 @@
 }
 
 @media (max-width: 860px) {
-  .inner {
+  .inner,
+  .innerHome {
     padding: 2.25rem 1.1rem 1.5rem;
   }
 
