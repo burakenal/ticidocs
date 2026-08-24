@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { searchDocuments, type SearchDocument, type SearchHit } from "@ticidocs/search";
+import { getSearchCopy } from "./search-copy";
 import styles from "./search-dialog.module.css";
 
 export interface SearchDialogProps {
@@ -24,6 +25,7 @@ export function SearchDialog({
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  const copy = getSearchCopy(locale);
   const hits = useMemo(
     () => searchDocuments(documents, query, { locale, limit: 10 }),
     [documents, locale, query],
@@ -113,21 +115,21 @@ export function SearchDialog({
         className={styles.dialog}
         role="dialog"
         aria-modal="true"
-        aria-label="Search documentation"
+        aria-label={copy.dialogAriaLabel}
         onClick={(event) => event.stopPropagation()}
       >
         <input
           ref={inputRef}
           className={styles.input}
           value={query}
-          placeholder="Search documentation..."
-          aria-label="Search documentation"
+          placeholder={copy.placeholder}
+          aria-label={copy.dialogAriaLabel}
           onChange={(event) => setQuery(event.target.value)}
         />
         <ul className={styles.results} role="listbox">
           {hits.length === 0 ? (
             <li className={styles.empty}>
-              {query.trim() ? "No results" : "Type to search"}
+              {query.trim() ? copy.noResults : copy.emptyHint}
             </li>
           ) : (
             hits.map((hit, index) => (
@@ -140,7 +142,7 @@ export function SearchDialog({
             ))
           )}
         </ul>
-        <div className={styles.hint}>↑↓ navigate · Enter open · Esc close</div>
+        <div className={styles.hint}>{copy.keyboardHint}</div>
       </div>
     </div>,
     document.body,

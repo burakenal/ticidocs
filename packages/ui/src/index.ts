@@ -30,6 +30,8 @@ export { Columns, Column } from "./columns";
 export { Hero, HeroAction } from "./hero";
 export { SectionHeading } from "./section-heading";
 export { SearchDialog, useSearchHotkey } from "./search-dialog";
+export { getSearchCopy } from "./search-copy";
+export type { SearchCopy } from "./search-copy";
 export { mdxComponents } from "./mdx-components";
 export { MethodBadge } from "./method-badge";
 export { SchemaViewer } from "./schema-viewer";

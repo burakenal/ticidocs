@@ -7,6 +7,7 @@ import { LocaleSwitcher } from "./locale-switcher";
 import { VersionSwitcher } from "./version-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
 import { SearchDialog, useSearchHotkey } from "./search-dialog";
+import { getSearchCopy } from "./search-copy";
 import styles from "./navbar.module.css";
 
 export interface NavbarProps {
@@ -42,6 +43,7 @@ export function Navbar({
   const [searchOpen, setSearchOpen] = useState(false);
   const openSearch = useCallback(() => setSearchOpen(true), []);
   useSearchHotkey(openSearch);
+  const searchCopy = getSearchCopy(locale);
 
   return (
     <header className={styles.navbar}>
@@ -85,10 +87,10 @@ export function Navbar({
           type="button"
           className={styles.searchButton}
           onClick={openSearch}
-          aria-label="Search documentation"
+          aria-label={searchCopy.buttonAriaLabel}
         >
           <SearchIcon />
-          <span className={styles.searchLabel}>Search...</span>
+          <span className={styles.searchLabel}>{searchCopy.buttonLabel}</span>
           <kbd className={styles.kbd}>Ctrl K</kbd>
         </button>
       </div>

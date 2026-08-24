@@ -16,7 +16,7 @@ export function Sidebar({ items, currentPath, sectionTitle }: SidebarProps) {
   return (
     <nav id="ticidocs-sidebar" className={styles.nav}>
       {sectionTitle ? (
-        <div className={styles.sectionTitle}>{sectionTitle}</div>
+        <div className={styles.staticSectionTitle}>{sectionTitle}</div>
       ) : null}
       {items.map((item) => {
         if (item.type === "external") {
