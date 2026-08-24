@@ -35,7 +35,7 @@ CI (`.github/workflows/ci.yml`) runs the same quality steps and a Docker image b
 - TypeScript strict; avoid `any` unless necessary
 - No Tailwind — CSS modules + CSS variables (`@ticidocs/theme`)
 - No admin panel, database, or SaaS auth in this repo
-- Keep Ticiyo-specific product docs in sibling `Enal.TiciDocs`, not here
+- Keep Ticiyo product docs in sibling product repos (`Enal.IntegrationHub/docs`, `Enal.Ticiyo.Ecommerce/docs`), not here
 - Docs versioning is optional (`versions` / `defaultVersion` in `docs.config.ts`); omit it for `/{locale}/...` sites
 
 ## Scaffold templates

@@ -51,7 +51,8 @@ Ticidocs/
 pnpm dev           # dogfood docs app
 pnpm dev:packages  # watch @ticidocs/* packages
 pnpm dev:all       # packages watch + dogfood docs
-pnpm dev:enal      # Enal.TiciDocs (lib watch + site on :3001)
+pnpm dev:hub      # Integration Hub docs (lib watch + site on :3001)
+pnpm dev:ticiyo   # Ticiyo Ecommerce docs (lib watch + site on :3002)
 pnpm build         # build all packages + apps
 pnpm lint          # ESLint
 pnpm test          # Vitest (+ example validation)

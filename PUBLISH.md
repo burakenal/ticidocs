@@ -31,7 +31,7 @@ Or Actions → **Publish** → uncheck dry_run (requires repo secret `NPM_TOKEN`
 ## After publish
 
 - Consumers can use `npx create-ticidocs my-docs` without `--link`
-- Enal.TiciDocs (and other apps) may switch from `workspace:*` to `"0.1.0"` when ready
+- Product docs apps (`Enal.IntegrationHub/docs`, `Enal.Ticiyo.Ecommerce/docs`) may switch from `workspace:*` to `"0.1.0"` when ready
 - Bump versions together when cutting `0.1.1` / `0.2.0` (including `PACKAGE_VERSION` in `create-ticidocs/src/scaffold.ts`)
 
 ## Notes

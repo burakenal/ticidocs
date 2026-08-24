@@ -140,7 +140,8 @@ function normalizeActionLabel(children: ReactNode): ReactNode {
 
   const parts = Children.toArray(children).filter((child) => {
     if (typeof child === "string") return child.trim().length > 0;
-    return child != null && child !== false && child !== true;
+    if (typeof child === "boolean") return false;
+    return child != null;
   });
 
   if (parts.length === 0) return "";
