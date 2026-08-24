@@ -1,0 +1,55 @@
+.tabs {
+  margin: 1.25rem 0;
+  border: 1px solid var(--docs-border);
+  border-radius: var(--docs-radius);
+  overflow: hidden;
+  background: var(--docs-surface);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--docs-border);
+  background: color-mix(in srgb, var(--docs-hover) 70%, transparent);
+}
+
+.tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--docs-muted);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.tab:hover {
+  color: var(--docs-foreground);
+  background: var(--docs-hover);
+}
+
+.active {
+  color: var(--docs-primary);
+  background: color-mix(in srgb, var(--docs-primary) 12%, transparent);
+  font-weight: 600;
+}
+
+.panel {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.panel > :first-child {
+  margin-top: 0;
+}
+
+.panel > :last-child {
+  margin-bottom: 0;
+}

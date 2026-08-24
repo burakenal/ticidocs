@@ -1,0 +1,42 @@
+.steps {
+  list-style: none;
+  margin: 1.5rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.85rem;
+}
+
+.marker {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--docs-primary) 16%, transparent);
+  color: var(--docs-primary-strong);
+  font-family: var(--docs-font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.title {
+  margin: 0.15rem 0 0.4rem;
+  font-family: var(--docs-font-display);
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.body > :first-child {
+  margin-top: 0;
+}
+
+.body > :last-child {
+  margin-bottom: 0;
+}

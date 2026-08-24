@@ -1,0 +1,35 @@
+{
+  "name": "ticidocs",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Open-source, self-hosted documentation platform",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "turbo run dev --filter=@ticidocs/docs",
+    "build": "turbo run build",
+    "lint": "eslint \"packages/*/src/**/*.{ts,tsx}\" \"apps/docs/**/*.{ts,tsx}\" \"create-ticidocs/src/**/*.{ts,tsx}\" --max-warnings 0",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "docker:build": "docker build -t ticidocs-docs .",
+    "docker:up": "docker compose up --build -d"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@types/node": "^22.13.10",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  },
+  "pnpm": {
+    "overrides": {
+      "react": "19.0.0",
+      "react-dom": "19.0.0"
+    }
+  }
+}

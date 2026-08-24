@@ -1,0 +1,113 @@
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--docs-background);
+  color: var(--docs-foreground);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: var(--docs-sidebar-width) minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--docs-nav-height);
+  height: calc(100vh - var(--docs-nav-height));
+  overflow: auto;
+  border-right: 1px solid var(--docs-sidebar-border);
+  background: var(--docs-sidebar);
+  padding: 1.15rem 0.75rem 2.5rem;
+  scrollbar-width: thin;
+}
+
+.mainColumn {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--docs-toc-width);
+  min-width: 0;
+}
+
+.mainColumnApi {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.main {
+  min-width: 0;
+  padding: 2rem 2.25rem 5rem;
+}
+
+.mainApi {
+  padding: 1.5rem 1.5rem 4rem;
+}
+
+.article {
+  max-width: var(--docs-max-content);
+  margin: 0 auto;
+}
+
+.articleApi {
+  max-width: none;
+  margin: 0;
+}
+
+.toc {
+  position: sticky;
+  top: var(--docs-nav-height);
+  height: calc(100vh - var(--docs-nav-height));
+  overflow: auto;
+  padding: 1.5rem 1rem 2.5rem 0.5rem;
+  border-left: 1px solid var(--docs-border);
+  scrollbar-width: thin;
+}
+
+.backdrop {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .mainColumn {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toc {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .main {
+    padding: 1.35rem 1.1rem 4rem;
+  }
+
+  .sidebar {
+    position: fixed;
+    z-index: 40;
+    inset: var(--docs-nav-height) auto 0 0;
+    width: min(18rem, 88vw);
+    transform: translateX(-105%);
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--docs-shadow-lg);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: var(--docs-nav-height) 0 0 0;
+    z-index: 30;
+    border: 0;
+    background: rgb(17 24 39 / 40%);
+    cursor: pointer;
+  }
+}

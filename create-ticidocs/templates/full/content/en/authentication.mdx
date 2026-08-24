@@ -1,0 +1,133 @@
+---
+title: Authentication
+description: Use API keys and bearer tokens with the demo Products API
+sidebarTitle: Authentication
+order: 3
+---
+
+# Authentication
+
+The **API Reference** pages on this site are generated from the demo Products OpenAPI. The spec supports two security schemes: **Bearer (JWT)** and **API key**. Requests are expected to provide at least one valid credential.
+
+<Callout type="warning">
+The Try It panel does not store credentials. Keys and tokens are used only in your browser session at request time. Never put production secrets in the documentation site.
+</Callout>
+
+## Which method should I use?
+
+| Method | Header | When |
+| --- | --- | --- |
+| **API key** | `X-Api-Key` | Simple server-to-server integrations, fixed client identity |
+| **Bearer token** | `Authorization: Bearer …` | User sessions, short-lived JWTs, OAuth flows |
+
+OpenAPI lists both schemes under global `security`; pick the one that matches your integration.
+
+## API key
+
+Send the key in the `X-Api-Key` header:
+
+```http
+GET /products HTTP/1.1
+Host: api.example.com
+X-Api-Key: your-api-key
+Accept: application/json
+```
+
+<Tabs>
+  <Tab title="cURL">
+
+```bash
+curl -sS "https://api.example.com/products?limit=20" \
+  -H "X-Api-Key: your-api-key" \
+  -H "Accept: application/json"
+```
+
+  </Tab>
+  <Tab title="JavaScript">
+
+```js
+const res = await fetch("https://api.example.com/products?limit=20", {
+  headers: {
+    "X-Api-Key": process.env.API_KEY,
+    Accept: "application/json",
+  },
+});
+const products = await res.json();
+```
+
+  </Tab>
+  <Tab title="Python">
+
+```python
+import os
+import requests
+
+r = requests.get(
+    "https://api.example.com/products",
+    params={"limit": 20},
+    headers={"X-Api-Key": os.environ["API_KEY"]},
+)
+r.raise_for_status()
+products = r.json()
+```
+
+  </Tab>
+  <Tab title="C#">
+
+```csharp
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("X-Api-Key", Environment.GetEnvironmentVariable("API_KEY"));
+client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+var json = await client.GetStringAsync("https://api.example.com/products?limit=20");
+```
+
+  </Tab>
+</Tabs>
+
+## Bearer token
+
+Send a JWT or opaque access token in the `Authorization` header:
+
+```http
+Authorization: Bearer <token>
+```
+
+Example request:
+
+```http
+GET /products/1 HTTP/1.1
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Accept: application/json
+```
+
+<Callout type="tip">
+On endpoint pages, pick an auth type in Try It and enter a token or API key. Requests only go to hosts listed in `api.allowedOrigins` in `docs.config.ts`.
+</Callout>
+
+## Error responses
+
+Missing or invalid credentials return `401`. The body matches the `Error` schema:
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+| Code | Meaning |
+| --- | --- |
+| `401` | Missing / invalid API key or bearer token |
+| `404` | Resource not found (e.g. unknown product `id`) |
+| `4xx` / `5xx` | Client or server errors; inspect the `message` field |
+
+## Security on the Ticidocs side
+
+- **Try It:** Browser calls the origin directly; no server proxy (smaller SSRF surface)
+- **allowedOrigins:** Config whitelist; hosts outside the list are blocked
+- **Docs site:** Not your API’s auth backend — only reference and try UI
+
+## Next step
+
+Explore [GET /products](/en/api/listproducts), or read SEO and fallback behavior on [Advanced](/en/advanced).

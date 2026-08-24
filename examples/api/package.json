@@ -1,0 +1,21 @@
+{
+  "name": "@ticidocs/example-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ticidocs example with OpenAPI navigation",
+  "scripts": {
+    "build": "node ./scripts/validate.mjs",
+    "lint": "node ./scripts/validate.mjs",
+    "test": "node ./scripts/validate.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@ticidocs/config": "workspace:*",
+    "@ticidocs/core": "workspace:*",
+    "@ticidocs/mdx": "workspace:*",
+    "@ticidocs/openapi": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

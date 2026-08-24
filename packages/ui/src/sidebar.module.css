@@ -1,0 +1,83 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.groupTitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--docs-muted);
+  margin: 0 0.45rem 0.45rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.link,
+.external {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: var(--docs-radius-sm);
+  color: #374151;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+:global(html[data-theme="dark"]) .link,
+:global(html[data-theme="dark"]) .external {
+  color: #d1d5db;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .link,
+  :global(html:not([data-theme="light"])) .external {
+    color: #d1d5db;
+  }
+}
+
+.link:hover,
+.external:hover {
+  background: var(--docs-hover);
+  color: var(--docs-foreground);
+  text-decoration: none;
+}
+
+.apiLink {
+  font-family: var(--docs-font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.linkText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.active {
+  background: var(--docs-active);
+  color: var(--docs-primary-strong);
+  font-weight: 600;
+}
+
+.active:hover {
+  background: var(--docs-active);
+  color: var(--docs-primary-strong);
+}

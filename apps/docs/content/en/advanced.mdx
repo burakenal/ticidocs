@@ -1,0 +1,115 @@
+---
+title: Advanced
+description: SEO, locale fallback, search, and deployment notes
+sidebarTitle: Advanced
+order: 4
+---
+
+# Advanced
+
+This page covers SEO outputs, locale fallback, search, and deployment notes that go beyond the basic MDX workflow.
+
+<Callout type="info">
+This page exists **only in English** on purpose. Opening `/tr/advanced` falls back to this content and shows a translation banner. That demonstrates the locale fallback path used when a translation is missing.
+</Callout>
+
+## Locale fallback
+
+Phase 1 rule: keep the **same relative path** under each locale (`getting-started.mdx` in both `en` and `tr`).
+
+| Situation | Behavior |
+| --- | --- |
+| File exists in active locale | That content is rendered |
+| File missing in active locale | `defaultLocale` content is shown + UI banner |
+| Language switcher | Navigates to the same slug in the other locale |
+
+Use this for gradual translation: ship English first, add `content/tr/...` when ready without renaming routes.
+
+## SEO checklist
+
+Every MDX page can set `title`, `description`, and optional `noindex` in frontmatter. The app then emits:
+
+- `<title>` and meta `description`
+- `canonical` → `{siteUrl}/{locale}/{slug}`
+- Open Graph: `og:title`, `og:description`, `og:locale`, `og:url`
+- Twitter card basics
+- `html lang="{locale}"`
+- **hreflang** alternates for existing translations + `x-default` → `defaultLocale`
+
+Site-wide:
+
+- `/sitemap.xml` — all locale × page URLs
+- `/robots.txt` — points at the sitemap
+
+`siteUrl` in `docs.config.ts` is required for correct canonical and sitemap URLs.
+
+```ts
+export default defineConfig({
+  siteUrl: "https://docs.ticidocs.dev",
+  locales: ["en", "tr"],
+  defaultLocale: "en",
+  // ...
+});
+```
+
+## Search
+
+`@ticidocs/search` builds a local index from MDX and OpenAPI ops. Open the palette with `Ctrl` / `Cmd` + `K`. Results stay on-device; there is no mandatory hosted search SaaS.
+
+## OpenAPI wiring
+
+```ts
+{
+  group: "API Reference",
+  openapi: "./openapi/openapi.yaml",
+  basePath: "api",
+}
+```
+
+- Paths become docs routes under `/{locale}/{basePath}/...`
+- Method badges, parameters, request/response schemas, and auth come from the spec
+- Code examples: cURL, JavaScript, TypeScript, Python, C#
+- Try It respects `api.allowedOrigins`
+
+## Theme and shell
+
+- CSS variables from `@ticidocs/theme` (light / dark / system)
+- `theme.primaryColor` in config tints accents
+- Navbar: locale switcher, theme toggle, optional GitHub link
+- Sidebar follows the active locale’s navigation tree
+- Right TOC tracks the active heading while scrolling
+
+## Deploy
+
+```bash
+# Container
+docker compose up --build -d
+
+# Or production build
+pnpm build
+```
+
+See the repo root `DEPLOY.md` for VPS, Nginx, and Kubernetes notes. Docker uses Next.js `standalone` output when `DOCKER_BUILD=1`.
+
+## Package map
+
+| Package | Role |
+| --- | --- |
+| `@ticidocs/config` | `defineConfig`, Zod validation |
+| `@ticidocs/core` | Locale routes, nav tree, SEO model (no React) |
+| `@ticidocs/mdx` | Load `content/{locale}`, frontmatter, headings |
+| `@ticidocs/openapi` | Parse OpenAPI 3.0/3.1 into nav + pages |
+| `@ticidocs/search` | Local search index |
+| `@ticidocs/ui` | Shell, MDX components, Try It |
+| `@ticidocs/theme` | Design tokens / CSS variables |
+
+## What’s intentionally later
+
+- JSON-LD Article schema
+- Accordion / CodeGroup extras
+- Managed translation CMS / auto-translate
+- Angular adapter / IntegrationHub embed
+
+## Next step
+
+Return to [Getting Started](/en/getting-started) to edit content, or open [API Reference](/en/api/listproducts) to exercise OpenAPI pages.

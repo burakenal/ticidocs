@@ -1,0 +1,104 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.35rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-family: var(--docs-font-mono);
+  line-height: 1.2;
+  flex: 0 0 auto;
+}
+
+.compact {
+  min-width: 2.55rem;
+  padding: 0.1rem 0.28rem;
+  font-size: 0.62rem;
+}
+
+.get {
+  color: #059669;
+  background: #d1fae5;
+}
+
+.post {
+  color: #2563eb;
+  background: #dbeafe;
+}
+
+.put {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.patch {
+  color: #c2410c;
+  background: #ffedd5;
+}
+
+.delete {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+.head,
+.options,
+.trace {
+  color: var(--docs-muted);
+  background: var(--docs-hover);
+}
+
+:global(html[data-theme="dark"]) .get {
+  color: #6ee7b7;
+  background: rgb(5 150 105 / 22%);
+}
+
+:global(html[data-theme="dark"]) .post {
+  color: #93c5fd;
+  background: rgb(37 99 235 / 22%);
+}
+
+:global(html[data-theme="dark"]) .put {
+  color: #fcd34d;
+  background: rgb(180 83 9 / 22%);
+}
+
+:global(html[data-theme="dark"]) .patch {
+  color: #fdba74;
+  background: rgb(194 65 12 / 22%);
+}
+
+:global(html[data-theme="dark"]) .delete {
+  color: #fca5a5;
+  background: rgb(220 38 38 / 22%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .get {
+    color: #6ee7b7;
+    background: rgb(5 150 105 / 22%);
+  }
+
+  :global(html:not([data-theme="light"])) .post {
+    color: #93c5fd;
+    background: rgb(37 99 235 / 22%);
+  }
+
+  :global(html:not([data-theme="light"])) .put {
+    color: #fcd34d;
+    background: rgb(180 83 9 / 22%);
+  }
+
+  :global(html:not([data-theme="light"])) .patch {
+    color: #fdba74;
+    background: rgb(194 65 12 / 22%);
+  }
+
+  :global(html:not([data-theme="light"])) .delete {
+    color: #fca5a5;
+    background: rgb(220 38 38 / 22%);
+  }
+}

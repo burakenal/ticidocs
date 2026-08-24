@@ -1,0 +1,48 @@
+.toc {
+  font-size: 0.8125rem;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  color: var(--docs-muted);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.depth2 a,
+.depth3 a {
+  color: var(--docs-muted);
+  text-decoration: none;
+  display: block;
+  border-left: 2px solid transparent;
+  padding: 0.25rem 0 0.25rem 0.65rem;
+  line-height: 1.35;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.depth2 a:hover,
+.depth3 a:hover {
+  color: var(--docs-primary-strong);
+  text-decoration: none;
+}
+
+.active {
+  color: var(--docs-primary-strong) !important;
+  border-left-color: var(--docs-primary) !important;
+  font-weight: 600;
+}
+
+.depth3 {
+  padding-left: 0.5rem;
+}

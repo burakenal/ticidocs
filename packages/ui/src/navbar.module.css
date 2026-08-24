@@ -1,0 +1,180 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--docs-nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--docs-border);
+  background: color-mix(in srgb, var(--docs-surface) 92%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.98rem;
+  letter-spacing: -0.03em;
+  color: var(--docs-foreground);
+  text-decoration: none;
+  padding: 0.15rem 0.1rem;
+  line-height: 0;
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.brandText {
+  line-height: 1.2;
+  background: linear-gradient(
+    90deg,
+    var(--docs-brand-from),
+    var(--docs-brand-to)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo {
+  display: block;
+  height: 1.75rem;
+  width: auto;
+  max-width: 9.5rem;
+  object-fit: contain;
+}
+
+.logoDark {
+  display: none;
+}
+
+html[data-theme="dark"] .logoLight {
+  display: none;
+}
+
+html[data-theme="dark"] .logoDark {
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .logoLight {
+    display: none;
+  }
+
+  html:not([data-theme="light"]) .logoDark {
+    display: block;
+  }
+}
+
+.menuButton,
+.github,
+.iconButton {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid var(--docs-border);
+  background: var(--docs-surface);
+  color: var(--docs-foreground);
+  border-radius: var(--docs-radius);
+  padding: 0.35rem 0.65rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.iconButton {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.menuButton:hover,
+.github:hover,
+.iconButton:hover,
+.searchButton:hover {
+  background: var(--docs-hover);
+  text-decoration: none;
+}
+
+.searchButton {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 12rem;
+  border: 1px solid var(--docs-border);
+  background: var(--docs-hover);
+  color: var(--docs-muted);
+  border-radius: var(--docs-radius);
+  padding: 0.38rem 0.5rem 0.38rem 0.75rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.searchLabel {
+  flex: 1;
+}
+
+.kbd {
+  font-family: var(--docs-font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  border: 1px solid var(--docs-border);
+  border-radius: 5px;
+  padding: 0.1rem 0.35rem;
+  color: var(--docs-muted);
+  background: var(--docs-surface);
+}
+
+.github {
+  padding-inline: 0.75rem;
+}
+
+@media (max-width: 700px) {
+  .kbd,
+  .searchLabel {
+    display: none;
+  }
+
+  .searchButton {
+    min-width: 0;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .github span {
+    display: none;
+  }
+}
+
+@media (min-width: 861px) {
+  .menuButton {
+    display: none;
+  }
+}

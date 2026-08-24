@@ -1,0 +1,265 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  position: sticky;
+  top: calc(var(--docs-nav-height) + 1rem);
+  max-height: calc(100vh - var(--docs-nav-height) - 2rem);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #0b1220;
+  box-shadow: 0 1px 2px rgb(17 24 39 / 4%);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.55rem;
+  padding: 0.45rem 0.65rem 0.45rem 0.85rem;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 12px 12px 0 0;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex: 0 0 auto;
+}
+
+.cardBody {
+  background: #0b1220;
+  color: #e5e7eb;
+  max-height: min(28rem, 55vh);
+  overflow: auto;
+  border-radius: 0 0 12px 12px;
+  scrollbar-width: thin;
+}
+
+.cardBody :global(pre) {
+  margin: 0;
+  padding: 0.95rem 1rem 1.1rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #e5e7eb;
+}
+
+.cardBody :global(code) {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font-family: var(--docs-font-mono);
+  font-size: inherit;
+}
+
+.status {
+  font-family: var(--docs-font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #059669;
+  background: #d1fae5;
+  padding: 0.18rem 0.45rem;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.langSelect {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.langMenu {
+  position: fixed;
+  z-index: 80;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  min-width: 8.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow:
+    0 10px 15px -3px rgb(17 24 39 / 10%),
+    0 4px 6px -4px rgb(17 24 39 / 8%);
+}
+
+.langOption {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  text-align: left;
+  border-radius: 7px;
+  padding: 0.4rem 0.55rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.langOption:hover {
+  background: #f3f4f6;
+}
+
+.langOptionActive {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.langOptionActive:hover {
+  background: #dbeafe;
+}
+
+.chevron {
+  display: block;
+  color: #6b7280;
+}
+
+.iconBtn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #6b7280;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.iconBtn:hover {
+  color: #111827;
+  background: rgb(17 24 39 / 6%);
+}
+
+:global(html[data-theme="dark"]) .card {
+  border-color: #1f2937;
+}
+
+:global(html[data-theme="dark"]) .cardHead {
+  background: #111827;
+  border-bottom-color: #1f2937;
+  color: #f3f4f6;
+}
+
+:global(html[data-theme="dark"]) .status {
+  color: #6ee7b7;
+  background: rgb(5 150 105 / 22%);
+}
+
+:global(html[data-theme="dark"]) .langMenu {
+  background: #111827;
+  border-color: #374151;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 35%),
+    0 4px 6px -4px rgb(0 0 0 / 25%);
+}
+
+:global(html[data-theme="dark"]) .langOption {
+  color: #f3f4f6;
+}
+
+:global(html[data-theme="dark"]) .langOption:hover {
+  background: #1f2937;
+}
+
+:global(html[data-theme="dark"]) .langOptionActive {
+  background: rgb(37 99 235 / 22%);
+  color: #93c5fd;
+}
+
+:global(html[data-theme="dark"]) .langOptionActive:hover {
+  background: rgb(37 99 235 / 32%);
+}
+
+:global(html[data-theme="dark"]) .chevron,
+:global(html[data-theme="dark"]) .iconBtn {
+  color: #9ca3af;
+}
+
+:global(html[data-theme="dark"]) .iconBtn:hover {
+  color: #f3f4f6;
+  background: rgb(255 255 255 / 8%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .card {
+    border-color: #1f2937;
+  }
+
+  :global(html:not([data-theme="light"])) .cardHead {
+    background: #111827;
+    border-bottom-color: #1f2937;
+    color: #f3f4f6;
+  }
+
+  :global(html:not([data-theme="light"])) .status {
+    color: #6ee7b7;
+    background: rgb(5 150 105 / 22%);
+  }
+
+  :global(html:not([data-theme="light"])) .langMenu {
+    background: #111827;
+    border-color: #374151;
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 35%),
+      0 4px 6px -4px rgb(0 0 0 / 25%);
+  }
+
+  :global(html:not([data-theme="light"])) .langOption {
+    color: #f3f4f6;
+  }
+
+  :global(html:not([data-theme="light"])) .langOption:hover {
+    background: #1f2937;
+  }
+
+  :global(html:not([data-theme="light"])) .langOptionActive {
+    background: rgb(37 99 235 / 22%);
+    color: #93c5fd;
+  }
+
+  :global(html:not([data-theme="light"])) .langOptionActive:hover {
+    background: rgb(37 99 235 / 32%);
+  }
+
+  :global(html:not([data-theme="light"])) .chevron,
+  :global(html:not([data-theme="light"])) .iconBtn {
+    color: #9ca3af;
+  }
+
+  :global(html:not([data-theme="light"])) .iconBtn:hover {
+    color: #f3f4f6;
+    background: rgb(255 255 255 / 8%);
+  }
+}

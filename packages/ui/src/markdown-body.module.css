@@ -1,0 +1,148 @@
+.prose {
+  font-size: 1rem;
+  color: #374151;
+}
+
+:global(html[data-theme="dark"]) .prose {
+  color: #d1d5db;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .prose {
+    color: #d1d5db;
+  }
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  font-family: var(--docs-font-display);
+  color: var(--docs-foreground);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  scroll-margin-top: 5rem;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.prose h1 {
+  font-size: clamp(1.75rem, 2.2vw, 2.25rem);
+  margin: 0 0 1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.prose h2 {
+  font-size: 1.25rem;
+  margin: 2.1rem 0 0.7rem;
+}
+
+.prose h3 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.45rem;
+  letter-spacing: -0.015em;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 0.95rem;
+}
+
+.prose li + li {
+  margin-top: 0.25rem;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+}
+
+.prose a {
+  color: var(--docs-primary-strong);
+  font-weight: 600;
+}
+
+.prose code {
+  background: #f3f4f6;
+  padding: 0.1rem 0.35rem;
+  border-radius: 5px;
+  font-size: 0.86em;
+  border: 1px solid #e5e7eb;
+  color: var(--docs-foreground);
+}
+
+:global(html[data-theme="dark"]) .prose code {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .prose code {
+    background: #1f2937;
+    border-color: #374151;
+  }
+}
+
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  color: inherit;
+}
+
+.prose blockquote {
+  margin: 1.15rem 0;
+  padding: 0.1rem 0 0.1rem 0.9rem;
+  border-left: 3px solid var(--docs-primary);
+  color: var(--docs-muted);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--docs-border);
+  margin: 1.75rem 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0 0 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--docs-border);
+  border-radius: var(--docs-radius);
+}
+
+.prose th,
+.prose td {
+  border-bottom: 1px solid var(--docs-border);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+}
+
+.prose th {
+  background: var(--docs-hover);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.prose tr:last-child td {
+  border-bottom: 0;
+}
+
+.code {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: var(--docs-radius);
+  background: var(--docs-code-background);
+  color: var(--docs-code-foreground);
+  margin: 0 0 1.15rem;
+}
+
+.code code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  border: 0;
+}

@@ -1,0 +1,133 @@
+---
+title: Kimlik Doğrulama
+description: Demo Products API ile API anahtarı ve bearer token kullanımı
+sidebarTitle: Kimlik Doğrulama
+order: 3
+---
+
+# Kimlik Doğrulama
+
+Bu sitedeki **API Reference** sayfaları demo Products OpenAPI’sinden üretilir. Spec, iki güvenlik şemasını destekler: **Bearer (JWT)** ve **API anahtarı**. İsteklerde en az birinin geçerli olması beklenir.
+
+<Callout type="warning">
+Try It paneli kimlik bilgilerini saklamaz. Anahtar ve token yalnızca tarayıcı oturumunuzda, istek anında kullanılır. Üretim anahtarlarını dokümantasyon sitesine yazmayın.
+</Callout>
+
+## Hangi yöntemi kullanmalıyım?
+
+| Yöntem | Başlık | Ne zaman |
+| --- | --- | --- |
+| **API anahtarı** | `X-Api-Key` | Basit sunucu-sunucu entegrasyonları, sabit istemci kimliği |
+| **Bearer token** | `Authorization: Bearer …` | Kullanıcı oturumu, kısa ömürlü JWT, OAuth akışları |
+
+OpenAPI’de global `security` her iki şemayı da listeler; entegrasyonunuza uygun olanı seçin.
+
+## API anahtarı
+
+Anahtarı `X-Api-Key` başlığında gönderin:
+
+```http
+GET /products HTTP/1.1
+Host: api.example.com
+X-Api-Key: your-api-key
+Accept: application/json
+```
+
+<Tabs>
+  <Tab title="cURL">
+
+```bash
+curl -sS "https://api.example.com/products?limit=20" \
+  -H "X-Api-Key: your-api-key" \
+  -H "Accept: application/json"
+```
+
+  </Tab>
+  <Tab title="JavaScript">
+
+```js
+const res = await fetch("https://api.example.com/products?limit=20", {
+  headers: {
+    "X-Api-Key": process.env.API_KEY,
+    Accept: "application/json",
+  },
+});
+const products = await res.json();
+```
+
+  </Tab>
+  <Tab title="Python">
+
+```python
+import os
+import requests
+
+r = requests.get(
+    "https://api.example.com/products",
+    params={"limit": 20},
+    headers={"X-Api-Key": os.environ["API_KEY"]},
+)
+r.raise_for_status()
+products = r.json()
+```
+
+  </Tab>
+  <Tab title="C#">
+
+```csharp
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("X-Api-Key", Environment.GetEnvironmentVariable("API_KEY"));
+client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+var json = await client.GetStringAsync("https://api.example.com/products?limit=20");
+```
+
+  </Tab>
+</Tabs>
+
+## Bearer token
+
+JWT veya opaque access token’ı `Authorization` başlığında gönderin:
+
+```http
+Authorization: Bearer <token>
+```
+
+Örnek istek:
+
+```http
+GET /products/1 HTTP/1.1
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Accept: application/json
+```
+
+<Callout type="tip">
+Endpoint sayfalarındaki Try It panelinde auth türünü seçip token veya API anahtarını girebilirsiniz. İstek yalnızca `docs.config.ts` içindeki `api.allowedOrigins` listesindeki host’lara gider.
+</Callout>
+
+## Hata yanıtları
+
+Yetkisiz veya geçersiz kimlik bilgisi durumunda API `401` döner. Gövde `Error` şemasına uyar:
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+| Kod | Anlam |
+| --- | --- |
+| `401` | Eksik / geçersiz API anahtarı veya bearer token |
+| `404` | Kaynak bulunamadı (ör. bilinmeyen ürün `id`) |
+| `4xx` / `5xx` | İstek veya sunucu hataları; `message` alanına bakın |
+
+## Ticidocs tarafında güvenlik
+
+- **Try It:** Tarayıcıdan doğrudan origin’e istek; sunucu proxy’si yok (SSRF yüzeyi daraltılır)
+- **allowedOrigins:** Config’te whitelist; listedeki olmayan host’lara istek engellenir
+- **Dokümantasyon sitesi:** API’nizin auth backend’i değildir; yalnızca referans ve deneme UI’sı sunar
+
+## Sonraki adım
+
+[GET /products](/tr/api/listproducts) ile listeleme endpoint’ini inceleyin veya [Advanced](/tr/advanced) sayfasında SEO ve fallback davranışını okuyun.

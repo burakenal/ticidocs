@@ -1,0 +1,89 @@
+---
+title: Ticidocs
+description: Açık kaynaklı, kendi sunucunuzda çalışan dokümantasyon platformu
+sidebarTitle: Genel Bakış
+order: 1
+---
+
+# Ticidocs
+
+Ticidocs; API, SDK ve ürün dokümantasyonu için açık kaynaklı, kendi sunucunuzda çalışan bir platformdur. Mintlify benzeri modern bir deneyim sunar; ancak mimari, UI ve kod tabanı bağımsızdır.
+
+Git’te tutulan MDX içerik ile locale-first routing, yerleşik SEO ve OpenAPI referansını tek bir Next.js sitesinde birleştirir. Zorunlu SaaS, bulut veritabanı veya harici kimlik doğrulama servisi yoktur.
+
+<Callout type="info">
+Bu site, monorepo içindeki `@ticidocs/docs` dogfood uygulamasıdır. Aynı içerik modeli `examples/full` ve `create-ticidocs` şablonlarında da kullanılır.
+</Callout>
+
+## Neler sunar?
+
+<CardGroup>
+  <Card title="Locale-first içerik" href="/tr/getting-started">
+    `content/{locale}` altında aynı slug seti; dil seçici aynı sayfaya geçer
+  </Card>
+  <Card title="MDX bileşenleri" href="/tr/getting-started">
+    Callout, Tabs, Steps, Card ve sözdizimi vurgulu kod blokları
+  </Card>
+  <Card title="SEO temelleri" href="/tr/advanced">
+    Canonical, hreflang, Open Graph, sitemap.xml ve robots.txt
+  </Card>
+  <Card title="OpenAPI + Try It" href="/tr/api/listproducts">
+    Endpoint sayfaları, çok dilli örnekler ve tarayıcıdan güvenli deneme
+  </Card>
+</CardGroup>
+
+### Özellik özeti
+
+| Alan | Ne yapar |
+| --- | --- |
+| **İçerik** | Git tabanlı MDX; frontmatter ile başlık, sıra, SEO alanları |
+| **Diller** | `locales` / `defaultLocale`; eksik çeviride fallback + banner |
+| **Navigasyon** | Gruplar, sayfa listesi ve `openapi` grupları |
+| **Arama** | Yerel indeks; `Ctrl` / `Cmd` + `K` |
+| **API** | OpenAPI 3.0/3.1 → method badge, şema, auth, Try It |
+| **Dağıtım** | Docker, VPS, Kubernetes veya herhangi bir Node host |
+
+## Kimler için?
+
+- REST API ve OpenAPI dokümantasyonu yazan ekipler
+- SDK / geliştirici portalı yayınlayan ürünler
+- İç teknik dokümantasyonunu self-hosted tutmak isteyen organizasyonlar
+- Angular, React veya .NET ürünlerini docs sitesine link / iframe / reverse proxy ile bağlayan ekipler
+
+Ticidocs bir **dokümantasyon sitesi motorudur**; ürününüze gömülü bir CMS değildir.
+
+## Mimariye kısa bakış
+
+```text
+content/{locale}/*.mdx  →  @ticidocs/mdx
+docs.config.ts          →  @ticidocs/config + @ticidocs/core
+openapi/*.yaml          →  @ticidocs/openapi
+                        ↓
+              apps/docs (Next.js App Router)
+                        ↓
+         /{locale}/...  +  /sitemap.xml  +  /robots.txt
+```
+
+- **URL:** `/{locale}/...` — örnek: `/tr/getting-started`, `/en/authentication`
+- **Aynı göreli path:** `getting-started.mdx` hem `en` hem `tr` altında; dil değişince slug korunur
+- **Fallback:** Bir locale’de dosya yoksa `defaultLocale` içeriği gösterilir (ör. `/tr/advanced`)
+
+## Bu sitede ne var?
+
+1. **Getting Started** — kurulum, yapılandırma, kimlik doğrulama örnekleri
+2. **API Reference** — demo Products OpenAPI’sinden üretilmiş endpoint sayfaları
+3. **Arama ve TOC** — sol navigasyon, sağ içindekiler, aktif başlık takibi
+
+## Sonraki adımlar
+
+<Steps>
+  <Step title="Yerelde çalıştırın">
+    [Başlangıç](/tr/getting-started) sayfasındaki `pnpm install` ve `pnpm dev` adımlarını izleyin.
+  </Step>
+  <Step title="Kimlik doğrulamayı okuyun">
+    Demo API için [Kimlik Doğrulama](/tr/authentication) başlıklarını ve hata kodlarını inceleyin.
+  </Step>
+  <Step title="API’yi deneyin">
+    [GET /products](/tr/api/listproducts) sayfasında Try It ile istek atın (`api.allowedOrigins` sınırlıdır).
+  </Step>
+</Steps>

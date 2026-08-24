@@ -1,0 +1,89 @@
+---
+title: Ticidocs
+description: Open-source, self-hosted documentation platform
+sidebarTitle: Overview
+order: 1
+---
+
+# Ticidocs
+
+Ticidocs is an open-source, self-hosted documentation platform for APIs, SDKs, and product docs. It aims for a Mintlify-like modern experience with an independent architecture, UI, and codebase.
+
+It combines Git-backed MDX content, locale-first routing, built-in SEO, and OpenAPI reference pages in a single Next.js site. There is no mandatory SaaS, cloud database, or external auth service.
+
+<Callout type="info">
+This site is the `@ticidocs/docs` dogfood app inside the monorepo. The same content model is used by `examples/full` and the `create-ticidocs` templates.
+</Callout>
+
+## What you get
+
+<CardGroup>
+  <Card title="Locale-first content" href="/en/getting-started">
+    Same slug set under `content/{locale}`; the language switcher keeps the page
+  </Card>
+  <Card title="MDX components" href="/en/getting-started">
+    Callout, Tabs, Steps, Card, and syntax-highlighted code blocks
+  </Card>
+  <Card title="SEO foundations" href="/en/advanced">
+    Canonical, hreflang, Open Graph, sitemap.xml, and robots.txt
+  </Card>
+  <Card title="OpenAPI + Try It" href="/en/api/listproducts">
+    Endpoint pages, multi-language examples, and a safe in-browser try panel
+  </Card>
+</CardGroup>
+
+### Feature summary
+
+| Area | What it does |
+| --- | --- |
+| **Content** | Git-based MDX; frontmatter for title, order, and SEO fields |
+| **Locales** | `locales` / `defaultLocale`; missing translation → fallback + banner |
+| **Navigation** | Groups, page lists, and `openapi` groups |
+| **Search** | Local index; `Ctrl` / `Cmd` + `K` |
+| **API** | OpenAPI 3.0/3.1 → method badge, schemas, auth, Try It |
+| **Deploy** | Docker, VPS, Kubernetes, or any Node host |
+
+## Who is it for?
+
+- Teams publishing REST / OpenAPI documentation
+- Products shipping SDK or developer portals
+- Organizations that want self-hosted internal technical docs
+- Teams linking Angular, React, or .NET products via link / iframe / reverse proxy
+
+Ticidocs is a **documentation site engine**, not an embedded CMS for your product.
+
+## Architecture at a glance
+
+```text
+content/{locale}/*.mdx  →  @ticidocs/mdx
+docs.config.ts          →  @ticidocs/config + @ticidocs/core
+openapi/*.yaml          →  @ticidocs/openapi
+                        ↓
+              apps/docs (Next.js App Router)
+                        ↓
+         /{locale}/...  +  /sitemap.xml  +  /robots.txt
+```
+
+- **URL:** `/{locale}/...` — e.g. `/en/getting-started`, `/tr/authentication`
+- **Same relative path:** `getting-started.mdx` under both `en` and `tr`; the slug is preserved when switching language
+- **Fallback:** If a locale file is missing, `defaultLocale` content is shown (e.g. `/tr/advanced`)
+
+## What’s on this site?
+
+1. **Getting Started** — install, configuration, authentication examples
+2. **API Reference** — endpoint pages generated from the demo Products OpenAPI
+3. **Search and TOC** — left nav, right table of contents, active heading tracking
+
+## Next steps
+
+<Steps>
+  <Step title="Run it locally">
+    Follow `pnpm install` and `pnpm dev` on [Getting Started](/en/getting-started).
+  </Step>
+  <Step title="Read authentication">
+    Review headers and error codes on [Authentication](/en/authentication).
+  </Step>
+  <Step title="Try the API">
+    Send a request from [GET /products](/en/api/listproducts) (`api.allowedOrigins` is restricted).
+  </Step>
+</Steps>

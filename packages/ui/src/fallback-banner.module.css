@@ -1,0 +1,25 @@
+.banner {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--docs-radius);
+  background: var(--docs-warning-bg);
+  color: var(--docs-warning-fg);
+  border: 1px solid var(--docs-warning-border);
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--docs-warning-fg) 55%, transparent);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.icon {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+  opacity: 0.9;
+}
+
+.text {
+  min-width: 0;
+  margin: 0;
+}

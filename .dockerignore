@@ -1,0 +1,15 @@
+node_modules
+.git
+.next
+**/.next
+**/dist
+**/*.tsbuildinfo
+.turbo
+**/coverage
+**/*.log
+**/.DS_Store
+.env
+.env.*
+.cursor
+.github
+agent-transcripts

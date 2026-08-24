@@ -1,0 +1,202 @@
+---
+title: Başlangıç
+description: Ticidocs'u yerelde kurun, yapılandırın ve içerik ekleyin
+sidebarTitle: Başlangıç
+order: 2
+---
+
+# Başlangıç
+
+Bu sayfada monorepo’yu yerelde çalıştırma, `docs.config.ts` ayarları ve MDX içerik ekleme adımları yer alır.
+
+<Callout type="tip">
+Monorepo için **pnpm** kullanın. npm ve yarn çalışabilir; desteklenen paket yöneticisi pnpm’dir. Node.js **20+** gerekir.
+</Callout>
+
+## Hızlı başlangıç
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Tarayıcıda [http://localhost:3000](http://localhost:3000) açın — `/` varsayılan locale’e (`en`) yönlendirilir. Türkçe için `/tr` veya `/tr/getting-started` kullanın.
+
+Yeni bir site iskelelemek için:
+
+```bash
+pnpm --filter create-ticidocs build
+pnpm --filter create-ticidocs start my-docs --template=full --link --yes
+```
+
+Şablonlar: `basic` (yalnız MDX), `api` (OpenAPI odaklı), `full` (MDX + OpenAPI + Try It).
+
+## Kurulum adımları
+
+<Steps>
+  <Step title="Bağımlılıkları kur">
+    Repo kökünde `pnpm install` çalıştırın. Turborepo workspace paketlerini bağlar.
+  </Step>
+  <Step title="Docs uygulamasını başlat">
+    `pnpm dev` çalıştırıp `http://localhost:3000` adresini açın. Geliştirme sunucusu `@ticidocs/docs` filtresiyle ayağa kalkar.
+  </Step>
+  <Step title="İçeriği düzenle">
+    `apps/docs/content/en` ve `content/tr` altına MDX ekleyin veya mevcut dosyaları güncelleyin. Aynı göreli path’i her iki dilde tutun.
+  </Step>
+  <Step title="Navigasyonu güncelle">
+    Yeni sayfayı `docs.config.ts` içindeki `navigation` gruplarına ekleyin; aksi halde sidebar’da görünmez.
+  </Step>
+</Steps>
+
+## Proje yapısı
+
+<CardGroup>
+  <Card title="content/{locale}" href="/tr/getting-started#mdx-ve-frontmatter">
+    Dile göre MDX sayfalar; aynı slug seti önerilir
+  </Card>
+  <Card title="docs.config.ts" href="/tr/getting-started#docsconfigts">
+    Site adı, diller, navigasyon, siteUrl, API origin’leri
+  </Card>
+  <Card title="openapi/" href="/tr/api/listproducts">
+    OpenAPI YAML/JSON; navigation’da `openapi` grubu ile bağlanır
+  </Card>
+  <Card title="packages/*" href="/tr/advanced">
+    core, config, mdx, openapi, search, ui, theme
+  </Card>
+</CardGroup>
+
+```text
+Enal.TiciDocs/
+├── apps/docs/           # Bu site (Next.js)
+│   ├── content/en|tr/
+│   ├── openapi/
+│   └── docs.config.ts
+├── packages/            # @ticidocs/*
+├── create-ticidocs/     # CLI iskeleti
+└── examples/            # basic | api | full
+```
+
+## docs.config.ts
+
+Minimum geçerli yapılandırma:
+
+```ts
+import { defineConfig } from "@ticidocs/config";
+
+export default defineConfig({
+  name: "Ticidocs",
+  description: "Open-source documentation platform",
+  siteUrl: "https://docs.ticidocs.dev",
+  locales: ["en", "tr"],
+  defaultLocale: "en",
+  navigation: [
+    {
+      group: "Getting Started",
+      pages: ["index", "getting-started", "authentication", "advanced"],
+    },
+    {
+      group: "API Reference",
+      openapi: "./openapi/openapi.yaml",
+      basePath: "api",
+    },
+  ],
+  theme: {
+    primaryColor: "#0055FF",
+  },
+  api: {
+    // Try It yalnızca bu origin’lere istek atabilir
+    allowedOrigins: ["https://api.example.com"],
+  },
+});
+```
+
+| Alan | Açıklama |
+| --- | --- |
+| `siteUrl` | Canonical, hreflang ve sitemap için zorunlu |
+| `locales` / `defaultLocale` | Dil listesi ve `/` yönlendirme hedefi |
+| `navigation` | Sidebar grupları; `pages` veya `openapi` |
+| `api.allowedOrigins` | Try It SSRF koruması; listedeki host’lar dışında istek yok |
+| `github.url` | Navbar’da repo bağlantısı (opsiyonel) |
+
+## MDX ve frontmatter
+
+Her sayfa YAML frontmatter ile başlar:
+
+```mdx
+---
+title: Başlangıç
+description: Ticidocs'u yerelde kurun
+sidebarTitle: Başlangıç
+order: 2
+---
+
+# Başlangıç
+
+İçerik buraya...
+```
+
+Desteklenen alanlar: `title`, `description`, `sidebarTitle`, `slug`, `draft`, `order`, `icon`, `noindex`.
+
+MDX içinde kullanabileceğiniz bileşenler:
+
+<Tabs>
+  <Tab title="Callout">
+
+```mdx
+<Callout type="tip">
+pnpm tercih edilen paket yöneticisidir.
+</Callout>
+```
+
+`type`: `info` | `tip` | `warning` | `success` | `error`
+
+  </Tab>
+  <Tab title="Steps">
+
+```mdx
+<Steps>
+  <Step title="Kur">pnpm install</Step>
+  <Step title="Çalıştır">pnpm dev</Step>
+</Steps>
+```
+
+  </Tab>
+  <Tab title="Tabs / Cards">
+
+```mdx
+<Tabs>
+  <Tab title="cURL">...</Tab>
+  <Tab title="Node">...</Tab>
+</Tabs>
+
+<CardGroup>
+  <Card title="Başlık" href="/tr">Kısa açıklama</Card>
+</CardGroup>
+```
+
+  </Tab>
+</Tabs>
+
+## Faydalı komutlar
+
+| Komut | Ne yapar |
+| --- | --- |
+| `pnpm dev` | Docs geliştirme sunucusu |
+| `pnpm build` | Tüm paketler + uygulama |
+| `pnpm lint` | ESLint |
+| `pnpm test` | Vitest |
+| `docker compose up --build -d` | Container ile ayağa kaldırma |
+
+## Doğrulama
+
+Kurulumdan sonra şunları kontrol edin:
+
+- `/en/getting-started` ve `/tr/getting-started` açılıyor
+- Dil seçici aynı slug’da kalıyor
+- `/tr/advanced` İngilizce fallback + çeviri banner’ı gösteriyor
+- `/sitemap.xml` ve `/robots.txt` üretiliyor
+- `Ctrl` / `Cmd` + `K` ile arama açılıyor
+
+## Sonraki adım
+
+Demo API için kimlik doğrulama başlıklarını [Kimlik Doğrulama](/tr/authentication) sayfasında inceleyin.

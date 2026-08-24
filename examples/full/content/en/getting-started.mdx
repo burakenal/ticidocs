@@ -1,0 +1,202 @@
+---
+title: Getting Started
+description: Install, configure, and add content to Ticidocs locally
+sidebarTitle: Getting Started
+order: 2
+---
+
+# Getting Started
+
+This page covers running the monorepo locally, configuring `docs.config.ts`, and adding MDX content.
+
+<Callout type="tip">
+Use **pnpm** for the monorepo. npm and yarn may work, but pnpm is the supported package manager. Node.js **20+** is required.
+</Callout>
+
+## Quick start
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) — `/` redirects to the default locale (`en`). For Turkish use `/tr` or `/tr/getting-started`.
+
+To scaffold a new site:
+
+```bash
+pnpm --filter create-ticidocs build
+pnpm --filter create-ticidocs start my-docs --template=full --link --yes
+```
+
+Templates: `basic` (MDX only), `api` (OpenAPI-focused), `full` (MDX + OpenAPI + Try It).
+
+## Setup steps
+
+<Steps>
+  <Step title="Install dependencies">
+    Run `pnpm install` at the repository root. This links Turborepo workspace packages.
+  </Step>
+  <Step title="Start the docs app">
+    Run `pnpm dev` and open `http://localhost:3000`. The dev server starts the `@ticidocs/docs` filter.
+  </Step>
+  <Step title="Edit content">
+    Add or update MDX under `apps/docs/content/en` and `content/tr`. Keep the same relative path in both locales.
+  </Step>
+  <Step title="Update navigation">
+    Add new pages to `navigation` groups in `docs.config.ts`; otherwise they will not appear in the sidebar.
+  </Step>
+</Steps>
+
+## Project layout
+
+<CardGroup>
+  <Card title="content/{locale}" href="/en/getting-started#mdx-and-frontmatter">
+    MDX pages per language; prefer the same slug set
+  </Card>
+  <Card title="docs.config.ts" href="/en/getting-started#docsconfigts">
+    Site name, locales, navigation, siteUrl, API origins
+  </Card>
+  <Card title="openapi/" href="/en/api/listproducts">
+    OpenAPI YAML/JSON; wired via an `openapi` nav group
+  </Card>
+  <Card title="packages/*" href="/en/advanced">
+    core, config, mdx, openapi, search, ui, theme
+  </Card>
+</CardGroup>
+
+```text
+Enal.TiciDocs/
+├── apps/docs/           # This site (Next.js)
+│   ├── content/en|tr/
+│   ├── openapi/
+│   └── docs.config.ts
+├── packages/            # @ticidocs/*
+├── create-ticidocs/     # CLI scaffolder
+└── examples/            # basic | api | full
+```
+
+## docs.config.ts
+
+Minimum valid configuration:
+
+```ts
+import { defineConfig } from "@ticidocs/config";
+
+export default defineConfig({
+  name: "Ticidocs",
+  description: "Open-source documentation platform",
+  siteUrl: "https://docs.ticidocs.dev",
+  locales: ["en", "tr"],
+  defaultLocale: "en",
+  navigation: [
+    {
+      group: "Getting Started",
+      pages: ["index", "getting-started", "authentication", "advanced"],
+    },
+    {
+      group: "API Reference",
+      openapi: "./openapi/openapi.yaml",
+      basePath: "api",
+    },
+  ],
+  theme: {
+    primaryColor: "#0055FF",
+  },
+  api: {
+    // Try It may only call these origins
+    allowedOrigins: ["https://api.example.com"],
+  },
+});
+```
+
+| Field | Purpose |
+| --- | --- |
+| `siteUrl` | Required for canonical, hreflang, and sitemap |
+| `locales` / `defaultLocale` | Locale list and `/` redirect target |
+| `navigation` | Sidebar groups; `pages` or `openapi` |
+| `api.allowedOrigins` | Try It SSRF guard; requests outside the list are blocked |
+| `github.url` | Optional navbar repo link |
+
+## MDX and frontmatter
+
+Every page starts with YAML frontmatter:
+
+```mdx
+---
+title: Getting Started
+description: Install and run Ticidocs locally
+sidebarTitle: Getting Started
+order: 2
+---
+
+# Getting Started
+
+Content goes here...
+```
+
+Supported fields: `title`, `description`, `sidebarTitle`, `slug`, `draft`, `order`, `icon`, `noindex`.
+
+Components available in MDX:
+
+<Tabs>
+  <Tab title="Callout">
+
+```mdx
+<Callout type="tip">
+pnpm is the preferred package manager.
+</Callout>
+```
+
+`type`: `info` | `tip` | `warning` | `success` | `error`
+
+  </Tab>
+  <Tab title="Steps">
+
+```mdx
+<Steps>
+  <Step title="Install">pnpm install</Step>
+  <Step title="Run">pnpm dev</Step>
+</Steps>
+```
+
+  </Tab>
+  <Tab title="Tabs / Cards">
+
+```mdx
+<Tabs>
+  <Tab title="cURL">...</Tab>
+  <Tab title="Node">...</Tab>
+</Tabs>
+
+<CardGroup>
+  <Card title="Title" href="/en">Short description</Card>
+</CardGroup>
+```
+
+  </Tab>
+</Tabs>
+
+## Useful commands
+
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | Docs development server |
+| `pnpm build` | All packages + app |
+| `pnpm lint` | ESLint |
+| `pnpm test` | Vitest |
+| `docker compose up --build -d` | Bring up with containers |
+
+## Verify
+
+After setup, confirm:
+
+- `/en/getting-started` and `/tr/getting-started` load
+- The language switcher keeps the same slug
+- `/tr/advanced` shows English fallback + translation banner
+- `/sitemap.xml` and `/robots.txt` are generated
+- `Ctrl` / `Cmd` + `K` opens search
+
+## Next step
+
+Review demo API auth headers on [Authentication](/en/authentication).

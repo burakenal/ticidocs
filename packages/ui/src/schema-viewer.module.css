@@ -1,0 +1,66 @@
+.viewer {
+  border: 1px solid var(--docs-border);
+  border-radius: var(--docs-radius);
+  background: var(--docs-surface);
+  padding: 0.5rem 0.65rem;
+}
+
+.empty {
+  color: var(--docs-muted);
+}
+
+.node {
+  margin: 0.15rem 0;
+}
+
+.row {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.25rem 0.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.row:disabled {
+  cursor: default;
+}
+
+.row:not(:disabled):hover {
+  background: var(--docs-hover);
+}
+
+.toggle {
+  width: 1rem;
+  color: var(--docs-muted);
+  font-family: var(--docs-font-mono);
+}
+
+.name {
+  font-weight: 600;
+}
+
+.required {
+  color: #dc2626;
+  margin-left: 0.15rem;
+}
+
+.type,
+.format {
+  font-family: var(--docs-font-mono);
+  font-size: 0.8rem;
+  color: var(--docs-muted);
+}
+
+.description {
+  margin: 0 0 0.35rem 1.5rem;
+  color: var(--docs-muted);
+  font-size: 0.875rem;
+}
