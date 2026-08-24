@@ -2,21 +2,21 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 3.35rem;
-  padding: 0.12rem 0.4rem;
+  min-width: 2.85rem;
+  padding: 0.1rem 0.35rem;
   border-radius: 5px;
-  font-size: 0.68rem;
+  font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   font-family: var(--docs-font-mono);
-  line-height: 1.2;
+  line-height: 1.25;
   flex: 0 0 auto;
 }
 
 .compact {
-  min-width: 2.55rem;
-  padding: 0.1rem 0.28rem;
-  font-size: 0.62rem;
+  min-width: 2.15rem;
+  padding: 0.08rem 0.25rem;
+  font-size: 0.58rem;
 }
 
 .get {

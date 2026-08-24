@@ -7,6 +7,7 @@ import {
   buildSidebar,
   firstSidebarHref,
   groupOpenApiLinksByTag,
+  listOpenApiGroups,
   localePath,
   normalizePageEntry,
   resolveActiveSection,
@@ -46,6 +47,13 @@ describe("localePath", () => {
   it("builds locale root and nested paths", () => {
     expect(localePath("en")).toBe("/en");
     expect(localePath("en", "getting-started")).toBe("/en/getting-started");
+  });
+
+  it("includes version segments when provided", () => {
+    expect(localePath("en", "", "v1")).toBe("/en/v1");
+    expect(localePath("en", "getting-started", "v2")).toBe(
+      "/en/v2/getting-started",
+    );
   });
 });
 
@@ -120,6 +128,103 @@ describe("buildSidebar", () => {
       type: "group",
       title: "Ürün İşlemleri",
     });
+  });
+
+  it("nests OpenAPI groups inside a pages section (single top tab)", () => {
+    const config: DocsConfig = {
+      ...baseConfig,
+      navigation: [
+        {
+          group: "Integration Hub",
+          pages: [
+            "hub",
+            {
+              group: "Marketplace API",
+              openapi: "./openapi.json",
+              basePath: "hub/api/marketplace",
+            },
+          ],
+        },
+      ],
+    };
+    const map = new Map<string, DocPage>([
+      ["hub", page("en", "hub", "Hub overview")],
+    ]);
+    const openApiLinks = [
+      {
+        type: "page" as const,
+        title: "List products",
+        slug: "hub/api/marketplace/list-products",
+        href: "/en/hub/api/marketplace/list-products",
+        method: "get",
+        tags: ["Products"],
+      },
+    ];
+    const sidebar = buildSidebar(config, "en", map, openApiLinks);
+    expect(sidebar).toHaveLength(1);
+    expect(sidebar[0]).toMatchObject({
+      type: "group",
+      title: "Integration Hub",
+    });
+    if (sidebar[0]?.type !== "group") return;
+    expect(sidebar[0].children[0]).toMatchObject({
+      type: "page",
+      title: "Hub overview",
+      href: "/en/hub",
+    });
+    expect(sidebar[0].children[1]).toMatchObject({
+      type: "group",
+      title: "Marketplace API",
+    });
+    const apiGroup = sidebar[0].children[1];
+    if (apiGroup?.type !== "group") return;
+    expect(apiGroup.children[0]).toMatchObject({
+      type: "group",
+      title: "Products",
+    });
+
+    const tabs = buildSectionTabs(sidebar, "/en/hub/api/marketplace/list-products");
+    expect(tabs).toHaveLength(1);
+    expect(tabs[0]?.title).toBe("Integration Hub");
+    expect(tabs[0]?.active).toBe(true);
+  });
+});
+
+describe("listOpenApiGroups", () => {
+  it("collects top-level and nested OpenAPI groups in order", () => {
+    const config: DocsConfig = {
+      ...baseConfig,
+      navigation: [
+        {
+          group: "Product",
+          pages: [
+            "index",
+            {
+              group: "Nested API",
+              openapi: "./nested.json",
+              basePath: "product/api",
+            },
+          ],
+        },
+        {
+          group: "Standalone API",
+          openapi: "./standalone.json",
+          basePath: "api",
+        },
+      ],
+    };
+    expect(listOpenApiGroups(config)).toEqual([
+      {
+        group: "Nested API",
+        openapi: "./nested.json",
+        basePath: "product/api",
+      },
+      {
+        group: "Standalone API",
+        openapi: "./standalone.json",
+        basePath: "api",
+      },
+    ]);
   });
 });
 

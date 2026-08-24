@@ -2,11 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import GithubSlugger from "github-slugger";
-import type {
-  DocPage,
-  HeadingNode,
-  Locale,
-  PageFrontmatter,
+import {
+  pageMapKey,
+  type DocPage,
+  type HeadingNode,
+  type Locale,
+  type PageFrontmatter,
 } from "@ticidocs/core";
 
 const FRONTMATTER_KEYS = [
@@ -91,6 +92,7 @@ export function parseMdxFile(input: {
   locale: Locale;
   absolutePath: string;
   relativePath: string;
+  version?: string;
 }): DocPage {
   const raw = fs.readFileSync(input.absolutePath, "utf8");
   const { data, content } = matter(raw);
@@ -104,14 +106,18 @@ export function parseMdxFile(input: {
     frontmatter,
     headings: extractHeadings(content),
     body: content,
+    version: input.version,
   };
 }
 
 export function loadLocalePages(
   contentRoot: string,
   locale: Locale,
+  version?: string,
 ): DocPage[] {
-  const localeDir = path.join(contentRoot, locale);
+  const localeDir = version
+    ? path.join(contentRoot, version, locale)
+    : path.join(contentRoot, locale);
   if (!fs.existsSync(localeDir)) {
     return [];
   }
@@ -140,6 +146,7 @@ export function loadLocalePages(
         locale,
         absolutePath,
         relativePath,
+        version,
       });
       if (page.frontmatter.draft) {
         continue;
@@ -162,11 +169,39 @@ export function loadLocalePages(
 export function loadAllPages(
   contentRoot: string,
   locales: readonly Locale[],
+  versions?: readonly string[],
+  options?: { defaultVersion?: string },
 ): Map<string, DocPage> {
   const map = new Map<string, DocPage>();
-  for (const locale of locales) {
-    for (const page of loadLocalePages(contentRoot, locale)) {
-      map.set(`${locale}::${page.slug}`, page);
+
+  if (!versions?.length) {
+    for (const locale of locales) {
+      for (const page of loadLocalePages(contentRoot, locale)) {
+        map.set(pageMapKey(locale, page.slug), page);
+      }
+    }
+    return map;
+  }
+
+  const defaultVersion = options?.defaultVersion ?? versions[0];
+
+  for (const version of versions) {
+    for (const locale of locales) {
+      let pages = loadLocalePages(contentRoot, locale, version);
+      if (
+        pages.length === 0 &&
+        defaultVersion &&
+        version === defaultVersion
+      ) {
+        // Soft migration: default version may still live at content/{locale}
+        pages = loadLocalePages(contentRoot, locale).map((page) => ({
+          ...page,
+          version,
+        }));
+      }
+      for (const page of pages) {
+        map.set(pageMapKey(locale, page.slug, version), page);
+      }
     }
   }
   return map;
@@ -176,6 +211,7 @@ export function getPageFromMap(
   map: Map<string, DocPage>,
   locale: Locale,
   slug: string,
+  version?: string,
 ): DocPage | undefined {
-  return map.get(`${locale}::${slug}`);
+  return map.get(pageMapKey(locale, slug, version));
 }

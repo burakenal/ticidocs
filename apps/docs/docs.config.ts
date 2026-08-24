@@ -22,7 +22,7 @@ export default defineConfig({
     },
   ],
   theme: {
-    primaryColor: "#0055FF",
+    primaryColor: "#00C984",
   },
   github: {
     url: "https://github.com/burakenal/ticidocs",

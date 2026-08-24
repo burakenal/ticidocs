@@ -1,19 +1,22 @@
 .rail {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.75rem;
   position: sticky;
   top: calc(var(--docs-sticky-offset, var(--docs-nav-height)) + 1rem);
-  max-height: calc(100vh - var(--docs-sticky-offset, var(--docs-nav-height)) - 2rem);
+  max-height: calc(
+    100vh - var(--docs-sticky-offset, var(--docs-nav-height)) - 2rem
+  );
   overflow: auto;
   scrollbar-width: thin;
 }
 
 .card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--docs-border);
   border-radius: 12px;
-  background: #0b1220;
-  box-shadow: 0 1px 2px rgb(17 24 39 / 4%);
+  background: var(--docs-code-background);
+  overflow: hidden;
+  box-shadow: var(--docs-shadow);
 }
 
 .cardHead {
@@ -21,17 +24,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  min-height: 2.55rem;
-  padding: 0.45rem 0.65rem 0.45rem 0.85rem;
-  border-bottom: 1px solid #e5e7eb;
-  border-radius: 12px 12px 0 0;
-  background: #f3f4f6;
-  color: #111827;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.55rem 0.4rem 0.85rem;
+  border-bottom: 1px solid var(--docs-border);
+  background: var(--docs-hover);
+  color: var(--docs-foreground);
 }
 
 .cardTitle {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: -0.02em;
   display: flex;
@@ -46,25 +48,24 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.1rem;
   flex: 0 0 auto;
 }
 
 .cardBody {
-  background: #0b1220;
-  color: #e5e7eb;
-  max-height: min(28rem, 55vh);
+  background: var(--docs-code-background);
+  color: var(--docs-code-foreground);
+  max-height: min(26rem, 52vh);
   overflow: auto;
-  border-radius: 0 0 12px 12px;
   scrollbar-width: thin;
 }
 
 .cardBody :global(pre) {
   margin: 0;
-  padding: 0.95rem 1rem 1.1rem;
-  font-size: 0.8125rem;
-  line-height: 1.6;
-  color: #e5e7eb;
+  padding: 0.9rem 1rem 1.05rem;
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--docs-code-foreground);
 }
 
 .cardBody :global(code) {
@@ -77,12 +78,12 @@
 
 .status {
   font-family: var(--docs-font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: #059669;
   background: #d1fae5;
-  padding: 0.18rem 0.45rem;
+  padding: 0.18rem 0.42rem;
   border-radius: 6px;
   line-height: 1;
 }
@@ -97,7 +98,7 @@
   appearance: none;
   border: 0;
   background: transparent;
-  color: #374151;
+  color: var(--docs-muted);
   height: 1.7rem;
   border-radius: 6px;
   display: inline-flex;
@@ -111,7 +112,8 @@
 }
 
 .langBtn:hover {
-  background: rgb(17 24 39 / 6%);
+  color: var(--docs-foreground);
+  background: color-mix(in srgb, var(--docs-foreground) 6%, transparent);
 }
 
 .langLabel {
@@ -125,12 +127,10 @@
   padding: 0.3rem;
   list-style: none;
   min-width: 8.5rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--docs-border);
   border-radius: 10px;
-  background: #fff;
-  box-shadow:
-    0 10px 15px -3px rgb(17 24 39 / 10%),
-    0 4px 6px -4px rgb(17 24 39 / 8%);
+  background: var(--docs-surface);
+  box-shadow: var(--docs-shadow-lg);
 }
 
 .langOption {
@@ -138,7 +138,7 @@
   width: 100%;
   border: 0;
   background: transparent;
-  color: #111827;
+  color: var(--docs-foreground);
   text-align: left;
   border-radius: 7px;
   padding: 0.4rem 0.55rem;
@@ -149,29 +149,30 @@
 }
 
 .langOption:hover {
-  background: #f3f4f6;
+  background: var(--docs-hover);
 }
 
 .langOptionActive {
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: var(--docs-active);
+  color: var(--docs-primary-strong);
   font-weight: 600;
 }
 
 .langOptionActive:hover {
-  background: #dbeafe;
+  background: var(--docs-active);
 }
 
 .chevron {
   display: block;
-  color: #6b7280;
+  color: currentColor;
+  opacity: 0.7;
 }
 
 .iconBtn {
   appearance: none;
   border: 0;
   background: transparent;
-  color: #6b7280;
+  color: var(--docs-muted);
   width: 1.7rem;
   height: 1.7rem;
   border-radius: 6px;
@@ -183,18 +184,8 @@
 }
 
 .iconBtn:hover {
-  color: #111827;
-  background: rgb(17 24 39 / 6%);
-}
-
-:global(html[data-theme="dark"]) .card {
-  border-color: #1f2937;
-}
-
-:global(html[data-theme="dark"]) .cardHead {
-  background: #111827;
-  border-bottom-color: #1f2937;
-  color: #f3f4f6;
+  color: var(--docs-foreground);
+  background: color-mix(in srgb, var(--docs-foreground) 6%, transparent);
 }
 
 :global(html[data-theme="dark"]) .status {
@@ -202,93 +193,9 @@
   background: rgb(5 150 105 / 22%);
 }
 
-:global(html[data-theme="dark"]) .langMenu {
-  background: #111827;
-  border-color: #374151;
-  box-shadow:
-    0 10px 15px -3px rgb(0 0 0 / 35%),
-    0 4px 6px -4px rgb(0 0 0 / 25%);
-}
-
-:global(html[data-theme="dark"]) .langOption {
-  color: #f3f4f6;
-}
-
-:global(html[data-theme="dark"]) .langOption:hover {
-  background: #1f2937;
-}
-
-:global(html[data-theme="dark"]) .langOptionActive {
-  background: rgb(37 99 235 / 22%);
-  color: #93c5fd;
-}
-
-:global(html[data-theme="dark"]) .langOptionActive:hover {
-  background: rgb(37 99 235 / 32%);
-}
-
-:global(html[data-theme="dark"]) .chevron,
-:global(html[data-theme="dark"]) .iconBtn,
-:global(html[data-theme="dark"]) .langBtn {
-  color: #9ca3af;
-}
-
-:global(html[data-theme="dark"]) .langBtn:hover,
-:global(html[data-theme="dark"]) .iconBtn:hover {
-  color: #f3f4f6;
-  background: rgb(255 255 255 / 8%);
-}
-
 @media (prefers-color-scheme: dark) {
-  :global(html:not([data-theme="light"])) .card {
-    border-color: #1f2937;
-  }
-
-  :global(html:not([data-theme="light"])) .cardHead {
-    background: #111827;
-    border-bottom-color: #1f2937;
-    color: #f3f4f6;
-  }
-
   :global(html:not([data-theme="light"])) .status {
     color: #6ee7b7;
     background: rgb(5 150 105 / 22%);
-  }
-
-  :global(html:not([data-theme="light"])) .langMenu {
-    background: #111827;
-    border-color: #374151;
-    box-shadow:
-      0 10px 15px -3px rgb(0 0 0 / 35%),
-      0 4px 6px -4px rgb(0 0 0 / 25%);
-  }
-
-  :global(html:not([data-theme="light"])) .langOption {
-    color: #f3f4f6;
-  }
-
-  :global(html:not([data-theme="light"])) .langOption:hover {
-    background: #1f2937;
-  }
-
-  :global(html:not([data-theme="light"])) .langOptionActive {
-    background: rgb(37 99 235 / 22%);
-    color: #93c5fd;
-  }
-
-  :global(html:not([data-theme="light"])) .langOptionActive:hover {
-    background: rgb(37 99 235 / 32%);
-  }
-
-  :global(html:not([data-theme="light"])) .chevron,
-  :global(html:not([data-theme="light"])) .iconBtn,
-  :global(html:not([data-theme="light"])) .langBtn {
-    color: #9ca3af;
-  }
-
-  :global(html:not([data-theme="light"])) .langBtn:hover,
-  :global(html:not([data-theme="light"])) .iconBtn:hover {
-    color: #f3f4f6;
-    background: rgb(255 255 255 / 8%);
   }
 }

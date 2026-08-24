@@ -15,7 +15,9 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "docker:build": "docker build -t ticidocs-docs .",
-    "docker:up": "docker compose up --build -d"
+    "docker:up": "docker compose up --build -d",
+    "publish:dry": "pnpm build --filter=./packages/* --filter=create-ticidocs && pnpm --filter \"./packages/*\" publish --access public --dry-run --no-git-checks && pnpm --filter create-ticidocs publish --access public --dry-run --no-git-checks",
+    "publish:packages": "pnpm build --filter=./packages/* --filter=create-ticidocs && pnpm --filter \"./packages/*\" publish --access public --no-git-checks && pnpm --filter create-ticidocs publish --access public --no-git-checks"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",

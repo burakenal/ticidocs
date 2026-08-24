@@ -152,7 +152,7 @@ async function writeDocsConfig(
 
   const extras: string[] = [
     `  theme: {
-    primaryColor: "#0055FF",
+    primaryColor: "#00C984",
   },`,
   ];
 

@@ -94,7 +94,7 @@ See [DEPLOY.md](./DEPLOY.md) for VPS, Nginx, and Kubernetes notes.
 ## Phase 3 delivered
 
 - `@ticidocs/openapi` — OpenAPI 3.0/3.1 YAML/JSON parser
-- Nav `openapi` groups in `docs.config.ts`
+- Nav `openapi` groups in `docs.config.ts` (top-level tab, or nested under a `pages` section)
 - Endpoint pages: method badge, params, request/response schemas, auth
 - API ops included in sidebar + search
 
@@ -119,8 +119,9 @@ See [DEPLOY.md](./DEPLOY.md) for VPS, Nginx, and Kubernetes notes.
 
 ## Later leftovers
 
-- Publish `@ticidocs/*` to npm (see [PUBLISH.md](./PUBLISH.md))
-- Versioning, nested nav groups, advanced code-block options (line numbers / diff)
+- Publish `@ticidocs/*` to npm when the org is ready (see [PUBLISH.md](./PUBLISH.md) — `pnpm publish:dry` / Actions workflow)
+- Nested nav groups, advanced code-block options (line numbers / diff)
 - Optional: runnable Next apps under `examples/` (today they validate config only)
+- Per-version OpenAPI files (versioning URLs/content are ready; specs are still shared)
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for local workflow.

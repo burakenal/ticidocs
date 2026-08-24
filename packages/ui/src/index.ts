@@ -11,6 +11,8 @@ export type { TableOfContentsProps } from "./toc";
 export { ThemeSwitcher } from "./theme-switcher";
 export { LocaleSwitcher } from "./locale-switcher";
 export type { LocaleSwitcherProps } from "./locale-switcher";
+export { VersionSwitcher } from "./version-switcher";
+export type { VersionSwitcherProps } from "./version-switcher";
 export { FallbackBanner } from "./fallback-banner";
 export { Breadcrumbs, breadcrumbsFromSidebar } from "./breadcrumbs";
 export type { BreadcrumbItem } from "./breadcrumbs";

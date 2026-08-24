@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   buildSectionTabs,
+  localePath,
   resolveActiveSection,
   type DocsLogo,
   type HeadingNode,
@@ -31,6 +32,8 @@ export interface DocsShellProps {
   searchDocuments?: SearchDocument[];
   /** API reference pages use a wider layout without the TOC rail. */
   variant?: "docs" | "api";
+  versions?: string[];
+  version?: string;
   children: ReactNode;
 }
 
@@ -47,6 +50,8 @@ export function DocsShell({
   githubUrl,
   searchDocuments,
   variant = "docs",
+  versions,
+  version,
   children,
 }: DocsShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -79,9 +84,10 @@ export function DocsShell({
     ];
   }, [sidebar, activeSection]);
 
+  const homeHref = localePath(locale, "", version);
   const crumbs = useMemo(
-    () => breadcrumbsFromSidebar(sidebar, currentPath, `/${locale}`),
-    [sidebar, currentPath, locale],
+    () => breadcrumbsFromSidebar(sidebar, currentPath, homeHref),
+    [sidebar, currentPath, homeHref],
   );
 
   const hasTabs = sectionTabs.length > 1;
@@ -100,6 +106,8 @@ export function DocsShell({
         onMenuClick={() => setMobileOpen((open) => !open)}
         menuOpen={mobileOpen}
         searchDocuments={searchDocuments}
+        versions={versions}
+        version={version}
       />
       {hasTabs ? <SectionTabs tabs={sectionTabs} /> : null}
       <div className={styles.body}>

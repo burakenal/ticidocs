@@ -13,7 +13,10 @@
     },
     "./styles.css": "./styles.css"
   },
-  "files": ["dist", "styles.css"],
+  "files": [
+    "dist",
+    "styles.css"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
@@ -24,5 +27,12 @@
   "devDependencies": {
     "typescript": "^5.8.2",
     "vitest": "^3.0.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/burakenal/ticidocs.git"
   }
 }

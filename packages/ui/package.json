@@ -40,7 +40,9 @@
       "default": "./src/fallback-banner.tsx"
     }
   },
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "dev": "tsc -p tsconfig.json --noEmit --watch",
@@ -66,5 +68,12 @@
     "react-dom": "19.0.0",
     "typescript": "^5.8.2",
     "vitest": "^3.0.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/burakenal/ticidocs.git"
   }
 }

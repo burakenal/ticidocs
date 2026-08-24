@@ -4,13 +4,14 @@
   z-index: 45;
   height: var(--docs-tabs-height);
   border-bottom: 1px solid var(--docs-border);
-  background: var(--docs-surface);
+  background: color-mix(in srgb, var(--docs-surface) 92%, transparent);
+  backdrop-filter: blur(12px);
 }
 
 .inner {
   display: flex;
   align-items: stretch;
-  gap: 0.15rem;
+  gap: 0.05rem;
   height: 100%;
   padding: 0 1.25rem;
   overflow-x: auto;
@@ -27,7 +28,7 @@
   align-items: center;
   flex: 0 0 auto;
   height: 100%;
-  padding: 0 0.7rem;
+  padding: 0 0.75rem;
   border: 0;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
@@ -50,6 +51,6 @@
 
 .active {
   color: var(--docs-foreground);
-  font-weight: 650;
-  border-bottom-color: var(--docs-foreground);
+  font-weight: 600;
+  border-bottom-color: var(--docs-primary);
 }

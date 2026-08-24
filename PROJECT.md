@@ -454,14 +454,18 @@ export default defineConfig({
       pages: [
         "index",
         "getting-started",
-        "authentication"
+        "authentication",
+        // Nested OpenAPI stays under this product tab's sidebar
+        {
+          group: "API Reference",
+          openapi: "./openapi/openapi.yaml",
+          basePath: "api"
+        }
       ]
-    },
-
-    {
-      group: "API Reference",
-      openapi: "./openapi/openapi.yaml"
     }
+
+    // Or keep OpenAPI as its own top-level tab:
+    // { group: "API Reference", openapi: "./openapi/openapi.yaml" }
   ],
 
   theme: {

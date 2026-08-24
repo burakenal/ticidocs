@@ -4,13 +4,13 @@
   z-index: 50;
   height: var(--docs-nav-height);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(12rem, 28rem) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 32rem) minmax(0, 1fr);
   align-items: center;
   gap: 1rem;
   padding: 0 1.25rem;
   border-bottom: 1px solid var(--docs-border);
-  background: color-mix(in srgb, var(--docs-surface) 92%, transparent);
-  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--docs-surface) 88%, transparent);
+  backdrop-filter: blur(14px);
 }
 
 .left,
@@ -37,8 +37,8 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 700;
-  font-size: 0.98rem;
-  letter-spacing: -0.03em;
+  font-size: 1rem;
+  letter-spacing: -0.04em;
   color: var(--docs-foreground);
   text-decoration: none;
   padding: 0.15rem 0.1rem;
@@ -51,19 +51,12 @@
 
 .brandText {
   line-height: 1.2;
-  background: linear-gradient(
-    90deg,
-    var(--docs-brand-from),
-    var(--docs-brand-to)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--docs-foreground);
 }
 
 .logo {
   display: block;
-  height: 1.75rem;
+  height: 1.65rem;
   width: auto;
   max-width: 9.5rem;
   object-fit: contain;
@@ -102,7 +95,7 @@ html[data-theme="dark"] .logoDark {
   border: 1px solid var(--docs-border);
   background: var(--docs-surface);
   color: var(--docs-foreground);
-  border-radius: var(--docs-radius);
+  border-radius: 8px;
   padding: 0.35rem 0.65rem;
   font: inherit;
   font-size: 0.8125rem;
@@ -134,18 +127,25 @@ html[data-theme="dark"] .logoDark {
   align-items: center;
   gap: 0.55rem;
   width: 100%;
-  max-width: 28rem;
+  max-width: 32rem;
   border: 1px solid var(--docs-border);
   background: var(--docs-hover);
   color: var(--docs-muted);
-  border-radius: var(--docs-radius);
-  padding: 0.38rem 0.5rem 0.38rem 0.75rem;
+  border-radius: 10px;
+  padding: 0.42rem 0.55rem 0.42rem 0.8rem;
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
-  transition: border-color 120ms ease, background 120ms ease;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.searchButton:hover {
+  border-color: color-mix(in srgb, var(--docs-muted) 35%, var(--docs-border));
 }
 
 .searchLabel {
@@ -157,8 +157,8 @@ html[data-theme="dark"] .logoDark {
   font-size: 0.65rem;
   font-weight: 500;
   border: 1px solid var(--docs-border);
-  border-radius: 5px;
-  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  padding: 0.12rem 0.38rem;
   color: var(--docs-muted);
   background: var(--docs-surface);
 }

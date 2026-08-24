@@ -33,10 +33,12 @@ export function toSearchDocument(
     (page.slug || "Overview");
   const description = page.frontmatter.description ?? "";
   return {
-    id: `${page.locale}::${page.slug}`,
+    id: page.version
+      ? `${page.version}::${page.locale}::${page.slug}`
+      : `${page.locale}::${page.slug}`,
     locale: page.locale,
     slug: page.slug,
-    href: localePath(page.locale, page.slug),
+    href: localePath(page.locale, page.slug, page.version),
     title,
     description,
     breadcrumb,

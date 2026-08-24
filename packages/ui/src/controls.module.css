@@ -49,6 +49,20 @@
   padding-inline: 0.6rem;
 }
 
+.versionLabel {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--docs-border);
+  background: var(--docs-surface);
+  color: var(--docs-muted);
+  border-radius: var(--docs-radius);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .srOnly {
   position: absolute;
   width: 1px;

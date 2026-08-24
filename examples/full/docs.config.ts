@@ -9,12 +9,17 @@ export default defineConfig({
   navigation: [
     {
       group: "Getting Started",
-      pages: ["index", "getting-started", "authentication", "advanced"],
-    },
-    {
-      group: "API Reference",
-      openapi: "./openapi/openapi.yaml",
-      basePath: "api",
+      pages: [
+        "index",
+        "getting-started",
+        "authentication",
+        "advanced",
+        {
+          group: "API Reference",
+          openapi: "./openapi/openapi.yaml",
+          basePath: "api",
+        },
+      ],
     },
   ],
   theme: {

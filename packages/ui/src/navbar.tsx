@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { DocsLogo } from "@ticidocs/core";
+import { localePath, type DocsLogo } from "@ticidocs/core";
 import type { SearchDocument } from "@ticidocs/search";
 import { LocaleSwitcher } from "./locale-switcher";
+import { VersionSwitcher } from "./version-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
 import { SearchDialog, useSearchHotkey } from "./search-dialog";
 import styles from "./navbar.module.css";
@@ -18,6 +19,8 @@ export interface NavbarProps {
   menuOpen: boolean;
   onMenuClick: () => void;
   searchDocuments?: SearchDocument[];
+  versions?: string[];
+  version?: string;
 }
 
 export function Navbar({
@@ -30,6 +33,8 @@ export function Navbar({
   menuOpen,
   onMenuClick,
   searchDocuments = [],
+  versions,
+  version,
 }: NavbarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const openSearch = useCallback(() => setSearchOpen(true), []);
@@ -48,7 +53,7 @@ export function Navbar({
         >
           <MenuIcon open={menuOpen} />
         </button>
-        <a className={styles.brand} href={`/${locale}`}>
+        <a className={styles.brand} href={localePath(locale, "", version)}>
           {logo ? (
             <>
               <img
@@ -83,7 +88,20 @@ export function Navbar({
         </button>
       </div>
       <div className={styles.right}>
-        <LocaleSwitcher locale={locale} locales={locales} slug={slug} />
+        {versions?.length && version ? (
+          <VersionSwitcher
+            version={version}
+            versions={versions}
+            locale={locale}
+            slug={slug}
+          />
+        ) : null}
+        <LocaleSwitcher
+          locale={locale}
+          locales={locales}
+          slug={slug}
+          version={version}
+        />
         <ThemeSwitcher />
         {githubUrl ? (
           <a

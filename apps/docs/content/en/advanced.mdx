@@ -25,6 +25,29 @@ Phase 1 rule: keep the **same relative path** under each locale (`getting-starte
 
 Use this for gradual translation: ship English first, add `content/tr/...` when ready without renaming routes.
 
+## Versioning
+
+Optional. When omitted, routes stay `/{locale}/...` and content stays at `content/{locale}/` (this dogfood site).
+
+```ts
+export default defineConfig({
+  // ...
+  versions: ["v1", "v2"],
+  defaultVersion: "v1",
+});
+```
+
+Then:
+
+| Concern | Behavior |
+| --- | --- |
+| URL | `/{locale}/{version}/...` (e.g. `/en/v1/getting-started`) |
+| Content | Prefer `content/{version}/{locale}/`; default version may fall back to `content/{locale}/` |
+| Navbar | Version switcher next to the locale control |
+| Missing version segment | Redirects to `defaultVersion` |
+
+OpenAPI groups are shared across versions in this release (same spec for each version).
+
 ## SEO checklist
 
 Every MDX page can set `title`, `description`, and optional `noindex` in frontmatter. The app then emits:

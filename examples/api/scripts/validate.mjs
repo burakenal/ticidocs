@@ -7,7 +7,7 @@ const root = path.join(__dirname, "..");
 async function main() {
   const { defineConfig } = await import("@ticidocs/config");
   const { loadAllPages } = await import("@ticidocs/mdx");
-  const { isNavOpenApiGroup, listSlugsFromNavigation } = await import(
+  const { listOpenApiGroups, listSlugsFromNavigation } = await import(
     "@ticidocs/core"
   );
   const { loadOpenApiFile } = await import("@ticidocs/openapi");
@@ -43,7 +43,7 @@ async function main() {
     }
   }
 
-  for (const item of config.navigation.filter(isNavOpenApiGroup)) {
+  for (const item of listOpenApiGroups(config)) {
     const doc = loadOpenApiFile(path.resolve(root, item.openapi), {
       basePath: item.basePath ?? "api",
     });

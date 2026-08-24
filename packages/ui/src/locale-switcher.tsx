@@ -7,9 +7,15 @@ export interface LocaleSwitcherProps {
   locale: string;
   locales: string[];
   slug: string;
+  version?: string;
 }
 
-export function LocaleSwitcher({ locale, locales, slug }: LocaleSwitcherProps) {
+export function LocaleSwitcher({
+  locale,
+  locales,
+  slug,
+  version,
+}: LocaleSwitcherProps) {
   return (
     <label className={styles.locale}>
       <span className={styles.srOnly}>Language</span>
@@ -19,7 +25,7 @@ export function LocaleSwitcher({ locale, locales, slug }: LocaleSwitcherProps) {
         aria-label="Language"
         onChange={(event) => {
           const next = event.target.value;
-          window.location.assign(localePath(next, slug));
+          window.location.assign(localePath(next, slug, version));
         }}
       >
         {locales.map((item) => (

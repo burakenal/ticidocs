@@ -23,19 +23,20 @@ export interface NavPageRef {
   path: string;
 }
 
-export type NavPageEntry = string | NavPageRef;
-
-export interface NavGroup {
-  group: string;
-  pages: NavPageEntry[];
-  icon?: string;
-}
-
 export interface NavOpenApiGroup {
   group: string;
   openapi: string;
   /** URL prefix for generated API pages. Default: "api" */
   basePath?: string;
+  icon?: string;
+}
+
+/** MDX page path, titled page ref, or nested OpenAPI group. */
+export type NavPageEntry = string | NavPageRef | NavOpenApiGroup;
+
+export interface NavGroup {
+  group: string;
+  pages: NavPageEntry[];
   icon?: string;
 }
 
@@ -53,6 +54,14 @@ export interface DocsConfig {
   siteUrl: string;
   locales: Locale[];
   defaultLocale: Locale;
+  /**
+   * When set, routes become `/{locale}/{version}/...` and content lives under
+   * `content/{version}/{locale}/` (with optional fallback to `content/{locale}/`
+   * for the default version only).
+   */
+  versions?: string[];
+  /** Must be listed in `versions`. Defaults to `versions[0]`. */
+  defaultVersion?: string;
   logo?: DocsLogo;
   navigation: NavigationItem[];
   theme?: DocsThemeConfig;
@@ -79,7 +88,7 @@ export interface HeadingNode {
 
 export interface DocPage {
   locale: Locale;
-  /** Relative path without locale, e.g. "getting-started" or "api/products" */
+  /** Relative path without locale/version, e.g. "getting-started" or "api/products" */
   slug: string;
   filePath: string;
   frontmatter: PageFrontmatter;
@@ -88,6 +97,8 @@ export interface DocPage {
   body: string;
   /** True when this page was resolved via defaultLocale fallback */
   isFallback?: boolean;
+  /** Docs version segment when `config.versions` is enabled */
+  version?: string;
 }
 
 export interface SidebarPageLink {
@@ -177,17 +188,72 @@ export function isNavOpenApiGroup(item: NavigationItem): item is NavOpenApiGroup
   return "group" in item && typeof (item as NavOpenApiGroup).openapi === "string";
 }
 
+/** True when a `pages[]` entry is a nested OpenAPI group. */
+export function isNavOpenApiEntry(
+  entry: NavPageEntry,
+): entry is NavOpenApiGroup {
+  return (
+    typeof entry === "object" &&
+    entry !== null &&
+    "openapi" in entry &&
+    typeof (entry as NavOpenApiGroup).openapi === "string"
+  );
+}
+
 export function isNavExternal(item: NavigationItem): item is NavExternalLink {
   return "href" in item && "title" in item && !("group" in item);
 }
 
-export function normalizePageEntry(entry: NavPageEntry): NavPageRef {
+export function normalizePageEntry(
+  entry: Exclude<NavPageEntry, NavOpenApiGroup>,
+): NavPageRef {
   if (typeof entry === "string") {
     return { path: entry === "index" ? "" : entry };
   }
   return {
     title: entry.title,
     path: entry.path === "index" ? "" : entry.path,
+  };
+}
+
+/**
+ * Collect OpenAPI groups from top-level navigation and nested `pages` entries.
+ * Order matches config declaration order.
+ */
+export function listOpenApiGroups(config: DocsConfig): NavOpenApiGroup[] {
+  const groups: NavOpenApiGroup[] = [];
+  for (const item of config.navigation) {
+    if (isNavOpenApiGroup(item)) {
+      groups.push(item);
+      continue;
+    }
+    if (!isNavGroup(item)) {
+      continue;
+    }
+    for (const entry of item.pages) {
+      if (isNavOpenApiEntry(entry)) {
+        groups.push(entry);
+      }
+    }
+  }
+  return groups;
+}
+
+function openApiSidebarGroup(
+  item: NavOpenApiGroup,
+  openApiLinks: SidebarPageLink[],
+): SidebarGroup {
+  const basePath = (item.basePath ?? "api").replace(/^\/+|\/+$/g, "");
+  const matched = openApiLinks.filter((link) =>
+    basePath
+      ? link.slug === basePath || link.slug.startsWith(`${basePath}/`)
+      : true,
+  );
+  return {
+    type: "group",
+    title: item.group,
+    icon: item.icon,
+    children: groupOpenApiLinksByTag(matched),
   };
 }
 
@@ -202,9 +268,40 @@ export function assertValidLocale(
   }
 }
 
-export function localePath(locale: Locale, slug = ""): string {
+export function resolveDefaultVersion(
+  config: Pick<DocsConfig, "versions" | "defaultVersion">,
+): string | undefined {
+  if (!config.versions?.length) {
+    return undefined;
+  }
+  return config.defaultVersion ?? config.versions[0];
+}
+
+/**
+ * Build a docs path.
+ * - Unversioned: `/{locale}` or `/{locale}/{slug}`
+ * - Versioned: `/{locale}/{version}` or `/{locale}/{version}/{slug}`
+ */
+export function localePath(
+  locale: Locale,
+  slug = "",
+  version?: string,
+): string {
   const clean = slug.replace(/^\/+|\/+$/g, "");
+  const ver = version?.replace(/^\/+|\/+$/g, "");
+  if (ver) {
+    return clean ? `/${locale}/${ver}/${clean}` : `/${locale}/${ver}`;
+  }
   return clean ? `/${locale}/${clean}` : `/${locale}`;
+}
+
+/** Map key for loaded pages: `locale::slug` or `version::locale::slug`. */
+export function pageMapKey(
+  locale: Locale,
+  slug: string,
+  version?: string,
+): string {
+  return version ? `${version}::${locale}::${slug}` : `${locale}::${slug}`;
 }
 
 export function absoluteUrl(siteUrl: string, path: string): string {
@@ -237,17 +334,19 @@ export function buildPageSeo(input: {
   slug: string;
   frontmatter: PageFrontmatter;
   availableLocales: Locale[];
+  version?: string;
 }): PageSeo {
-  const { config, locale, slug, frontmatter, availableLocales } = input;
+  const { config, locale, slug, frontmatter, availableLocales, version } =
+    input;
   const titleBase = frontmatter.title ?? config.name;
   const description =
     frontmatter.description ?? config.description ?? config.name;
-  const path = localePath(locale, slug);
+  const path = localePath(locale, slug, version);
   const canonical = absoluteUrl(config.siteUrl, path);
 
   const alternates: SeoAlternate[] = availableLocales.map((loc) => ({
     locale: loc,
-    url: absoluteUrl(config.siteUrl, localePath(loc, slug)),
+    url: absoluteUrl(config.siteUrl, localePath(loc, slug, version)),
   }));
 
   return {
@@ -260,7 +359,7 @@ export function buildPageSeo(input: {
     alternates,
     xDefault: absoluteUrl(
       config.siteUrl,
-      localePath(config.defaultLocale, slug),
+      localePath(config.defaultLocale, slug, version),
     ),
   };
 }
@@ -383,6 +482,7 @@ export function buildSidebar(
   locale: Locale,
   pagesBySlug: Map<string, DocPage>,
   openApiLinks: SidebarPageLink[] = [],
+  version?: string,
 ): SidebarItem[] {
   assertValidLocale(locale, config.locales);
 
@@ -396,21 +496,15 @@ export function buildSidebar(
     }
 
     if (isNavOpenApiGroup(item)) {
-      const basePath = (item.basePath ?? "api").replace(/^\/+|\/+$/g, "");
-      const matched = openApiLinks.filter((link) =>
-        basePath
-          ? link.slug === basePath || link.slug.startsWith(`${basePath}/`)
-          : true,
-      );
-      return {
-        type: "group" as const,
-        title: item.group,
-        icon: item.icon,
-        children: groupOpenApiLinksByTag(matched),
-      };
+      return openApiSidebarGroup(item, openApiLinks);
     }
 
-    const children: SidebarPageLink[] = item.pages.map((entry) => {
+    const children: SidebarNode[] = [];
+    for (const entry of item.pages) {
+      if (isNavOpenApiEntry(entry)) {
+        children.push(openApiSidebarGroup(entry, openApiLinks));
+        continue;
+      }
       const ref = normalizePageEntry(entry);
       const page = pagesBySlug.get(ref.path);
       const title =
@@ -418,14 +512,14 @@ export function buildSidebar(
         page?.frontmatter.sidebarTitle ??
         page?.frontmatter.title ??
         (ref.path === "" ? "Overview" : ref.path);
-      return {
+      children.push({
         type: "page" as const,
         title,
         slug: ref.path,
-        href: localePath(locale, ref.path),
+        href: localePath(locale, ref.path, version),
         icon: page?.frontmatter.icon ?? item.icon,
-      };
-    });
+      });
+    }
 
     return {
       type: "group" as const,
@@ -467,6 +561,9 @@ export function listSlugsFromNavigation(config: DocsConfig): string[] {
       continue;
     }
     for (const entry of item.pages) {
+      if (isNavOpenApiEntry(entry)) {
+        continue;
+      }
       const ref = normalizePageEntry(entry);
       slugs.add(ref.path);
     }
