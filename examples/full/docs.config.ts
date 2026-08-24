@@ -21,7 +21,7 @@ export default defineConfig({
     primaryColor: "#0f766e",
   },
   github: {
-    url: "https://github.com/enal/ticidocs",
+    url: "https://github.com/burakenal/ticidocs",
   },
   api: {
     allowedOrigins: ["https://api.example.com"],

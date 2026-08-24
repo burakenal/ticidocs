@@ -36,6 +36,8 @@
   --docs-shadow-lg: 0 12px 40px rgb(17 24 39 / 12%);
   --docs-max-content: 44rem;
   --docs-nav-height: 3.5rem;
+  --docs-tabs-height: 2.75rem;
+  --docs-header-height: calc(var(--docs-nav-height) + var(--docs-tabs-height));
   --docs-sidebar-width: 16.5rem;
   --docs-toc-width: 13.5rem;
   --docs-api-rail-width: 26rem;

@@ -70,7 +70,7 @@ export function Navbar({
           )}
         </a>
       </div>
-      <div className={styles.right}>
+      <div className={styles.center}>
         <button
           type="button"
           className={styles.searchButton}
@@ -78,9 +78,11 @@ export function Navbar({
           aria-label="Search documentation"
         >
           <SearchIcon />
-          <span className={styles.searchLabel}>Search</span>
+          <span className={styles.searchLabel}>Search...</span>
           <kbd className={styles.kbd}>Ctrl K</kbd>
         </button>
+      </div>
+      <div className={styles.right}>
         <LocaleSwitcher locale={locale} locales={locales} slug={slug} />
         <ThemeSwitcher />
         {githubUrl ? (

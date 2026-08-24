@@ -98,6 +98,8 @@ export interface SidebarPageLink {
   icon?: string;
   /** HTTP method for OpenAPI sidebar rows (e.g. "get") */
   method?: string;
+  /** OpenAPI tags used to nest endpoints under category submenus */
+  tags?: string[];
 }
 
 export interface SidebarExternalLink {
@@ -106,11 +108,13 @@ export interface SidebarExternalLink {
   href: string;
 }
 
+export type SidebarNode = SidebarPageLink | SidebarGroup;
+
 export interface SidebarGroup {
   type: "group";
   title: string;
   icon?: string;
-  children: SidebarPageLink[];
+  children: SidebarNode[];
 }
 
 export type SidebarItem = SidebarGroup | SidebarExternalLink;
@@ -129,6 +133,40 @@ export interface PageSeo {
   noindex: boolean;
   alternates: SeoAlternate[];
   xDefault: string;
+}
+
+export interface ArticleJsonLd {
+  "@context": "https://schema.org";
+  "@type": "Article";
+  headline: string;
+  description: string;
+  inLanguage: string;
+  url: string;
+  isPartOf: {
+    "@type": "WebSite";
+    name: string;
+    url: string;
+  };
+}
+
+export function buildArticleJsonLd(input: {
+  seo: PageSeo;
+  siteName: string;
+  siteUrl: string;
+}): ArticleJsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: input.seo.title,
+    description: input.seo.description,
+    inLanguage: input.seo.locale,
+    url: input.seo.canonical,
+    isPartOf: {
+      "@type": "WebSite",
+      name: input.siteName,
+      url: input.siteUrl.replace(/\/+$/, ""),
+    },
+  };
 }
 
 export function isNavGroup(item: NavigationItem): item is NavGroup {
@@ -227,6 +265,119 @@ export function buildPageSeo(input: {
   };
 }
 
+/** Nest OpenAPI endpoint links under their first tag (Scalar-style). */
+export function groupOpenApiLinksByTag(
+  links: SidebarPageLink[],
+): SidebarNode[] {
+  const order: string[] = [];
+  const byTag = new Map<string, SidebarPageLink[]>();
+  const untagged: SidebarPageLink[] = [];
+
+  for (const link of links) {
+    const tag = link.tags?.find((t) => t.trim().length > 0)?.trim();
+    if (!tag) {
+      untagged.push(link);
+      continue;
+    }
+    if (!byTag.has(tag)) {
+      order.push(tag);
+      byTag.set(tag, []);
+    }
+    byTag.get(tag)!.push(link);
+  }
+
+  const groups: SidebarNode[] = order.map((tag) => ({
+    type: "group" as const,
+    title: tag,
+    children: byTag.get(tag)!,
+  }));
+
+  return [...groups, ...untagged];
+}
+
+export interface SectionTab {
+  title: string;
+  href: string;
+  active: boolean;
+  external?: boolean;
+}
+
+function sidebarNodeContainsPath(
+  node: SidebarNode,
+  currentPath: string,
+): boolean {
+  if (node.type === "page") {
+    return node.href === currentPath;
+  }
+  return node.children.some((child) =>
+    sidebarNodeContainsPath(child, currentPath),
+  );
+}
+
+/** First navigable page href inside a sidebar node tree. */
+export function firstSidebarHref(nodes: SidebarNode[]): string | undefined {
+  for (const node of nodes) {
+    if (node.type === "page") {
+      return node.href;
+    }
+    const nested = firstSidebarHref(node.children);
+    if (nested) {
+      return nested;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Active top-level section for Upstash-style product tabs + scoped sidebar.
+ * Prefers the group that contains `currentPath`; falls back to the first group.
+ */
+export function resolveActiveSection(
+  sidebar: SidebarItem[],
+  currentPath: string,
+): SidebarGroup | undefined {
+  const groups = sidebar.filter(
+    (item): item is SidebarGroup => item.type === "group",
+  );
+  const matched = groups.find((group) =>
+    group.children.some((child) => sidebarNodeContainsPath(child, currentPath)),
+  );
+  return matched ?? groups[0];
+}
+
+/** Horizontal product/section tabs derived from top-level sidebar items. */
+export function buildSectionTabs(
+  sidebar: SidebarItem[],
+  currentPath: string,
+): SectionTab[] {
+  const active = resolveActiveSection(sidebar, currentPath);
+  const tabs: SectionTab[] = [];
+
+  for (const item of sidebar) {
+    if (item.type === "external") {
+      tabs.push({
+        title: item.title,
+        href: item.href,
+        active: false,
+        external: true,
+      });
+      continue;
+    }
+
+    const href = firstSidebarHref(item.children);
+    if (!href) {
+      continue;
+    }
+    tabs.push({
+      title: item.title,
+      href,
+      active: active?.title === item.title,
+    });
+  }
+
+  return tabs;
+}
+
 export function buildSidebar(
   config: DocsConfig,
   locale: Locale,
@@ -246,14 +397,16 @@ export function buildSidebar(
 
     if (isNavOpenApiGroup(item)) {
       const basePath = (item.basePath ?? "api").replace(/^\/+|\/+$/g, "");
-      const children = openApiLinks.filter((link) =>
-        basePath ? link.slug === basePath || link.slug.startsWith(`${basePath}/`) : true,
+      const matched = openApiLinks.filter((link) =>
+        basePath
+          ? link.slug === basePath || link.slug.startsWith(`${basePath}/`)
+          : true,
       );
       return {
         type: "group" as const,
         title: item.group,
         icon: item.icon,
-        children,
+        children: groupOpenApiLinksByTag(matched),
       };
     }
 

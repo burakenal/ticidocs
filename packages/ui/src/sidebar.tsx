@@ -1,17 +1,22 @@
 "use client";
 
-import type { SidebarItem } from "@ticidocs/core";
+import type { SidebarItem, SidebarNode } from "@ticidocs/core";
 import { MethodBadge } from "./method-badge";
 import styles from "./sidebar.module.css";
 
 export interface SidebarProps {
   items: SidebarItem[];
   currentPath: string;
+  /** Root heading when the shell scopes the tree to one product section. */
+  sectionTitle?: string;
 }
 
-export function Sidebar({ items, currentPath }: SidebarProps) {
+export function Sidebar({ items, currentPath, sectionTitle }: SidebarProps) {
   return (
     <nav id="ticidocs-sidebar" className={styles.nav}>
+      {sectionTitle ? (
+        <div className={styles.sectionTitle}>{sectionTitle}</div>
+      ) : null}
       {items.map((item) => {
         if (item.type === "external") {
           return (
@@ -27,31 +32,87 @@ export function Sidebar({ items, currentPath }: SidebarProps) {
           );
         }
 
+        // Scoped section: skip redundant group label (shown as sectionTitle).
+        if (sectionTitle) {
+          return (
+            <SidebarNodeList
+              key={item.title}
+              nodes={item.children}
+              currentPath={currentPath}
+            />
+          );
+        }
+
         return (
           <div key={item.title} className={styles.group}>
-            <div className={styles.groupTitle}>{item.title}</div>
-            <ul className={styles.list}>
-              {item.children.map((child) => {
-                const active = child.href === currentPath;
-                return (
-                  <li key={child.href}>
-                    <a
-                      className={`${styles.link} ${child.method ? styles.apiLink : ""} ${active ? styles.active : ""}`}
-                      href={child.href}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      {child.method ? (
-                        <MethodBadge method={child.method} compact />
-                      ) : null}
-                      <span className={styles.linkText}>{child.title}</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
+            <div className={styles.groupTitle}>
+              {item.icon ? (
+                <span className={styles.icon} aria-hidden>
+                  {item.icon}
+                </span>
+              ) : null}
+              {item.title}
+            </div>
+            <SidebarNodeList nodes={item.children} currentPath={currentPath} />
           </div>
         );
       })}
     </nav>
+  );
+}
+
+function SidebarNodeList({
+  nodes,
+  currentPath,
+  depth = 0,
+}: {
+  nodes: SidebarNode[];
+  currentPath: string;
+  depth?: number;
+}) {
+  return (
+    <ul className={styles.list} data-depth={depth}>
+      {nodes.map((node) => {
+        if (node.type === "group") {
+          return (
+            <li key={`group:${node.title}`} className={styles.subGroup}>
+              <div className={styles.subGroupTitle}>
+                {node.icon ? (
+                  <span className={styles.icon} aria-hidden>
+                    {node.icon}
+                  </span>
+                ) : null}
+                {node.title}
+              </div>
+              <SidebarNodeList
+                nodes={node.children}
+                currentPath={currentPath}
+                depth={depth + 1}
+              />
+            </li>
+          );
+        }
+
+        const active = node.href === currentPath;
+        return (
+          <li key={node.href}>
+            <a
+              className={`${styles.link} ${node.method ? styles.apiLink : ""} ${active ? styles.active : ""}`}
+              href={node.href}
+              aria-current={active ? "page" : undefined}
+            >
+              {node.method ? (
+                <MethodBadge method={node.method} compact />
+              ) : node.icon ? (
+                <span className={styles.icon} aria-hidden>
+                  {node.icon}
+                </span>
+              ) : null}
+              <span className={styles.linkText}>{node.title}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

@@ -36,10 +36,16 @@ describe("scaffold", () => {
 
     await fs.access(path.join(targetDir, "openapi", "openapi.yaml"));
     await fs.access(path.join(targetDir, "app", "[locale]", "[[...slug]]", "page.tsx"));
+    await fs.access(path.join(targetDir, "Dockerfile"));
+    await fs.access(path.join(targetDir, "docker-compose.yml"));
+    await fs.access(path.join(targetDir, "middleware.ts"));
 
     const config = await fs.readFile(path.join(targetDir, "docs.config.ts"), "utf8");
     expect(config).toContain('name: "Demo Api"');
     expect(config).toContain("openapi/openapi.yaml");
     expect(config).toContain("github");
+
+    const readme = await fs.readFile(path.join(targetDir, "README.md"), "utf8");
+    expect(readme).toContain("docker compose");
   });
 });

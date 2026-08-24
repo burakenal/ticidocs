@@ -192,19 +192,20 @@ function LanguageMenu({
 
   return (
     <div className={styles.langSelect} ref={rootRef}>
-      <button
-        ref={buttonRef}
-        type="button"
-        className={styles.iconBtn}
-        aria-expanded={open}
-        aria-haspopup="listbox"
-        aria-controls={listId}
-        title={LANG_META[value]}
-        aria-label={`Language: ${LANG_META[value]}`}
-        onClick={toggleOpen}
-      >
-        <ChevronIcon />
-      </button>
+        <button
+          ref={buttonRef}
+          type="button"
+          className={styles.langBtn}
+          aria-expanded={open}
+          aria-haspopup="listbox"
+          aria-controls={listId}
+          title={LANG_META[value]}
+          aria-label={`Language: ${LANG_META[value]}`}
+          onClick={toggleOpen}
+        >
+          <span className={styles.langLabel}>{LANG_META[value]}</span>
+          <ChevronIcon />
+        </button>
       {open && menuPos ? (
         <ul
           id={listId}
@@ -272,14 +273,14 @@ function ChevronIcon() {
   return (
     <svg
       className={styles.chevron}
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
       fill="none"
       aria-hidden
     >
       <path
-        d="M4.2 5.2 7 2.5l2.8 2.7M4.2 8.8 7 11.5l2.8-2.7"
+        d="M3 4.5 6 7.5 9 4.5"
         stroke="currentColor"
         strokeWidth="1.4"
         strokeLinecap="round"

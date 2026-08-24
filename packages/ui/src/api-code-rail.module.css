@@ -3,8 +3,8 @@
   flex-direction: column;
   gap: 0.85rem;
   position: sticky;
-  top: calc(var(--docs-nav-height) + 1rem);
-  max-height: calc(100vh - var(--docs-nav-height) - 2rem);
+  top: calc(var(--docs-sticky-offset, var(--docs-nav-height)) + 1rem);
+  max-height: calc(100vh - var(--docs-sticky-offset, var(--docs-nav-height)) - 2rem);
   overflow: auto;
   scrollbar-width: thin;
 }
@@ -91,6 +91,31 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+}
+
+.langBtn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #374151;
+  height: 1.7rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  cursor: pointer;
+  padding: 0 0.35rem;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.langBtn:hover {
+  background: rgb(17 24 39 / 6%);
+}
+
+.langLabel {
+  line-height: 1;
 }
 
 .langMenu {
@@ -203,10 +228,12 @@
 }
 
 :global(html[data-theme="dark"]) .chevron,
-:global(html[data-theme="dark"]) .iconBtn {
+:global(html[data-theme="dark"]) .iconBtn,
+:global(html[data-theme="dark"]) .langBtn {
   color: #9ca3af;
 }
 
+:global(html[data-theme="dark"]) .langBtn:hover,
 :global(html[data-theme="dark"]) .iconBtn:hover {
   color: #f3f4f6;
   background: rgb(255 255 255 / 8%);
@@ -254,10 +281,12 @@
   }
 
   :global(html:not([data-theme="light"])) .chevron,
-  :global(html:not([data-theme="light"])) .iconBtn {
+  :global(html:not([data-theme="light"])) .iconBtn,
+  :global(html:not([data-theme="light"])) .langBtn {
     color: #9ca3af;
   }
 
+  :global(html:not([data-theme="light"])) .langBtn:hover,
   :global(html:not([data-theme="light"])) .iconBtn:hover {
     color: #f3f4f6;
     background: rgb(255 255 255 / 8%);

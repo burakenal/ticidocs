@@ -201,9 +201,19 @@ pnpm install
 pnpm dev
 \`\`\`
 
+## Docker
+
+\`\`\`bash
+docker compose up --build -d
+\`\`\`
+
+Or: \`docker build -t ${projectName} .\` then \`docker run --rm -p 3000:3000 ${projectName}\`.
+
+Uses Next.js \`standalone\` output when \`DOCKER_BUILD=1\` (set in the Dockerfile).
+
 ${
   linkWorkspace
-    ? "This project uses `workspace:*` dependencies. Add it to the Ticidocs monorepo `pnpm-workspace.yaml` (or run from a checkout that already includes it)."
+    ? "This project uses `workspace:*` dependencies. Add it to the Ticidocs monorepo `pnpm-workspace.yaml` (or run from a checkout that already includes it). Docker images need resolvable `@ticidocs/*` packages (publish or mount the monorepo)."
     : "Install published `@ticidocs/*` packages from npm, or recreate with `--link` inside the Ticidocs monorepo."
 }
 `;

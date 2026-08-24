@@ -12,6 +12,12 @@ const LABELS: Record<HttpMethod, string> = {
   trace: "TRACE",
 };
 
+const COMPACT_LABELS: Partial<Record<HttpMethod, string>> = {
+  delete: "DEL",
+  options: "OPT",
+  patch: "PAT",
+};
+
 const METHODS = new Set<string>(Object.keys(LABELS));
 
 export function MethodBadge({
@@ -23,7 +29,11 @@ export function MethodBadge({
 }) {
   const key = method.toLowerCase();
   const styleKey = (METHODS.has(key) ? key : "options") as HttpMethod;
-  const label = METHODS.has(key) ? LABELS[styleKey] : method.toUpperCase();
+  const label = METHODS.has(key)
+    ? compact
+      ? (COMPACT_LABELS[styleKey] ?? LABELS[styleKey])
+      : LABELS[styleKey]
+    : method.toUpperCase();
 
   return (
     <span

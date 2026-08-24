@@ -119,5 +119,8 @@ See [DEPLOY.md](./DEPLOY.md) for VPS, Nginx, and Kubernetes notes.
 
 ## Later leftovers
 
-- JSON-LD Article schema
-- Publish `@ticidocs/*` to npm
+- Publish `@ticidocs/*` to npm (see [PUBLISH.md](./PUBLISH.md))
+- Versioning, nested nav groups, advanced code-block options (line numbers / diff)
+- Optional: runnable Next apps under `examples/` (today they validate config only)
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for local workflow.

@@ -1,14 +1,20 @@
 import { describe, expect, it } from "vitest";
 import {
   absoluteUrl,
+  buildArticleJsonLd,
   buildPageSeo,
+  buildSectionTabs,
   buildSidebar,
+  firstSidebarHref,
+  groupOpenApiLinksByTag,
   localePath,
   normalizePageEntry,
+  resolveActiveSection,
   resolvePageWithFallback,
   toOgLocale,
   type DocsConfig,
   type DocPage,
+  type SidebarItem,
 } from "./index.js";
 
 const baseConfig: DocsConfig = {
@@ -61,9 +67,145 @@ describe("buildSidebar", () => {
       title: "Getting Started",
     });
     if (sidebar[0]?.type === "group") {
-      expect(sidebar[0].children[0]?.href).toBe("/en");
-      expect(sidebar[0].children[1]?.href).toBe("/en/getting-started");
+      const first = sidebar[0].children[0];
+      const second = sidebar[0].children[1];
+      expect(first?.type === "page" ? first.href : undefined).toBe("/en");
+      expect(second?.type === "page" ? second.href : undefined).toBe(
+        "/en/getting-started",
+      );
     }
+  });
+
+  it("nests OpenAPI links under tag submenus", () => {
+    const config: DocsConfig = {
+      ...baseConfig,
+      navigation: [
+        {
+          group: "Marketplace API",
+          openapi: "./openapi.json",
+          basePath: "hub/api/marketplace",
+        },
+      ],
+    };
+    const sidebar = buildSidebar(config, "en", new Map(), [
+      {
+        type: "page",
+        title: "List cargo",
+        slug: "hub/api/marketplace/list-cargo",
+        href: "/en/hub/api/marketplace/list-cargo",
+        method: "get",
+        tags: ["Kargo İşlemleri"],
+      },
+      {
+        type: "page",
+        title: "List products",
+        slug: "hub/api/marketplace/list-products",
+        href: "/en/hub/api/marketplace/list-products",
+        method: "get",
+        tags: ["Ürün İşlemleri"],
+      },
+    ]);
+
+    expect(sidebar[0]).toMatchObject({
+      type: "group",
+      title: "Marketplace API",
+    });
+    if (sidebar[0]?.type !== "group") return;
+    expect(sidebar[0].children).toHaveLength(2);
+    expect(sidebar[0].children[0]).toMatchObject({
+      type: "group",
+      title: "Kargo İşlemleri",
+    });
+    expect(sidebar[0].children[1]).toMatchObject({
+      type: "group",
+      title: "Ürün İşlemleri",
+    });
+  });
+});
+
+describe("groupOpenApiLinksByTag", () => {
+  it("keeps first-seen tag order and leaves untagged flat", () => {
+    const nodes = groupOpenApiLinksByTag([
+      {
+        type: "page",
+        title: "A",
+        slug: "a",
+        href: "/a",
+        tags: ["Orders"],
+      },
+      {
+        type: "page",
+        title: "B",
+        slug: "b",
+        href: "/b",
+        tags: ["Products"],
+      },
+      {
+        type: "page",
+        title: "C",
+        slug: "c",
+        href: "/c",
+      },
+    ]);
+    expect(nodes.map((n) => ("title" in n ? n.title : ""))).toEqual([
+      "Orders",
+      "Products",
+      "C",
+    ]);
+  });
+});
+
+describe("section tabs helpers", () => {
+  const sidebar: SidebarItem[] = [
+    {
+      type: "group",
+      title: "Overview",
+      children: [{ type: "page", title: "Home", slug: "", href: "/en" }],
+    },
+    {
+      type: "group",
+      title: "Developer API",
+      children: [
+        {
+          type: "group",
+          title: "Vector",
+          children: [
+            {
+              type: "page",
+              title: "List indices",
+              slug: "api/list",
+              href: "/en/api/list",
+              method: "get",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: "external",
+      title: "Blog",
+      href: "https://example.com/blog",
+    },
+  ];
+
+  it("resolves the section that contains the current path", () => {
+    const active = resolveActiveSection(sidebar, "/en/api/list");
+    expect(active?.title).toBe("Developer API");
+    expect(firstSidebarHref(active!.children)).toBe("/en/api/list");
+  });
+
+  it("builds product tabs with the active section marked", () => {
+    const tabs = buildSectionTabs(sidebar, "/en/api/list");
+    expect(tabs).toEqual([
+      { title: "Overview", href: "/en", active: false },
+      { title: "Developer API", href: "/en/api/list", active: true },
+      {
+        title: "Blog",
+        href: "https://example.com/blog",
+        active: false,
+        external: true,
+      },
+    ]);
   });
 });
 
@@ -97,5 +239,26 @@ describe("buildPageSeo", () => {
     expect(absoluteUrl("https://docs.example.com/", "/en")).toBe(
       "https://docs.example.com/en",
     );
+  });
+});
+
+describe("buildArticleJsonLd", () => {
+  it("emits Article schema for a page", () => {
+    const seo = buildPageSeo({
+      config: baseConfig,
+      locale: "en",
+      slug: "getting-started",
+      frontmatter: { title: "Getting started", description: "Setup" },
+      availableLocales: ["en"],
+    });
+    const jsonLd = buildArticleJsonLd({
+      seo,
+      siteName: baseConfig.name,
+      siteUrl: baseConfig.siteUrl,
+    });
+    expect(jsonLd["@type"]).toBe("Article");
+    expect(jsonLd.headline).toBe("Getting started");
+    expect(jsonLd.url).toBe("https://docs.example.com/en/getting-started");
+    expect(jsonLd.isPartOf.name).toBe(baseConfig.name);
   });
 });

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { buildArticleJsonLd } from "@ticidocs/core";
 import { DocsShell } from "@ticidocs/ui/docs-shell";
 import { EndpointView } from "@ticidocs/ui/endpoint-view";
 import { MdxContent } from "../../../components/mdx-content";
@@ -112,6 +113,12 @@ export default async function DocsPage({ params }: PageProps) {
 
   const api = resolveApiOperation(slug);
   if (api) {
+    const seo = getSeoForApi(locale, api.operation);
+    const jsonLd = buildArticleJsonLd({
+      seo,
+      siteName: config.name,
+      siteUrl: config.siteUrl,
+    });
     return (
       <DocsShell
         name={config.name}
@@ -126,6 +133,10 @@ export default async function DocsPage({ params }: PageProps) {
         githubUrl={config.github?.url}
         searchDocuments={searchDocuments}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <EndpointView
           operation={api.operation}
           document={api.document}
@@ -141,6 +152,12 @@ export default async function DocsPage({ params }: PageProps) {
   }
 
   const { page, isFallback } = resolved;
+  const seo = getSeoForPage(locale, slug, page);
+  const jsonLd = buildArticleJsonLd({
+    seo,
+    siteName: config.name,
+    siteUrl: config.siteUrl,
+  });
 
   return (
     <DocsShell
@@ -156,6 +173,10 @@ export default async function DocsPage({ params }: PageProps) {
       githubUrl={config.github?.url}
       searchDocuments={searchDocuments}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <MdxContent source={page.body} />
     </DocsShell>
   );

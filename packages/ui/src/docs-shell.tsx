@@ -1,10 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import type { DocsLogo, HeadingNode, SidebarItem } from "@ticidocs/core";
+import {
+  buildSectionTabs,
+  resolveActiveSection,
+  type DocsLogo,
+  type HeadingNode,
+  type SidebarItem,
+} from "@ticidocs/core";
 import type { SearchDocument } from "@ticidocs/search";
 import { Breadcrumbs, breadcrumbsFromSidebar } from "./breadcrumbs";
 import { Navbar } from "./navbar";
+import { SectionTabs } from "./section-tabs";
 import { Sidebar } from "./sidebar";
 import { TableOfContents } from "./toc";
 import { FallbackBanner } from "./fallback-banner";
@@ -48,13 +55,41 @@ export function DocsShell({
     setMobileOpen(false);
   }, [currentPath]);
 
+  const sectionTabs = useMemo(
+    () => buildSectionTabs(sidebar, currentPath),
+    [sidebar, currentPath],
+  );
+
+  const activeSection = useMemo(
+    () => resolveActiveSection(sidebar, currentPath),
+    [sidebar, currentPath],
+  );
+
+  const scopedSidebar = useMemo((): SidebarItem[] => {
+    if (!activeSection) {
+      return sidebar;
+    }
+    return [
+      {
+        type: "group",
+        title: activeSection.title,
+        icon: activeSection.icon,
+        children: activeSection.children,
+      },
+    ];
+  }, [sidebar, activeSection]);
+
   const crumbs = useMemo(
     () => breadcrumbsFromSidebar(sidebar, currentPath, `/${locale}`),
     [sidebar, currentPath, locale],
   );
 
+  const hasTabs = sectionTabs.length > 1;
+
   return (
-    <div className={styles.shell}>
+    <div
+      className={`${styles.shell} ${hasTabs ? styles.shellWithTabs : ""}`}
+    >
       <Navbar
         name={name}
         locale={locale}
@@ -66,12 +101,17 @@ export function DocsShell({
         menuOpen={mobileOpen}
         searchDocuments={searchDocuments}
       />
+      {hasTabs ? <SectionTabs tabs={sectionTabs} /> : null}
       <div className={styles.body}>
         <aside
           className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ""}`}
           aria-label="Documentation navigation"
         >
-          <Sidebar items={sidebar} currentPath={currentPath} />
+          <Sidebar
+            items={scopedSidebar}
+            currentPath={currentPath}
+            sectionTitle={hasTabs ? activeSection?.title : undefined}
+          />
         </aside>
         {mobileOpen ? (
           <button
@@ -91,7 +131,7 @@ export function DocsShell({
             <article
               className={`${styles.article} ${variant === "api" ? styles.articleApi : ""}`}
             >
-              <Breadcrumbs items={crumbs} />
+              {variant === "docs" ? <Breadcrumbs items={crumbs} /> : null}
               {children}
             </article>
           </main>

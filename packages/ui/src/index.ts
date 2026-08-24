@@ -2,6 +2,8 @@ export { DocsShell } from "./docs-shell";
 export type { DocsShellProps } from "./docs-shell";
 export { Navbar } from "./navbar";
 export type { NavbarProps } from "./navbar";
+export { SectionTabs } from "./section-tabs";
+export type { SectionTabsProps } from "./section-tabs";
 export { Sidebar } from "./sidebar";
 export type { SidebarProps } from "./sidebar";
 export { TableOfContents } from "./toc";

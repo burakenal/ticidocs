@@ -89,10 +89,14 @@ export function resolveApiOperation(
 export function getOpenApiSidebarLinks(locale: string): SidebarPageLink[] {
   return getAllApiOperations().map((operation) => ({
     type: "page" as const,
-    title: operation.path,
+    title:
+      operation.summary ??
+      operation.operationId ??
+      `${operation.method.toUpperCase()} ${operation.path}`,
     slug: operation.slug,
     href: localePath(locale, operation.slug),
     method: operation.method,
+    tags: operation.tags,
   }));
 }
 

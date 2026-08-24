@@ -31,24 +31,45 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
   );
 }
 
+type SidebarCrumbNode = {
+  type: string;
+  title?: string;
+  href?: string;
+  children?: SidebarCrumbNode[];
+};
+
+function findSidebarTrail(
+  nodes: SidebarCrumbNode[],
+  currentPath: string,
+  trail: BreadcrumbItem[] = [],
+): BreadcrumbItem[] | undefined {
+  for (const node of nodes) {
+    if (node.type === "group" && node.children) {
+      const nested = findSidebarTrail(node.children, currentPath, [
+        ...trail,
+        { label: node.title ?? "Docs" },
+      ]);
+      if (nested) return nested;
+      continue;
+    }
+    if (node.href === currentPath) {
+      return [...trail, { label: node.title ?? currentPath }];
+    }
+  }
+  return undefined;
+}
+
 export function breadcrumbsFromSidebar(
-  sidebar: {
-    type: string;
-    title?: string;
-    children?: { title: string; href: string }[];
-  }[],
+  sidebar: SidebarCrumbNode[],
   currentPath: string,
   homeHref: string,
 ): BreadcrumbItem[] {
   for (const item of sidebar) {
     if (item.type !== "group" || !item.children) continue;
-    const child = item.children.find((entry) => entry.href === currentPath);
-    if (child) {
-      return [
-        { label: item.title ?? "Docs", href: homeHref },
-        { label: child.title },
-      ];
-    }
+    const found = findSidebarTrail(item.children, currentPath, [
+      { label: item.title ?? "Docs", href: homeHref },
+    ]);
+    if (found) return found;
   }
   return [];
 }

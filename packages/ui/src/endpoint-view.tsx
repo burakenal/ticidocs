@@ -53,10 +53,13 @@ export function EndpointView({
     };
   }, [tryItOpen]);
 
+  const category = operation.tags.find((tag) => tag.trim().length > 0)?.trim();
+
   return (
     <div className={styles.layout}>
       <div className={styles.content}>
         <header className={styles.header}>
+          {category ? <div className={styles.category}>{category}</div> : null}
           <h1 className={styles.title}>{title}</h1>
           {operation.description ? (
             <p className={styles.description}>{operation.description}</p>
