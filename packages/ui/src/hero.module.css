@@ -99,54 +99,56 @@
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  align-items: center;
+  gap: 0.75rem;
   margin-top: 1.65rem;
 }
 
 .actionPrimary,
 .actionSecondary {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.65rem;
-  padding: 0.6rem 1.2rem;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border: 1px solid transparent;
   border-radius: var(--docs-radius-sm);
+  font: inherit;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
   text-decoration: none;
   transition:
     background 160ms ease,
     border-color 160ms ease,
     color 160ms ease,
-    transform 160ms ease,
-    box-shadow 160ms ease;
+    filter 160ms ease;
 }
 
 .actionPrimary {
   background: var(--docs-primary);
   color: var(--docs-primary-foreground);
-  border: 1px solid transparent;
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--docs-primary) 28%, transparent);
+  border-color: var(--docs-primary);
 }
 
 .actionPrimary:hover {
-  filter: brightness(0.97);
+  filter: brightness(0.96);
   text-decoration: none;
-  transform: translateY(-1px);
 }
 
 .actionSecondary {
-  background: color-mix(in srgb, var(--docs-surface) 88%, transparent);
+  background: var(--docs-surface);
   color: var(--docs-foreground);
-  border: 1px solid var(--docs-border);
-  backdrop-filter: blur(8px);
+  border-color: color-mix(in srgb, var(--docs-foreground) 16%, var(--docs-border));
 }
 
 .actionSecondary:hover {
-  border-color: color-mix(in srgb, var(--docs-primary) 35%, var(--docs-border));
+  border-color: color-mix(in srgb, var(--docs-primary) 40%, var(--docs-border));
+  background: color-mix(in srgb, var(--docs-primary) 5%, var(--docs-surface));
   text-decoration: none;
-  transform: translateY(-1px);
 }
 
 .visual {

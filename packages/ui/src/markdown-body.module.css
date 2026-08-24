@@ -93,7 +93,13 @@
 .prose :global([class*="actionPrimary"]),
 .prose :global([class*="actionSecondary"]) {
   color: inherit;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.prose :global([class*="actionPrimary"]):hover,
+.prose :global([class*="actionSecondary"]):hover {
   text-decoration: none;
 }
 
