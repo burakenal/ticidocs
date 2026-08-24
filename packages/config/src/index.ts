@@ -32,6 +32,34 @@ const navExternalSchema = z.object({
   external: z.literal(true).optional(),
 });
 
+const localizedStringSchema = z.union([
+  z.string().min(1),
+  z.record(z.string().min(1), z.string().min(1)),
+]);
+
+const footerLinkSchema = z.object({
+  label: localizedStringSchema,
+  href: z.string().min(1),
+  external: z.boolean().optional(),
+});
+
+const footerNavGroupSchema = z.object({
+  title: localizedStringSchema,
+  links: z.array(footerLinkSchema).min(1),
+});
+
+const footerSocialSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().url(),
+});
+
+const footerSchema = z.object({
+  description: localizedStringSchema.optional(),
+  navGroups: z.array(footerNavGroupSchema).optional(),
+  copyright: localizedStringSchema.optional(),
+  socials: z.array(footerSocialSchema).optional(),
+});
+
 const docsConfigSchema = z
   .object({
     name: z.string().min(1),
@@ -82,6 +110,7 @@ const docsConfigSchema = z
         allowedOrigins: z.array(z.string().url()).min(1),
       })
       .optional(),
+    footer: footerSchema.optional(),
   })
   .superRefine((value, ctx) => {
     if (!value.locales.includes(value.defaultLocale)) {

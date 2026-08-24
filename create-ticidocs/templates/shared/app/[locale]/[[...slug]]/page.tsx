@@ -144,6 +144,8 @@ export default async function DocsPage({ params }: PageProps) {
         searchDocuments={searchDocuments}
         versions={config.versions}
         version={version}
+        defaultLocale={config.defaultLocale}
+        footer={config.footer}
       >
         <script
           type="application/ld+json"
@@ -186,6 +188,8 @@ export default async function DocsPage({ params }: PageProps) {
       searchDocuments={searchDocuments}
       versions={config.versions}
       version={version}
+      defaultLocale={config.defaultLocale}
+      footer={config.footer}
     >
       <script
         type="application/ld+json"

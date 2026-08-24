@@ -53,6 +53,38 @@ describe("defineConfig", () => {
     ).toThrow(/Invalid docs\.config\.ts/);
   });
 
+  it("accepts localized footer config", () => {
+    const config = defineConfig({
+      name: "Ticidocs",
+      siteUrl: "https://docs.example.com",
+      locales: ["en", "tr"],
+      defaultLocale: "en",
+      navigation: [{ group: "Start", pages: ["index"] }],
+      footer: {
+        description: {
+          en: "Build with Ticidocs.",
+          tr: "Ticidocs ile geliştirin.",
+        },
+        navGroups: [
+          {
+            title: { en: "Resources", tr: "Kaynaklar" },
+            links: [
+              { label: { en: "Docs", tr: "Dokümantasyon" }, href: "/en" },
+            ],
+          },
+        ],
+        copyright: "© 2026 Ticidocs",
+        socials: [
+          { label: "GitHub", href: "https://github.com/example/ticidocs" },
+        ],
+      },
+    });
+    expect(config.footer?.navGroups?.[0]?.title).toEqual({
+      en: "Resources",
+      tr: "Kaynaklar",
+    });
+  });
+
   it("accepts nested OpenAPI groups inside pages", () => {
     const config = defineConfig({
       name: "Ticidocs",

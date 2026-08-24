@@ -47,6 +47,50 @@ export interface DocsApiConfig {
   allowedOrigins: string[];
 }
 
+/** Plain string or per-locale map (`{ en: "...", tr: "..." }`). */
+export type LocalizedString = string | Record<string, string>;
+
+export interface DocsFooterLink {
+  label: LocalizedString;
+  href: string;
+  external?: boolean;
+}
+
+export interface DocsFooterNavGroup {
+  title: LocalizedString;
+  links: DocsFooterLink[];
+}
+
+export interface DocsFooterSocial {
+  label: string;
+  href: string;
+}
+
+export interface DocsFooterConfig {
+  description?: LocalizedString;
+  navGroups?: DocsFooterNavGroup[];
+  copyright?: LocalizedString;
+  socials?: DocsFooterSocial[];
+}
+
+export function resolveLocalized(
+  value: LocalizedString | undefined,
+  locale: string,
+  fallbackLocale?: string,
+): string | undefined {
+  if (value == null) {
+    return undefined;
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  return (
+    value[locale] ??
+    (fallbackLocale ? value[fallbackLocale] : undefined) ??
+    Object.values(value)[0]
+  );
+}
+
 export interface NavPageRef {
   title?: string;
   path: string;
@@ -96,6 +140,8 @@ export interface DocsConfig {
   theme?: DocsThemeConfig;
   github?: DocsGithubConfig;
   api?: DocsApiConfig;
+  /** Site footer rendered below the docs shell. Labels may be localized. */
+  footer?: DocsFooterConfig;
 }
 
 export interface PageFrontmatter {

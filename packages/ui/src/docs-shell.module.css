@@ -5,6 +5,7 @@
   background: var(--docs-background);
   color: var(--docs-foreground);
   --docs-sticky-offset: var(--docs-nav-height);
+  overflow-x: clip;
 }
 
 .shellWithTabs {
@@ -13,8 +14,6 @@
 
 .frame {
   width: 100%;
-  max-width: var(--docs-shell-max-width);
-  margin-inline: auto;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -30,6 +29,21 @@
   flex: 1;
   min-height: 0;
   width: 100%;
+}
+
+.bodyHome {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "main";
+}
+
+.shellHome {
+  background:
+    radial-gradient(
+      42% 32rem at 100% 0%,
+      color-mix(in srgb, var(--docs-primary) 12%, transparent),
+      transparent 72%
+    ),
+    var(--docs-background);
 }
 
 .sidebar {
@@ -73,7 +87,10 @@
 }
 
 .mainHome {
-  padding: 1.5rem var(--docs-page-pad) 4.5rem;
+  padding: 0 var(--docs-page-pad) 4rem;
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--docs-max-content-home);
 }
 
 .article {
@@ -86,7 +103,7 @@
 }
 
 .articleHome {
-  max-width: var(--docs-max-content-home);
+  max-width: none;
   width: 100%;
 }
 
@@ -123,9 +140,12 @@
   }
 
   .main,
-  .mainApi,
-  .mainHome {
+  .mainApi {
     padding: 1.35rem 1.1rem 4rem;
+  }
+
+  .mainHome {
+    padding: 0 1.1rem 4rem;
   }
 
   .sidebar {

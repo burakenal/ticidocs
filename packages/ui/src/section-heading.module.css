@@ -1,0 +1,36 @@
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.85rem 1.25rem;
+  margin: 2.5rem 0 1.15rem;
+}
+
+.copy {
+  min-width: 0;
+  max-width: 40rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--docs-font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--docs-foreground);
+}
+
+.description {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--docs-muted);
+  text-wrap: pretty;
+}
+
+.aside {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}

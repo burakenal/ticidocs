@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type {
   ApiOperation,
   ApiParameter,
@@ -13,7 +13,7 @@ import { MethodBadge } from "./method-badge";
 import { SchemaViewer } from "./schema-viewer";
 import { ApiCodeRail } from "./api-code-rail";
 import { ApiField, ApiFieldGroup } from "./api-field";
-import { TryItPanel } from "./try-it";
+import { TryItModal } from "./try-it";
 import styles from "./endpoint-view.module.css";
 
 export function EndpointView({
@@ -35,24 +35,6 @@ export function EndpointView({
   const success = operation.responses.find((response) =>
     response.status.startsWith("2"),
   );
-
-  useEffect(() => {
-    if (!tryItOpen) {
-      return;
-    }
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setTryItOpen(false);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    const previous = globalThis.document.body.style.overflow;
-    globalThis.document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      globalThis.document.body.style.overflow = previous;
-    };
-  }, [tryItOpen]);
 
   const category = operation.tags.find((tag) => tag.trim().length > 0)?.trim();
 
@@ -164,49 +146,13 @@ export function EndpointView({
         <ApiCodeRail operation={operation} document={document} />
       </div>
 
-      {tryItOpen ? (
-        <div className={styles.drawerRoot}>
-          <button
-            type="button"
-            className={styles.drawerBackdrop}
-            aria-label={apiCopy.tryItClose}
-            onClick={() => setTryItOpen(false)}
-          />
-          <div
-            className={styles.drawer}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="try-it-title"
-          >
-            <div className={styles.drawerHead}>
-              <div>
-                <h2 id="try-it-title" className={styles.drawerTitle}>
-                  {apiCopy.tryIt}
-                </h2>
-                <div className={styles.drawerSignature}>
-                  <MethodBadge method={operation.method} compact />
-                  <code>{operation.path}</code>
-                </div>
-              </div>
-              <button
-                type="button"
-                className={styles.drawerClose}
-                onClick={() => setTryItOpen(false)}
-              >
-                {apiCopy.tryItClose}
-              </button>
-            </div>
-            <div className={styles.drawerBody}>
-              <TryItPanel
-                operation={operation}
-                document={document}
-                allowedOrigins={allowedOrigins}
-                embedded
-              />
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <TryItModal
+        open={tryItOpen}
+        onClose={() => setTryItOpen(false)}
+        operation={operation}
+        document={document}
+        allowedOrigins={allowedOrigins}
+      />
     </div>
   );
 }

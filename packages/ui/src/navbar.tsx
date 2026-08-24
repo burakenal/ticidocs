@@ -18,6 +18,8 @@ export interface NavbarProps {
   githubUrl?: string;
   menuOpen: boolean;
   onMenuClick: () => void;
+  /** Hide the mobile sidebar toggle (e.g. overview/home). Default true. */
+  showMenu?: boolean;
   searchDocuments?: SearchDocument[];
   versions?: string[];
   version?: string;
@@ -32,6 +34,7 @@ export function Navbar({
   githubUrl,
   menuOpen,
   onMenuClick,
+  showMenu = true,
   searchDocuments = [],
   versions,
   version,
@@ -43,16 +46,18 @@ export function Navbar({
   return (
     <header className={styles.navbar}>
       <div className={styles.left}>
-        <button
-          type="button"
-          className={styles.menuButton}
-          aria-expanded={menuOpen}
-          aria-controls="ticidocs-sidebar"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          onClick={onMenuClick}
-        >
-          <MenuIcon open={menuOpen} />
-        </button>
+        {showMenu ? (
+          <button
+            type="button"
+            className={styles.menuButton}
+            aria-expanded={menuOpen}
+            aria-controls="ticidocs-sidebar"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={onMenuClick}
+          >
+            <MenuIcon open={menuOpen} />
+          </button>
+        ) : null}
         <a className={styles.brand} href={localePath(locale, "", version)}>
           {logo ? (
             <>

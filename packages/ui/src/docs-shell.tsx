@@ -5,12 +5,14 @@ import {
   buildSectionTabs,
   localePath,
   resolveActiveSection,
+  type DocsFooterConfig,
   type DocsLogo,
   type HeadingNode,
   type SidebarItem,
 } from "@ticidocs/core";
 import type { SearchDocument } from "@ticidocs/search";
 import { Breadcrumbs, breadcrumbsFromSidebar } from "./breadcrumbs";
+import { Footer } from "./footer";
 import { Navbar } from "./navbar";
 import { SectionTabs } from "./section-tabs";
 import { Sidebar } from "./sidebar";
@@ -34,6 +36,8 @@ export interface DocsShellProps {
   variant?: "docs" | "api";
   versions?: string[];
   version?: string;
+  defaultLocale?: string;
+  footer?: DocsFooterConfig;
   children: ReactNode;
 }
 
@@ -52,6 +56,8 @@ export function DocsShell({
   variant = "docs",
   versions,
   version,
+  defaultLocale,
+  footer,
   children,
 }: DocsShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -91,8 +97,24 @@ export function DocsShell({
     [sidebar, currentPath, homeHref],
   );
 
-  const hasTabs = sectionTabs.length > 1;
+  const hasTabs = sectionTabs.length > 1 && !isHome;
   const showToc = variant === "docs" && !isHome;
+  const showSidebar = !isHome;
+
+  const shellClass = [
+    styles.shell,
+    hasTabs ? styles.shellWithTabs : "",
+    isHome ? styles.shellHome : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const bodyClass = [
+    styles.body,
+    isHome ? styles.bodyHome : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const mainColumnClass = [
     styles.mainColumn,
@@ -119,9 +141,7 @@ export function DocsShell({
     .join(" ");
 
   return (
-    <div
-      className={`${styles.shell} ${hasTabs ? styles.shellWithTabs : ""}`}
-    >
+    <div className={shellClass}>
       <div className={styles.frame}>
         <Navbar
           name={name}
@@ -132,23 +152,26 @@ export function DocsShell({
           githubUrl={githubUrl}
           onMenuClick={() => setMobileOpen((open) => !open)}
           menuOpen={mobileOpen}
+          showMenu={showSidebar}
           searchDocuments={searchDocuments}
           versions={versions}
           version={version}
         />
         {hasTabs ? <SectionTabs tabs={sectionTabs} /> : null}
-        <div className={styles.body}>
-          <aside
-            className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ""}`}
-            aria-label="Documentation navigation"
-          >
-            <Sidebar
-              items={scopedSidebar}
-              currentPath={currentPath}
-              sectionTitle={hasTabs ? activeSection?.title : undefined}
-            />
-          </aside>
-          {mobileOpen ? (
+        <div className={bodyClass}>
+          {showSidebar ? (
+            <aside
+              className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ""}`}
+              aria-label="Documentation navigation"
+            >
+              <Sidebar
+                items={scopedSidebar}
+                currentPath={currentPath}
+                sectionTitle={hasTabs ? activeSection?.title : undefined}
+              />
+            </aside>
+          ) : null}
+          {showSidebar && mobileOpen ? (
             <button
               type="button"
               className={styles.backdrop}
@@ -173,6 +196,16 @@ export function DocsShell({
             ) : null}
           </div>
         </div>
+        {footer ? (
+          <Footer
+            name={name}
+            locale={locale}
+            defaultLocale={defaultLocale}
+            version={version}
+            logo={logo}
+            footer={footer}
+          />
+        ) : null}
       </div>
     </div>
   );

@@ -2,12 +2,13 @@
   position: sticky;
   top: 0;
   z-index: 50;
+  width: 100%;
   height: var(--docs-nav-height);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(14rem, 32rem) minmax(0, 1fr);
   align-items: center;
   gap: 1rem;
-  padding: 0 1.25rem;
+  padding: 0 var(--docs-page-pad);
   border-bottom: 1px solid var(--docs-border);
   background: color-mix(in srgb, var(--docs-surface) 88%, transparent);
   backdrop-filter: blur(14px);

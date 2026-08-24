@@ -43,7 +43,7 @@
   /* Column system — override via theme.layout in docs.config.ts */
   --docs-shell-max-width: 90rem;
   --docs-max-content: 44rem;
-  --docs-max-content-home: 56rem;
+  --docs-max-content-home: 64rem;
   --docs-nav-height: 3.5rem;
   --docs-tabs-height: 2.625rem;
   --docs-header-height: calc(var(--docs-nav-height) + var(--docs-tabs-height));

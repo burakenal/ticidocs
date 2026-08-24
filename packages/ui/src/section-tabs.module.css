@@ -13,7 +13,7 @@
   align-items: stretch;
   gap: 0.05rem;
   height: 100%;
-  padding: 0 1.25rem;
+  padding: 0 var(--docs-page-pad);
   overflow-x: auto;
   scrollbar-width: none;
 }
