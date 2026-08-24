@@ -1,16 +1,6 @@
 .prose {
   font-size: 1rem;
-  color: #374151;
-}
-
-:global(html[data-theme="dark"]) .prose {
-  color: #d1d5db;
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(html:not([data-theme="light"])) .prose {
-    color: #d1d5db;
-  }
+  color: color-mix(in srgb, var(--docs-foreground) 78%, var(--docs-muted));
 }
 
 .prose h1,
@@ -64,24 +54,12 @@
 }
 
 .prose code {
-  background: #f3f4f6;
+  background: var(--docs-hover);
   padding: 0.1rem 0.35rem;
   border-radius: 5px;
   font-size: 0.86em;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--docs-border);
   color: var(--docs-foreground);
-}
-
-:global(html[data-theme="dark"]) .prose code {
-  background: #1f2937;
-  border-color: #374151;
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(html:not([data-theme="light"])) .prose code {
-    background: #1f2937;
-    border-color: #374151;
-  }
 }
 
 .prose pre code {

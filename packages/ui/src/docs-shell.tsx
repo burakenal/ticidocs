@@ -96,58 +96,60 @@ export function DocsShell({
     <div
       className={`${styles.shell} ${hasTabs ? styles.shellWithTabs : ""}`}
     >
-      <Navbar
-        name={name}
-        locale={locale}
-        locales={locales}
-        slug={slug}
-        logo={logo}
-        githubUrl={githubUrl}
-        onMenuClick={() => setMobileOpen((open) => !open)}
-        menuOpen={mobileOpen}
-        searchDocuments={searchDocuments}
-        versions={versions}
-        version={version}
-      />
-      {hasTabs ? <SectionTabs tabs={sectionTabs} /> : null}
-      <div className={styles.body}>
-        <aside
-          className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ""}`}
-          aria-label="Documentation navigation"
-        >
-          <Sidebar
-            items={scopedSidebar}
-            currentPath={currentPath}
-            sectionTitle={hasTabs ? activeSection?.title : undefined}
-          />
-        </aside>
-        {mobileOpen ? (
-          <button
-            type="button"
-            className={styles.backdrop}
-            aria-label="Close navigation"
-            onClick={() => setMobileOpen(false)}
-          />
-        ) : null}
-        <div
-          className={`${styles.mainColumn} ${variant === "api" ? styles.mainColumnApi : ""}`}
-        >
-          <main
-            className={`${styles.main} ${variant === "api" ? styles.mainApi : ""}`}
+      <div className={styles.frame}>
+        <Navbar
+          name={name}
+          locale={locale}
+          locales={locales}
+          slug={slug}
+          logo={logo}
+          githubUrl={githubUrl}
+          onMenuClick={() => setMobileOpen((open) => !open)}
+          menuOpen={mobileOpen}
+          searchDocuments={searchDocuments}
+          versions={versions}
+          version={version}
+        />
+        {hasTabs ? <SectionTabs tabs={sectionTabs} /> : null}
+        <div className={styles.body}>
+          <aside
+            className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ""}`}
+            aria-label="Documentation navigation"
           >
-            {isFallback ? <FallbackBanner locale={locale} /> : null}
-            <article
-              className={`${styles.article} ${variant === "api" ? styles.articleApi : ""}`}
-            >
-              {variant === "docs" ? <Breadcrumbs items={crumbs} /> : null}
-              {children}
-            </article>
-          </main>
-          {variant === "docs" ? (
-            <aside className={styles.toc} aria-label="On this page">
-              <TableOfContents headings={headings} />
-            </aside>
+            <Sidebar
+              items={scopedSidebar}
+              currentPath={currentPath}
+              sectionTitle={hasTabs ? activeSection?.title : undefined}
+            />
+          </aside>
+          {mobileOpen ? (
+            <button
+              type="button"
+              className={styles.backdrop}
+              aria-label="Close navigation"
+              onClick={() => setMobileOpen(false)}
+            />
           ) : null}
+          <div
+            className={`${styles.mainColumn} ${variant === "api" ? styles.mainColumnApi : ""}`}
+          >
+            <main
+              className={`${styles.main} ${variant === "api" ? styles.mainApi : ""}`}
+            >
+              {isFallback ? <FallbackBanner locale={locale} /> : null}
+              <article
+                className={`${styles.article} ${variant === "api" ? styles.articleApi : ""}`}
+              >
+                {variant === "docs" ? <Breadcrumbs items={crumbs} /> : null}
+                {children}
+              </article>
+            </main>
+            {variant === "docs" ? (
+              <aside className={styles.toc} aria-label="On this page">
+                <TableOfContents headings={headings} />
+              </aside>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>

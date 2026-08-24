@@ -56,9 +56,9 @@
 
 .logo {
   display: block;
-  height: 1.65rem;
+  height: 2.1rem;
   width: auto;
-  max-width: 9.5rem;
+  max-width: 12rem;
   object-fit: contain;
 }
 
@@ -95,7 +95,7 @@ html[data-theme="dark"] .logoDark {
   border: 1px solid var(--docs-border);
   background: var(--docs-surface);
   color: var(--docs-foreground);
-  border-radius: 8px;
+  border-radius: var(--docs-radius-sm);
   padding: 0.35rem 0.65rem;
   font: inherit;
   font-size: 0.8125rem;
@@ -104,7 +104,8 @@ html[data-theme="dark"] .logoDark {
   text-decoration: none;
   transition:
     background 120ms ease,
-    border-color 120ms ease;
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 .iconButton {
@@ -129,15 +130,16 @@ html[data-theme="dark"] .logoDark {
   width: 100%;
   max-width: 32rem;
   border: 1px solid var(--docs-border);
-  background: var(--docs-hover);
+  background: var(--docs-surface);
   color: var(--docs-muted);
-  border-radius: 10px;
-  padding: 0.42rem 0.55rem 0.42rem 0.8rem;
+  border-radius: 999px;
+  padding: 0.42rem 0.55rem 0.42rem 0.85rem;
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
+  box-shadow: var(--docs-shadow);
   transition:
     border-color 120ms ease,
     background 120ms ease,
@@ -145,7 +147,8 @@ html[data-theme="dark"] .logoDark {
 }
 
 .searchButton:hover {
-  border-color: color-mix(in srgb, var(--docs-muted) 35%, var(--docs-border));
+  border-color: color-mix(in srgb, var(--docs-muted) 28%, var(--docs-border));
+  background: var(--docs-surface);
 }
 
 .searchLabel {
@@ -160,7 +163,7 @@ html[data-theme="dark"] .logoDark {
   border-radius: 6px;
   padding: 0.12rem 0.38rem;
   color: var(--docs-muted);
-  background: var(--docs-surface);
+  background: var(--docs-background-accent);
 }
 
 .github {

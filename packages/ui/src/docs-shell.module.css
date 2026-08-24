@@ -11,6 +11,18 @@
   --docs-sticky-offset: var(--docs-header-height);
 }
 
+/* Upstash/Mintlify outer frame: max-w-8xl (92rem), centered */
+.frame {
+  width: 100%;
+  max-width: var(--docs-shell-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
 .body {
   display: grid;
   /* Upstash: fixed sidebar + fluid main */

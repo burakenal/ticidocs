@@ -23,7 +23,7 @@
   gap: 0.35rem;
   font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--docs-muted);
   margin: 0 0.4rem 0.4rem;
@@ -64,7 +64,7 @@
   margin: 0.1rem 0;
   padding: 0.35rem 0.45rem;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--docs-radius-sm);
   background: transparent;
   color: var(--docs-foreground);
   font: inherit;
@@ -114,8 +114,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.38rem 0.5rem;
-  border-radius: 8px;
-  color: #404040;
+  border-radius: var(--docs-radius-sm);
+  color: color-mix(in srgb, var(--docs-foreground) 72%, var(--docs-muted));
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -123,18 +123,6 @@
   transition:
     background 120ms ease,
     color 120ms ease;
-}
-
-:global(html[data-theme="dark"]) .link,
-:global(html[data-theme="dark"]) .external {
-  color: #d4d4d4;
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(html:not([data-theme="light"])) .link,
-  :global(html:not([data-theme="light"])) .external {
-    color: #d4d4d4;
-  }
 }
 
 .link:hover,
@@ -161,6 +149,7 @@
   background: var(--docs-active);
   color: var(--docs-primary-strong);
   font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--docs-primary);
 }
 
 .active:hover {

@@ -60,13 +60,13 @@ export function Navbar({
                 className={`${styles.logo} ${styles.logoLight}`}
                 src={logo.light}
                 alt={name}
-                height={28}
+                height={34}
               />
               <img
                 className={`${styles.logo} ${styles.logoDark}`}
                 src={logo.dark}
                 alt=""
-                height={28}
+                height={34}
                 aria-hidden="true"
               />
             </>
