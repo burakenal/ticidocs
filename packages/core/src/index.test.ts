@@ -9,9 +9,12 @@ import {
   groupOpenApiLinksByTag,
   listOpenApiGroups,
   localePath,
+  matchConfiguredLocale,
+  negotiateLocaleFromAcceptLanguage,
   normalizePageEntry,
   resolveActiveSection,
   resolvePageWithFallback,
+  resolvePreferredLocale,
   toOgLocale,
   type DocsConfig,
   type DocPage,
@@ -369,5 +372,54 @@ describe("buildArticleJsonLd", () => {
     expect(jsonLd.headline).toBe("Getting started");
     expect(jsonLd.url).toBe("https://docs.example.com/en/getting-started");
     expect(jsonLd.isPartOf.name).toBe(baseConfig.name);
+  });
+});
+
+describe("locale preference", () => {
+  const locales = ["en", "tr"] as const;
+
+  it("matches primary subtags like tr-TR → tr", () => {
+    expect(matchConfiguredLocale("tr-TR", locales)).toBe("tr");
+    expect(matchConfiguredLocale("en_US", locales)).toBe("en");
+    expect(matchConfiguredLocale("de", locales)).toBeUndefined();
+  });
+
+  it("negotiates Accept-Language by q-value", () => {
+    expect(
+      negotiateLocaleFromAcceptLanguage(
+        "de-DE,de;q=0.9,tr-TR;q=0.8,en;q=0.7",
+        locales,
+      ),
+    ).toBe("tr");
+    expect(
+      negotiateLocaleFromAcceptLanguage("fr-FR,fr;q=0.9", locales),
+    ).toBeUndefined();
+  });
+
+  it("prefers cookie over Accept-Language", () => {
+    expect(
+      resolvePreferredLocale({
+        cookieValue: "en",
+        acceptLanguage: "tr-TR,tr;q=0.9",
+        locales,
+        defaultLocale: "en",
+      }),
+    ).toBe("en");
+    expect(
+      resolvePreferredLocale({
+        cookieValue: null,
+        acceptLanguage: "tr-TR,tr;q=0.9",
+        locales,
+        defaultLocale: "en",
+      }),
+    ).toBe("tr");
+    expect(
+      resolvePreferredLocale({
+        cookieValue: null,
+        acceptLanguage: null,
+        locales,
+        defaultLocale: "en",
+      }),
+    ).toBe("en");
   });
 });

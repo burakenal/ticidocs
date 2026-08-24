@@ -1,3 +1,15 @@
+export {
+  LOCALE_COOKIE_MAX_AGE,
+  LOCALE_COOKIE_NAME,
+  LOCALE_STORAGE_KEY,
+  localeCookieSerialize,
+  matchConfiguredLocale,
+  negotiateLocaleFromAcceptLanguage,
+  resolvePreferredLocale,
+  setLocalePreference,
+} from "./locale-preference.js";
+export type { ResolvePreferredLocaleInput } from "./locale-preference.js";
+
 export type Locale = string;
 
 export interface DocsLogo {

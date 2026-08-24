@@ -1,6 +1,6 @@
 "use client";
 
-import { localePath } from "@ticidocs/core";
+import { localePath, setLocalePreference } from "@ticidocs/core";
 import { useEffect, useId, useRef, useState } from "react";
 import styles from "./controls.module.css";
 
@@ -133,6 +133,7 @@ export function LocaleSwitcher({
                   onClick={() => {
                     setOpen(false);
                     if (item !== locale) {
+                      setLocalePreference(item);
                       window.location.assign(localePath(item, slug, version));
                     }
                   }}
