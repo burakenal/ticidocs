@@ -109,24 +109,29 @@ export interface NavPageRef {
 }
 
 export interface NavOpenApiGroup {
-  group: string;
+  group: LocalizedString;
   openapi: string;
   /** URL prefix for generated API pages. Default: "api" */
   basePath?: string;
   icon?: string;
+  /**
+   * Display labels for OpenAPI tags (keyed by the tag name in the spec).
+   * Used for sidebar subgroup titles under this API section.
+   */
+  tagLabels?: Record<string, LocalizedString>;
 }
 
 /** MDX page path, titled page ref, or nested OpenAPI group. */
 export type NavPageEntry = string | NavPageRef | NavOpenApiGroup;
 
 export interface NavGroup {
-  group: string;
+  group: LocalizedString;
   pages: NavPageEntry[];
   icon?: string;
 }
 
 export interface NavExternalLink {
-  title: string;
+  title: LocalizedString;
   href: string;
   external?: true;
 }
@@ -334,6 +339,8 @@ export function listOpenApiGroups(config: DocsConfig): NavOpenApiGroup[] {
 function openApiSidebarGroup(
   item: NavOpenApiGroup,
   openApiLinks: SidebarPageLink[],
+  locale: Locale,
+  fallbackLocale?: Locale,
 ): SidebarGroup {
   const basePath = (item.basePath ?? "api").replace(/^\/+|\/+$/g, "");
   const matched = openApiLinks.filter((link) =>
@@ -341,11 +348,15 @@ function openApiSidebarGroup(
       ? link.slug === basePath || link.slug.startsWith(`${basePath}/`)
       : true,
   );
+  const title =
+    resolveLocalized(item.group, locale, fallbackLocale) ?? "API";
   return {
     type: "group",
-    title: item.group,
+    title,
     icon: item.icon,
-    children: groupOpenApiLinksByTag(matched),
+    children: groupOpenApiLinksByTag(matched, (tag) =>
+      resolveLocalized(item.tagLabels?.[tag], locale, fallbackLocale),
+    ),
     collapsible: false,
   };
 }
@@ -460,6 +471,7 @@ export function buildPageSeo(input: {
 /** Nest OpenAPI endpoint links under their first tag (Scalar-style). */
 export function groupOpenApiLinksByTag(
   links: SidebarPageLink[],
+  resolveTagTitle?: (tag: string) => string | undefined,
 ): SidebarNode[] {
   const order: string[] = [];
   const byTag = new Map<string, SidebarPageLink[]>();
@@ -480,7 +492,7 @@ export function groupOpenApiLinksByTag(
 
   const groups: SidebarNode[] = order.map((tag) => ({
     type: "group" as const,
-    title: tag,
+    title: resolveTagTitle?.(tag) ?? tag,
     children: byTag.get(tag)!,
   }));
 
@@ -578,24 +590,30 @@ export function buildSidebar(
   version?: string,
 ): SidebarItem[] {
   assertValidLocale(locale, config.locales);
+  const fallbackLocale = config.defaultLocale;
 
   return config.navigation.map((item) => {
     if (isNavExternal(item)) {
       return {
         type: "external" as const,
-        title: item.title,
+        title: resolveLocalized(item.title, locale, fallbackLocale) ?? "Link",
         href: item.href,
       };
     }
 
     if (isNavOpenApiGroup(item)) {
-      return openApiSidebarGroup(item, openApiLinks);
+      return openApiSidebarGroup(item, openApiLinks, locale, fallbackLocale);
     }
 
     const children: SidebarNode[] = [];
     for (const entry of item.pages) {
       if (isNavOpenApiEntry(entry)) {
-        const apiGroup = openApiSidebarGroup(entry, openApiLinks);
+        const apiGroup = openApiSidebarGroup(
+          entry,
+          openApiLinks,
+          locale,
+          fallbackLocale,
+        );
         // Empty specs (coming-soon) stay in config but hide until paths exist.
         if (apiGroup.children.length > 0) {
           children.push(apiGroup);
@@ -620,7 +638,7 @@ export function buildSidebar(
 
     return {
       type: "group" as const,
-      title: item.group,
+      title: resolveLocalized(item.group, locale, fallbackLocale) ?? "Docs",
       icon: item.icon,
       children,
     };

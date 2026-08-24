@@ -1,16 +1,22 @@
 import { z } from "zod";
 import type { DocsConfig } from "@ticidocs/core";
 
+const localizedStringSchema = z.union([
+  z.string().min(1),
+  z.record(z.string().min(1), z.string().min(1)),
+]);
+
 const navPageRefSchema = z.object({
   title: z.string().optional(),
   path: z.string().min(1),
 });
 
 const navOpenApiSchema = z.object({
-  group: z.string().min(1),
+  group: localizedStringSchema,
   openapi: z.string().min(1),
   basePath: z.string().optional(),
   icon: z.string().optional(),
+  tagLabels: z.record(z.string().min(1), localizedStringSchema).optional(),
 });
 
 /** MDX page, titled page ref, or nested OpenAPI group (same shape as top-level). */
@@ -21,21 +27,16 @@ const navPageEntrySchema = z.union([
 ]);
 
 const navGroupSchema = z.object({
-  group: z.string().min(1),
+  group: localizedStringSchema,
   pages: z.array(navPageEntrySchema).min(1),
   icon: z.string().optional(),
 });
 
 const navExternalSchema = z.object({
-  title: z.string().min(1),
+  title: localizedStringSchema,
   href: z.string().url(),
   external: z.literal(true).optional(),
 });
-
-const localizedStringSchema = z.union([
-  z.string().min(1),
-  z.record(z.string().min(1), z.string().min(1)),
-]);
 
 const footerLinkSchema = z.object({
   label: localizedStringSchema,

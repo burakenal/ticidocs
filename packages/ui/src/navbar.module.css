@@ -5,9 +5,10 @@
   width: 100%;
   height: var(--docs-nav-height);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(14rem, 32rem) minmax(0, 1fr);
+  /* auto sides keep controls from overlapping the search shortcut badge */
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   padding: 0 var(--docs-page-pad);
   border-bottom: 1px solid var(--docs-border);
   background: color-mix(in srgb, var(--docs-surface) 88%, transparent);
@@ -19,18 +20,26 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  min-width: 0;
 }
 
 .right {
   justify-content: flex-end;
+  gap: 0.6rem;
+  flex-wrap: nowrap;
+}
+
+.right > * {
+  flex-shrink: 0;
 }
 
 .center {
   display: flex;
   align-items: center;
   justify-content: center;
+  justify-self: center;
   min-width: 0;
+  width: 100%;
+  max-width: 28rem;
 }
 
 .brand {
@@ -131,12 +140,12 @@ html[data-theme="dark"] .logoDark {
   align-items: center;
   gap: 0.55rem;
   width: 100%;
-  max-width: 32rem;
+  max-width: 28rem;
   border: 1px solid var(--docs-border);
   background: var(--docs-surface);
   color: var(--docs-muted);
   border-radius: 999px;
-  padding: 0.42rem 0.55rem 0.42rem 0.85rem;
+  padding: 0.42rem 0.65rem 0.42rem 0.85rem;
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -156,9 +165,14 @@ html[data-theme="dark"] .logoDark {
 
 .searchLabel {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .kbd {
+  flex-shrink: 0;
   font-family: var(--docs-font-mono);
   font-size: 0.65rem;
   font-weight: 500;

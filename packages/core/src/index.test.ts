@@ -87,6 +87,65 @@ describe("buildSidebar", () => {
     }
   });
 
+  it("resolves localized navigation group and OpenAPI tag labels", () => {
+    const config: DocsConfig = {
+      ...baseConfig,
+      navigation: [
+        {
+          group: {
+            en: "Marketplace Integration",
+            tr: "Pazaryeri Entegrasyonu",
+          },
+          pages: [
+            {
+              group: { en: "Marketplace API", tr: "Pazaryeri API" },
+              openapi: "./openapi.json",
+              basePath: "api/marketplace",
+              tagLabels: {
+                "Kargo İşlemleri": {
+                  en: "Cargo operations",
+                  tr: "Kargo İşlemleri",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    const links = [
+      {
+        type: "page" as const,
+        title: "List cargo",
+        slug: "api/marketplace/list-cargo",
+        href: "/en/api/marketplace/list-cargo",
+        tags: ["Kargo İşlemleri"],
+      },
+    ];
+    const en = buildSidebar(config, "en", new Map(), links);
+    expect(en[0]).toMatchObject({
+      type: "group",
+      title: "Marketplace Integration",
+    });
+    if (en[0]?.type === "group") {
+      const api = en[0].children[0];
+      expect(api).toMatchObject({ type: "group", title: "Marketplace API" });
+      if (api?.type === "group") {
+        expect(api.children[0]).toMatchObject({
+          type: "group",
+          title: "Cargo operations",
+        });
+      }
+    }
+
+    const tr = buildSidebar(config, "tr", new Map(), [
+      { ...links[0]!, href: "/tr/api/marketplace/list-cargo" },
+    ]);
+    expect(tr[0]).toMatchObject({
+      type: "group",
+      title: "Pazaryeri Entegrasyonu",
+    });
+  });
+
   it("nests OpenAPI links under tag submenus", () => {
     const config: DocsConfig = {
       ...baseConfig,
@@ -264,6 +323,25 @@ describe("groupOpenApiLinksByTag", () => {
       "Products",
       "C",
     ]);
+  });
+
+  it("applies optional tag title resolver", () => {
+    const nodes = groupOpenApiLinksByTag(
+      [
+        {
+          type: "page",
+          title: "A",
+          slug: "a",
+          href: "/a",
+          tags: ["Kargo İşlemleri"],
+        },
+      ],
+      (tag) => (tag === "Kargo İşlemleri" ? "Cargo operations" : undefined),
+    );
+    expect(nodes[0]).toMatchObject({
+      type: "group",
+      title: "Cargo operations",
+    });
   });
 });
 

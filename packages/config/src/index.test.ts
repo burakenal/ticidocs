@@ -85,6 +85,40 @@ describe("defineConfig", () => {
     });
   });
 
+  it("accepts localized navigation groups and OpenAPI tag labels", () => {
+    const config = defineConfig({
+      name: "Ticidocs",
+      siteUrl: "https://docs.example.com",
+      locales: ["en", "tr"],
+      defaultLocale: "en",
+      navigation: [
+        {
+          group: { en: "Marketplace", tr: "Pazaryeri" },
+          pages: [
+            "index",
+            {
+              group: { en: "API", tr: "API" },
+              openapi: "./openapi.yaml",
+              basePath: "api",
+              tagLabels: {
+                Orders: { en: "Orders", tr: "Siparişler" },
+              },
+            },
+          ],
+        },
+      ],
+    });
+    const product = config.navigation[0];
+    expect(product && "pages" in product).toBe(true);
+    if (product && "pages" in product) {
+      expect(product.group).toEqual({ en: "Marketplace", tr: "Pazaryeri" });
+      expect(product.pages[1]).toMatchObject({
+        group: { en: "API", tr: "API" },
+        tagLabels: { Orders: { en: "Orders", tr: "Siparişler" } },
+      });
+    }
+  });
+
   it("accepts nested OpenAPI groups inside pages", () => {
     const config = defineConfig({
       name: "Ticidocs",
