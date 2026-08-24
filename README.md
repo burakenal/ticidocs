@@ -2,10 +2,12 @@
 
 Open-source, self-hosted documentation platform (Mintlify-inspired, independent implementation).
 
+Build MDX + OpenAPI developer docs as a Next.js site you host yourself — no SaaS, no mandatory database.
+
 ## Requirements
 
 - Node.js 20+
-- pnpm 9+
+- pnpm 9+ (pinned via `packageManager` in root `package.json`)
 
 ## Quick start
 
@@ -16,7 +18,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) — redirects to `/en`.
 
-Try:
+Dogfood routes to try:
 
 - `/en/getting-started`
 - `/tr/getting-started`
@@ -24,105 +26,100 @@ Try:
 - `/sitemap.xml`
 - `/robots.txt`
 
-## Workspace layout
+## Features
+
+- Locale-first routing (`/[locale]/...`) with translation fallback
+- `docs.config.ts` validation (`siteUrl`, locales, navigation, theme, API origins)
+- MDX guides (`content/{locale}`) with Callout, Tabs, Steps, Cards
+- Syntax highlighting and copy on code blocks
+- Local search (`Ctrl` / `Cmd` + `K`)
+- OpenAPI 3.0 / 3.1 reference pages (params, schemas, auth, Try It)
+- Code examples: cURL, JavaScript, TypeScript, Python, C#
+- Optional docs versioning via `versions` / `defaultVersion`
+- Docker / Compose deploy (`standalone` Next.js output)
+- `create-ticidocs` CLI with `basic`, `api`, and `full` templates
+
+## Monorepo layout
+
+pnpm workspaces + Turborepo:
 
 ```text
 Ticidocs/
-├── apps/docs/                 # Next.js dogfood site
+├── apps/
+│   └── docs/                  # Next.js dogfood site (@ticidocs/docs)
 ├── packages/
-│   ├── core/                  # @ticidocs/core
-│   ├── config/                # @ticidocs/config
-│   ├── mdx/                   # @ticidocs/mdx
-│   ├── openapi/               # @ticidocs/openapi
-│   ├── search/                # @ticidocs/search
-│   ├── ui/                    # @ticidocs/ui
-│   └── theme/                 # @ticidocs/theme
+│   ├── core/                  # @ticidocs/core — engine types & helpers
+│   ├── config/                # @ticidocs/config — docs.config.ts
+│   ├── mdx/                   # @ticidocs/mdx — load / frontmatter / headings
+│   ├── openapi/               # @ticidocs/openapi — OpenAPI 3.0/3.1
+│   ├── search/                # @ticidocs/search — local search index
+│   ├── ui/                    # @ticidocs/ui — doc UI components
+│   └── theme/                 # @ticidocs/theme — CSS variables
 ├── create-ticidocs/           # npx create-ticidocs
-├── examples/{basic,api,full}/
+├── examples/
+│   ├── basic/
+│   ├── api/
+│   └── full/                  # config / OpenAPI validation fixtures
+├── .github/workflows/         # CI + publish
+├── docker-compose.yml
+├── Dockerfile
 ├── pnpm-workspace.yaml
 ├── turbo.json
-├── package.json
-└── PROJECT.md
+└── package.json
 ```
 
 ## Scripts
 
-```bash
-pnpm dev           # dogfood docs app
-pnpm dev:packages  # watch @ticidocs/* packages
-pnpm dev:all       # packages watch + dogfood docs
-pnpm dev:hub      # Integration Hub docs (lib watch + site on :3001)
-pnpm dev:ticiyo   # Ticiyo Ecommerce docs (lib watch + site on :3002)
-pnpm build         # build all packages + apps
-pnpm lint          # ESLint
-pnpm test          # Vitest (+ example validation)
-```
+| Command | Description |
+| --- | --- |
+| `pnpm dev` | Dogfood docs (`apps/docs`) on `:3000` |
+| `pnpm dev:packages` | Watch `@ticidocs/*` packages |
+| `pnpm dev:all` | Package watch + dogfood docs |
+| `pnpm build` | Build all packages + apps |
+| `pnpm lint` | ESLint |
+| `pnpm test` | Vitest (+ example validation) |
+| `pnpm typecheck` | TypeScript across the workspace |
+| `pnpm docker:up` | `docker compose up --build -d` |
+| `pnpm publish:dry` | Dry-run publish of packages + CLI |
 
 ## Scaffold a new site
+
+From this monorepo (local link):
 
 ```bash
 pnpm --filter create-ticidocs build
 pnpm --filter create-ticidocs start my-docs --template=basic --link --yes
 ```
 
-Or after publish: `npx create-ticidocs my-docs`.
+After packages are on npm:
+
+```bash
+npx create-ticidocs my-docs
+```
+
+Templates: `basic` · `api` · `full` — see [create-ticidocs/README.md](./create-ticidocs/README.md).
 
 ## Docker
 
 ```bash
 docker compose up --build -d
+# or: pnpm docker:up
 ```
 
 See [DEPLOY.md](./DEPLOY.md) for VPS, Nginx, and Kubernetes notes.
 
-## Phase 1 delivered
+## Docs in this repo
 
-- Locale-first routing (`/[locale]/...`) with `en` + `tr`
-- `docs.config.ts` validation (`siteUrl`, `locales`, `defaultLocale`)
-- MDX content under `content/{locale}`
-- Sidebar, navbar, theme toggle, locale switcher
-- Translation fallback banner
-- SEO: title/description, canonical, hreflang, Open Graph, Twitter card, sitemap, robots
+| File | Topic |
+| --- | --- |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Local workflow and conventions |
+| [DEPLOY.md](./DEPLOY.md) | Self-host / Docker / K8s |
+| [PUBLISH.md](./PUBLISH.md) | Publishing `@ticidocs/*` to npm |
+| [LICENSE](./LICENSE) | MIT |
 
-## Phase 2 delivered
+## Roadmap
 
-- Real MDX compilation (`next-mdx-remote`)
-- Components: Callout, Tabs/Tab, Steps/Step, Card/CardGroup
-- Syntax highlighting + copy button on code blocks
-- Local search (`@ticidocs/search` + Ctrl/Cmd+K)
-- TOC scroll spy (active heading)
-
-## Phase 3 delivered
-
-- `@ticidocs/openapi` — OpenAPI 3.0/3.1 YAML/JSON parser
-- Nav `openapi` groups in `docs.config.ts` (top-level tab, or nested under a `pages` section)
-- Endpoint pages: method badge, params, request/response schemas, auth
-- API ops included in sidebar + search
-
-## Phase 4 delivered
-
-- Code examples: cURL, JavaScript, TypeScript, Python, C#
-- Browser Try It with `api.allowedOrigins` guard (no server proxy / SSRF)
-- Auth fields for bearer / API key (not stored)
-
-## Phase 5 delivered
-
-- Multi-stage `Dockerfile` + `docker-compose.yml`
-- Next.js `standalone` output in Docker (`DOCKER_BUILD=1`); local Windows builds stay non-standalone (symlink permissions)
-- GitHub Actions CI (lint / test / build / docker)
-- [DEPLOY.md](./DEPLOY.md)
-
-## Phase 6 delivered
-
-- `create-ticidocs` CLI (`basic` / `api` / `full` templates)
-- Interactive + non-interactive (`--yes`, `--template`, `--github`, `--link`)
-- `examples/api` and `examples/full`
-
-## Later leftovers
-
-- Publish `@ticidocs/*` to npm when the org is ready (see [PUBLISH.md](./PUBLISH.md) — `pnpm publish:dry` / Actions workflow)
-- Nested nav groups, advanced code-block options (line numbers / diff)
-- Optional: runnable Next apps under `examples/` (today they validate config only)
-- Per-version OpenAPI files (versioning URLs/content are ready; specs are still shared)
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for local workflow.
+- Publish `@ticidocs/*` when the npm org is ready (`pnpm publish:dry` / Actions)
+- Nested nav groups; richer code-block options (line numbers / diff)
+- Optional runnable Next apps under `examples/` (today they validate config only)
+- Per-version OpenAPI files (versioned URLs/content exist; specs are still shared)
