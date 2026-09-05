@@ -58,6 +58,56 @@
   scrollbar-width: thin;
 }
 
+.bodyResizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.bodyResizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+.resizeHandle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 5;
+  width: 7px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.resizeHandle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: transparent;
+  transition: background-color 140ms ease, opacity 140ms ease;
+  opacity: 0;
+}
+
+.resizeHandle:hover::after,
+.resizeHandle:focus-visible::after,
+.resizeHandleActive::after {
+  background: var(--docs-primary);
+  opacity: 0.85;
+}
+
+.resizeHandle:focus-visible {
+  outline: none;
+}
+
 /* Home keeps a full-width layout on desktop; drawer only on small screens. */
 @media (min-width: 861px) {
   .sidebarHomeMobile {
@@ -164,6 +214,10 @@
     transform: translateX(-105%);
     transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
     box-shadow: var(--docs-shadow-lg);
+  }
+
+  .resizeHandle {
+    display: none;
   }
 
   .sidebarOpen {

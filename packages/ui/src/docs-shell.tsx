@@ -1,6 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from "react";
 import {
   buildSectionTabs,
   localePath,
@@ -19,6 +29,55 @@ import { Sidebar } from "./sidebar";
 import { TableOfContents } from "./toc";
 import { FallbackBanner } from "./fallback-banner";
 import styles from "./docs-shell.module.css";
+
+const SIDEBAR_WIDTH_STORAGE_KEY = "ticidocs:sidebar-width";
+const SIDEBAR_MIN_WIDTH = 200;
+const SIDEBAR_MAX_WIDTH = 480;
+
+function clampSidebarWidth(width: number) {
+  return Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, Math.round(width)));
+}
+
+function parseCssLengthToPx(value: string): number | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  if (trimmed.endsWith("px")) {
+    const n = Number.parseFloat(trimmed);
+    return Number.isFinite(n) ? n : null;
+  }
+  if (trimmed.endsWith("rem")) {
+    const n = Number.parseFloat(trimmed);
+    if (!Number.isFinite(n)) return null;
+    const root = Number.parseFloat(
+      getComputedStyle(document.documentElement).fontSize,
+    );
+    return n * (Number.isFinite(root) ? root : 16);
+  }
+  const n = Number.parseFloat(trimmed);
+  return Number.isFinite(n) ? n : null;
+}
+
+function readDefaultSidebarWidthPx(): number {
+  const fromCss = parseCssLengthToPx(
+    getComputedStyle(document.documentElement).getPropertyValue(
+      "--docs-sidebar-width",
+    ),
+  );
+  return fromCss ?? 264;
+}
+
+function readStoredSidebarWidth(): number | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = Number(raw);
+    if (!Number.isFinite(parsed)) return null;
+    return clampSidebarWidth(parsed);
+  } catch {
+    return null;
+  }
+}
 
 export interface DocsShellProps {
   name: string;
@@ -61,11 +120,101 @@ export function DocsShell({
   children,
 }: DocsShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState<number | null>(null);
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeActiveRef = useRef(false);
   const isHome = variant === "docs" && (!slug || slug === "index");
 
   useEffect(() => {
     setMobileOpen(false);
   }, [currentPath]);
+
+  useEffect(() => {
+    setSidebarWidth(readStoredSidebarWidth());
+  }, []);
+
+  useEffect(() => {
+    if (sidebarWidth == null) return;
+    try {
+      window.localStorage.setItem(
+        SIDEBAR_WIDTH_STORAGE_KEY,
+        String(sidebarWidth),
+      );
+    } catch {
+      /* ignore quota / private mode */
+    }
+  }, [sidebarWidth]);
+
+  const onResizePointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLButtonElement>) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      const handle = event.currentTarget;
+      handle.setPointerCapture(event.pointerId);
+      resizeActiveRef.current = true;
+      setIsResizing(true);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    },
+    [],
+  );
+
+  const onResizePointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLButtonElement>) => {
+      if (!resizeActiveRef.current) return;
+      const next = clampSidebarWidth(event.clientX);
+      setSidebarWidth(next);
+    },
+    [],
+  );
+
+  const endResize = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!resizeActiveRef.current) return;
+    resizeActiveRef.current = false;
+    setIsResizing(false);
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, []);
+
+  const onResizeKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+      const step = event.shiftKey ? 32 : 16;
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        setSidebarWidth((current) => {
+          const base = current ?? readDefaultSidebarWidthPx();
+          const delta = event.key === "ArrowLeft" ? -step : step;
+          return clampSidebarWidth(base + delta);
+        });
+      } else if (event.key === "Home") {
+        event.preventDefault();
+        setSidebarWidth(SIDEBAR_MIN_WIDTH);
+      } else if (event.key === "End") {
+        event.preventDefault();
+        setSidebarWidth(SIDEBAR_MAX_WIDTH);
+      }
+    },
+    [],
+  );
+
+  const resetSidebarWidth = useCallback(() => {
+    setSidebarWidth(null);
+    try {
+      window.localStorage.removeItem(SIDEBAR_WIDTH_STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const sectionTabs = useMemo(
     () => buildSectionTabs(sidebar, currentPath),
@@ -142,6 +291,11 @@ export function DocsShell({
     .filter(Boolean)
     .join(" ");
 
+  const bodyStyle =
+    showDesktopSidebar && sidebarWidth != null
+      ? ({ "--docs-sidebar-width": `${sidebarWidth}px` } as CSSProperties)
+      : undefined;
+
   return (
     <div className={shellClass}>
       <div className={styles.frame}>
@@ -160,7 +314,10 @@ export function DocsShell({
           version={version}
         />
         {hasTabs ? <SectionTabs tabs={sectionTabs} /> : null}
-        <div className={bodyClass}>
+        <div
+          className={`${bodyClass}${isResizing ? ` ${styles.bodyResizing}` : ""}`}
+          style={bodyStyle}
+        >
           {showDesktopSidebar || showMobileNav ? (
             <aside
               className={`${styles.sidebar} ${isHome ? styles.sidebarHomeMobile : ""} ${mobileOpen ? styles.sidebarOpen : ""}`}
@@ -171,6 +328,23 @@ export function DocsShell({
                 currentPath={currentPath}
                 sectionTitle={hasTabs ? activeSection?.title : undefined}
               />
+              {showDesktopSidebar ? (
+                <button
+                  type="button"
+                  className={`${styles.resizeHandle}${isResizing ? ` ${styles.resizeHandleActive}` : ""}`}
+                  aria-label="Resize sidebar"
+                  aria-orientation="vertical"
+                  aria-valuemin={SIDEBAR_MIN_WIDTH}
+                  aria-valuemax={SIDEBAR_MAX_WIDTH}
+                  aria-valuenow={sidebarWidth ?? undefined}
+                  onPointerDown={onResizePointerDown}
+                  onPointerMove={onResizePointerMove}
+                  onPointerUp={endResize}
+                  onPointerCancel={endResize}
+                  onKeyDown={onResizeKeyDown}
+                  onDoubleClick={resetSidebarWidth}
+                />
+              ) : null}
             </aside>
           ) : null}
           {showMobileNav && mobileOpen ? (
