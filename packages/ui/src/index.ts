@@ -23,6 +23,7 @@ export { Callout } from "./callout";
 export { Tabs, Tab } from "./tabs";
 export { Steps, Step } from "./steps";
 export { Card, CardGroup } from "./cards";
+export { BrandMark } from "./brand-mark";
 export { Accordion, AccordionGroup } from "./accordion";
 export { CodeGroup } from "./code-group";
 export { CodeBlock } from "./code-block";

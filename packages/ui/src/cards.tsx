@@ -36,6 +36,7 @@ export function Card({
   title,
   href,
   icon,
+  logo,
   badge,
   tone = "primary",
   tags,
@@ -46,6 +47,8 @@ export function Card({
   href?: string;
   /** Named icon: store | hub | rocket | book | key | plug */
   icon?: string;
+  /** Optional partner/product logo image (takes precedence over icon). */
+  logo?: string;
   badge?: string;
   tone?: "primary" | "green" | "blue" | "orange" | "violet";
   tags?: string | string[];
@@ -64,7 +67,11 @@ export function Card({
   const body = (
     <>
       <div className={styles.top}>
-        {icon ? (
+        {logo ? (
+          <span className={styles.logoWrap}>
+            <img className={styles.logo} src={logo} alt="" />
+          </span>
+        ) : icon ? (
           <span className={`${styles.icon} ${styles[`tone_${tone}`]}`}>
             <CardIcon name={icon} />
           </span>

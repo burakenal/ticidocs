@@ -3,6 +3,7 @@ import { Callout } from "./callout";
 import { Tabs, Tab } from "./tabs";
 import { Steps, Step } from "./steps";
 import { Card, CardGroup } from "./cards";
+import { BrandMark } from "./brand-mark";
 import { Accordion, AccordionGroup } from "./accordion";
 import { CodeGroup } from "./code-group";
 import { CodeBlock } from "./code-block";
@@ -20,6 +21,7 @@ export const mdxComponents: MDXComponents = {
   Step,
   Card,
   CardGroup,
+  BrandMark,
   Accordion,
   AccordionGroup,
   CodeGroup,
