@@ -28,6 +28,8 @@ export { CodeGroup } from "./code-group";
 export { CodeBlock } from "./code-block";
 export { Columns, Column } from "./columns";
 export { Hero, HeroAction } from "./hero";
+export { LogoBand, LogoBandItem } from "./logo-band";
+export type { LogoBandItemProps } from "./logo-band";
 export { SectionHeading } from "./section-heading";
 export { SearchDialog, useSearchHotkey } from "./search-dialog";
 export { getSearchCopy } from "./search-copy";

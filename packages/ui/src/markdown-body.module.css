@@ -48,6 +48,11 @@
   margin: 0;
 }
 
+.prose :global([class*="band"]) :global([class*="label"]) {
+  margin: 0 auto 0.75rem;
+  color: inherit;
+}
+
 .prose :global([class*="heading"]) :global([class*="title"]),
 .prose :global([class*="heading"]) :global([class*="description"]) {
   margin: 0;

@@ -56,20 +56,20 @@ export function Hero({
               <span className={styles.panelDot} />
               <span className={styles.panelDot} />
               <span className={styles.panelDot} />
-              <span className={styles.panelLabel}>marketplace.ticiyo.com</span>
+              <span className={styles.panelLabel}>hubapi.ticiyo.com</span>
             </div>
             <div className={styles.panelBody}>
               <div className={styles.endpoint}>
                 <span className={styles.method}>GET</span>
-                <span className={styles.path}>/v1/marketplace/orders</span>
+                <span className={styles.path}>/v1/integrations</span>
               </div>
               <div className={styles.meta}>
                 <span className={styles.status}>200 OK</span>
                 <span className={styles.latency}>38 ms</span>
               </div>
               <pre className={styles.code}>{`{
-  "data": [{ "id": "ord_9f2", "status": "paid" }],
-  "page": { "next": null }
+  "surfaces": ["marketplace", "e-archive", "ai", "notifications"],
+  "ready": ["marketplace", "e-archive"]
 }`}</pre>
             </div>
           </div>
