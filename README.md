@@ -30,7 +30,7 @@ Dogfood routes to try:
 
 - Locale-first routing (`/[locale]/...`) with translation fallback
 - `docs.config.ts` validation (`siteUrl`, locales, navigation, theme, API origins)
-- MDX guides (`content/{locale}`) with Callout, Tabs, Steps, Cards
+- MDX guides (`content/{locale}`) with Callout, Tabs, Steps, Cards, CodeGroup, RequestSample
 - Syntax highlighting and copy on code blocks
 - Local search (`Ctrl` / `Cmd` + `K`)
 - OpenAPI 3.0 / 3.1 reference pages (params, schemas, auth, Try It)

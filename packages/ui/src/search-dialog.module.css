@@ -82,6 +82,60 @@
   color: var(--docs-muted);
   font-size: 0.875rem;
   margin-top: 0.28rem;
+  line-height: 1.45;
+}
+
+.resultDesc h1,
+.resultDesc h2,
+.resultDesc h3 {
+  font-family: var(--docs-font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0.35rem 0 0.2rem;
+  letter-spacing: -0.01em;
+  color: var(--docs-foreground);
+  line-height: 1.3;
+}
+
+.resultDesc h1:first-child,
+.resultDesc h2:first-child,
+.resultDesc h3:first-child {
+  margin-top: 0;
+}
+
+.resultDesc p,
+.resultDesc ul,
+.resultDesc ol {
+  margin: 0 0 0.35rem;
+}
+
+.resultDesc p:last-child,
+.resultDesc ul:last-child,
+.resultDesc ol:last-child {
+  margin-bottom: 0;
+}
+
+.resultDesc ul,
+.resultDesc ol {
+  padding-left: 1.1rem;
+}
+
+.resultDesc li + li {
+  margin-top: 0.15rem;
+}
+
+.resultDesc code {
+  background: var(--docs-hover);
+  padding: 0.05rem 0.25rem;
+  border-radius: 4px;
+  font-size: 0.82em;
+  border: 1px solid var(--docs-border);
+  color: var(--docs-foreground);
+}
+
+.resultDesc strong {
+  color: var(--docs-foreground);
+  font-weight: 600;
 }
 
 .hint {

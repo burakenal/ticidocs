@@ -27,6 +27,7 @@ export { BrandMark } from "./brand-mark";
 export { Accordion, AccordionGroup } from "./accordion";
 export { CodeGroup } from "./code-group";
 export { CodeBlock } from "./code-block";
+export { RequestSample } from "./request-sample";
 export { Columns, Column } from "./columns";
 export { Hero, HeroAction } from "./hero";
 export { LogoBand, LogoBandItem } from "./logo-band";

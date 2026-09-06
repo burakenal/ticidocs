@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { searchDocuments, type SearchDocument, type SearchHit } from "@ticidocs/search";
 import { getSearchCopy } from "./search-copy";
+import { MarkdownBody } from "./markdown-body";
 import styles from "./search-dialog.module.css";
 
 export interface SearchDialogProps {
@@ -168,7 +169,9 @@ function ResultRow({
         <div className={styles.resultTitle}>{hit.title}</div>
         <div className={styles.resultMeta}>{hit.breadcrumb}</div>
         {hit.description ? (
-          <div className={styles.resultDesc}>{hit.description}</div>
+          <div className={styles.resultDesc}>
+            <MarkdownBody source={hit.description} />
+          </div>
         ) : null}
       </a>
     </li>

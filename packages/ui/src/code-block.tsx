@@ -8,6 +8,8 @@ import {
   type ComponentPropsWithoutRef,
   type ReactNode,
 } from "react";
+import { useInCodeGroup } from "./code-group-context";
+import { languageLabel } from "./code-language";
 import styles from "./code-block.module.css";
 
 type PreProps = ComponentPropsWithoutRef<"pre"> & {
@@ -21,6 +23,8 @@ export function CodeBlock({
   bare = false,
   ...rest
 }: PreProps) {
+  const inCodeGroup = useInCodeGroup();
+  const effectiveBare = bare || inCodeGroup;
   const [copied, setCopied] = useState(false);
 
   const { code, language } = useMemo(() => {
@@ -63,7 +67,7 @@ export function CodeBlock({
     }
   }
 
-  if (bare) {
+  if (effectiveBare) {
     return (
       <pre
         {...rest}
@@ -78,7 +82,9 @@ export function CodeBlock({
   return (
     <div className={styles.wrap}>
       <div className={styles.toolbar}>
-        <span className={styles.lang}>{language || "text"}</span>
+        <span className={styles.lang}>
+          {language ? languageLabel(language) : "text"}
+        </span>
         <button type="button" className={styles.copy} onClick={onCopy}>
           {copied ? "Copied" : "Copy"}
         </button>

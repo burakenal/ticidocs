@@ -11,6 +11,7 @@ import { Columns, Column } from "./columns";
 import { Hero, HeroAction } from "./hero";
 import { LogoBand, LogoBandItem } from "./logo-band";
 import { SectionHeading } from "./section-heading";
+import { RequestSample } from "./request-sample";
 import styles from "./markdown-body.module.css";
 
 export const mdxComponents: MDXComponents = {
@@ -25,6 +26,7 @@ export const mdxComponents: MDXComponents = {
   Accordion,
   AccordionGroup,
   CodeGroup,
+  RequestSample,
   Columns,
   Column,
   Hero,

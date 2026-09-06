@@ -7,17 +7,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { CodeSampleLanguage } from "@ticidocs/openapi/codegen";
+import { languageLabel } from "./code-language";
 import { apiCopy } from "./api-copy";
 import styles from "./api-code-rail.module.css";
-
-export const LANG_META: Record<CodeSampleLanguage, string> = {
-  curl: "cURL",
-  javascript: "JavaScript",
-  typescript: "TypeScript",
-  csharp: "C#",
-  python: "Python",
-};
 
 export function SampleCard({
   title,
@@ -51,10 +43,12 @@ export function LanguageMenu({
   languages,
   value,
   onChange,
+  labels,
 }: {
-  languages: CodeSampleLanguage[];
-  value: CodeSampleLanguage;
-  onChange: (language: CodeSampleLanguage) => void;
+  languages: readonly string[];
+  value: string;
+  onChange: (language: string) => void;
+  labels?: Record<string, string>;
 }) {
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(
@@ -63,6 +57,10 @@ export function LanguageMenu({
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const listId = useId();
+
+  function labelFor(language: string): string {
+    return labels?.[language] ?? languageLabel(language);
+  }
 
   function updatePosition() {
     const rect = buttonRef.current?.getBoundingClientRect();
@@ -122,11 +120,11 @@ export function LanguageMenu({
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-controls={listId}
-        title={LANG_META[value]}
-        aria-label={`Language: ${LANG_META[value]}`}
+        title={labelFor(value)}
+        aria-label={`Language: ${labelFor(value)}`}
         onClick={toggleOpen}
       >
-        <span className={styles.langLabel}>{LANG_META[value]}</span>
+        <span className={styles.langLabel}>{labelFor(value)}</span>
         <ChevronIcon />
       </button>
       {open && menuPos ? (
@@ -155,7 +153,7 @@ export function LanguageMenu({
                     setOpen(false);
                   }}
                 >
-                  {LANG_META[language]}
+                  {labelFor(language)}
                 </button>
               </li>
             );

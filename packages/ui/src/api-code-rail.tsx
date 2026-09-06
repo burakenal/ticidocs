@@ -1,10 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   createDefaultSampleContext,
   generateCodeSamples,
-  type CodeSampleLanguage,
 } from "@ticidocs/openapi/codegen";
 import type {
   ApiOperation,
@@ -12,6 +11,7 @@ import type {
   ParsedOpenApi,
 } from "@ticidocs/openapi/types";
 import { CodeBlock } from "./code-block";
+import { usePreferredCodeLanguage } from "./code-language";
 import {
   CopyIconButton,
   LanguageMenu,
@@ -31,9 +31,11 @@ export function ApiCodeRail({
     () => generateCodeSamples(createDefaultSampleContext(document, operation)),
     [document, operation],
   );
-  const [language, setLanguage] = useState<CodeSampleLanguage>(
-    samples[0]?.language ?? "curl",
+  const languages = useMemo(
+    () => samples.map((sample) => sample.language),
+    [samples],
   );
+  const [language, setLanguage] = usePreferredCodeLanguage(languages);
   const active =
     samples.find((sample) => sample.language === language) ?? samples[0];
 

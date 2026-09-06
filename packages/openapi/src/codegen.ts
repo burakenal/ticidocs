@@ -191,11 +191,17 @@ export function generatePython(ctx: CodeSampleContext): string {
     .replace(/true/g, "True")
     .replace(/false/g, "False")
     .replace(/null/g, "None");
+  const payloadLiteral = hasBody
+    ? ctx.body!
+        .replace(/true/g, "True")
+        .replace(/false/g, "False")
+        .replace(/null/g, "None")
+    : "";
   return `import requests
 
 url = ${JSON.stringify(url)}
 headers = ${headerLiteral}
-${hasBody ? `payload = ${ctx.body}\n\nresponse = requests.request(${JSON.stringify(ctx.operation.method.toUpperCase())}, url, headers=headers, json=payload)` : `response = requests.request(${JSON.stringify(ctx.operation.method.toUpperCase())}, url, headers=headers)`}
+${hasBody ? `payload = ${payloadLiteral}\n\nresponse = requests.request(${JSON.stringify(ctx.operation.method.toUpperCase())}, url, headers=headers, json=payload)` : `response = requests.request(${JSON.stringify(ctx.operation.method.toUpperCase())}, url, headers=headers)`}
 print(response.status_code)
 print(response.text)`;
 }
@@ -239,6 +245,69 @@ export function generateCodeSamples(ctx: CodeSampleContext): CodeSample[] {
     { language: "python", title: "Python", code: generatePython(ctx) },
     { language: "csharp", title: "C#", code: generateCSharp(ctx) },
   ];
+}
+
+export interface HttpRequestSampleInput {
+  method?: string;
+  url: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+/** Build a sample context from a plain HTTP request (for MDX guide examples). */
+export function createHttpSampleContext(
+  input: HttpRequestSampleInput,
+): CodeSampleContext {
+  const rawMethod = (input.method ?? (input.body ? "post" : "get")).toLowerCase();
+  const method = (
+    ["get", "post", "put", "patch", "delete", "head", "options", "trace"].includes(
+      rawMethod,
+    )
+      ? rawMethod
+      : "post"
+  ) as ApiOperation["method"];
+
+  const headers = { ...(input.headers ?? {}) };
+  const contentType =
+    headers["Content-Type"] ??
+    headers["content-type"] ??
+    (input.body ? "application/json" : undefined);
+
+  const body = input.body?.trim() ?? "";
+  const operation: ApiOperation = {
+    id: "http-sample",
+    slug: "http-sample",
+    method,
+    path: "",
+    tags: [],
+    parameters: [],
+    responses: [],
+    security: [],
+    requestBody: body
+      ? {
+          required: true,
+          content: [
+            {
+              contentType: contentType ?? "application/json",
+            },
+          ],
+        }
+      : undefined,
+  };
+
+  return {
+    baseUrl: input.url,
+    operation,
+    securitySchemes: {},
+    headerValues: headers,
+    body,
+  };
+}
+
+export function generateHttpSamples(
+  input: HttpRequestSampleInput,
+): CodeSample[] {
+  return generateCodeSamples(createHttpSampleContext(input));
 }
 
 /** Ensures Try It only targets explicitly allowed origins (browser-side guard). */

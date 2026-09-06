@@ -1,49 +1,43 @@
 .group {
   margin: 1.25rem 0;
-  border: 1px solid var(--docs-border);
-  border-radius: var(--docs-radius);
+  border: 1px solid color-mix(in srgb, #fff 10%, transparent);
+  border-radius: 12px;
   overflow: hidden;
-  background: var(--docs-surface);
+  background: var(--docs-code-background);
+  color: var(--docs-code-foreground);
+  box-shadow: var(--docs-shadow);
 }
 
-.list {
+.toolbar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--docs-border);
-  background: color-mix(in srgb, var(--docs-hover) 70%, transparent);
-}
-
-.tab {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  color: var(--docs-muted);
-  border-radius: 999px;
-  padding: 0.4rem 0.85rem;
-  font: inherit;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.tab:hover {
-  color: var(--docs-foreground);
-  background: var(--docs-hover);
-}
-
-.active {
-  color: var(--docs-primary);
-  background: color-mix(in srgb, var(--docs-primary) 12%, transparent);
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.1rem;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.55rem 0.4rem 0.85rem;
+  border-bottom: 1px solid color-mix(in srgb, #fff 10%, transparent);
+  background: color-mix(in srgb, #fff 4%, var(--docs-code-background));
 }
 
 .panel {
   padding: 0;
+  max-height: min(32rem, 60vh);
+  overflow: auto;
+  scrollbar-width: thin;
 }
 
 .panel :global(pre) {
   margin: 0;
   border: 0;
   border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.panel :global([class*="wrap"]) {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }

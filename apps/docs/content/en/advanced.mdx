@@ -132,14 +132,17 @@ See the repo root `DEPLOY.md` for VPS, Nginx, and Kubernetes notes. Docker uses 
 - Managed translation CMS / auto-translate
 - Angular adapter / IntegrationHub embed
 
-## Accordion and CodeGroup
+## Accordion, CodeGroup, and RequestSample
 
 <AccordionGroup>
   <Accordion title="Accordion" defaultOpen>
     Use `AccordionGroup` + `Accordion` for FAQs and progressive disclosure.
   </Accordion>
   <Accordion title="CodeGroup">
-    Wrap adjacent fenced blocks in `CodeGroup` to switch languages by tab.
+    Wrap adjacent fenced blocks in `CodeGroup` to switch hand-written samples by language.
+  </Accordion>
+  <Accordion title="RequestSample">
+    Prefer `RequestSample` for HTTP examples — it generates cURL, JavaScript, TypeScript, Python, and C# with a language menu and copy button.
   </Accordion>
 </AccordionGroup>
 
@@ -152,6 +155,16 @@ export const greeting = "hello";
 greeting = "hello"
 ```
 </CodeGroup>
+
+<RequestSample
+  method="POST"
+  url="https://api.example.com/v1/products"
+  headers={{
+    "Content-Type": "application/json",
+    Authorization: "Bearer <token>",
+  }}
+  body={{ name: "Widget", sku: "W-100" }}
+/>
 
 ## Next step
 

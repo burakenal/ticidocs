@@ -6,7 +6,6 @@ import {
   buildRequestUrl,
   createDefaultSampleContext,
   generateCodeSamples,
-  type CodeSampleLanguage,
 } from "@ticidocs/openapi/codegen";
 import type {
   ApiOperation,
@@ -18,6 +17,7 @@ import { apiCopy } from "./api-copy";
 import { MethodBadge } from "./method-badge";
 import { MarkdownBody } from "./markdown-body";
 import { CodeBlock } from "./code-block";
+import { usePreferredCodeLanguage } from "./code-language";
 import {
   CopyIconButton,
   LanguageMenu,
@@ -60,7 +60,6 @@ export function TryItModal({
     headers: string;
     body: string;
   } | null>(null);
-  const [language, setLanguage] = useState<CodeSampleLanguage>("curl");
 
   const title = operation.summary ?? operation.operationId ?? operation.path;
   const methodUpper = operation.method.toUpperCase();
@@ -99,6 +98,12 @@ export function TryItModal({
       }),
     [defaults, baseUrl, pathValues, queryValues, body, resolvedAuthValues],
   );
+
+  const languageIds = useMemo(
+    () => samples.map((sample) => sample.language),
+    [samples],
+  );
+  const [language, setLanguage] = usePreferredCodeLanguage(languageIds);
 
   const active =
     samples.find((sample) => sample.language === language) ?? samples[0];
