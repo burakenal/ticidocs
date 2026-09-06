@@ -14,6 +14,16 @@ import type {
   ParsedOpenApi,
 } from "@ticidocs/openapi/types";
 import { apiCopy } from "./api-copy";
+import {
+  deleteProfile,
+  documentAuthKey,
+  getActiveProfile,
+  readAuthProfiles,
+  setActiveProfileId,
+  upsertProfile,
+  type AuthBasicCreds,
+  type AuthProfileStore,
+} from "./auth-profiles";
 import { MethodBadge } from "./method-badge";
 import { MarkdownBody } from "./markdown-body";
 import { CodeBlock } from "./code-block";
@@ -49,8 +59,14 @@ export function TryItModal({
   const [queryValues, setQueryValues] = useState(defaults.queryValues ?? {});
   const [authValues, setAuthValues] = useState<Record<string, string>>({});
   const [basicAuth, setBasicAuth] = useState<
-    Record<string, { username: string; password: string }>
+    Record<string, AuthBasicCreds>
   >({});
+  const [authStore, setAuthStore] = useState<AuthProfileStore>({
+    profiles: [],
+    activeProfileId: null,
+  });
+  const [namingProfile, setNamingProfile] = useState(false);
+  const [profileNameDraft, setProfileNameDraft] = useState("");
   const [body, setBody] = useState(defaults.body ?? "");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{
@@ -64,6 +80,7 @@ export function TryItModal({
   const title = operation.summary ?? operation.operationId ?? operation.path;
   const methodUpper = operation.method.toUpperCase();
   const tryItEnabled = allowedOrigins.length > 0;
+  const authDocumentKey = useMemo(() => documentAuthKey(document), [document]);
 
   const securityIds = useMemo(
     () => [...new Set(operation.security.flatMap((req) => Object.keys(req)))],
@@ -134,10 +151,93 @@ export function TryItModal({
     setPathValues(defaults.pathValues ?? {});
     setQueryValues(defaults.queryValues ?? {});
     setBody(defaults.body ?? "");
+    setResult(null);
+    setNamingProfile(false);
+    setProfileNameDraft("");
+
+    const store = readAuthProfiles(authDocumentKey);
+    setAuthStore(store);
+    const active = getActiveProfile(store);
+    if (active) {
+      setAuthValues({ ...active.authValues });
+      setBasicAuth({ ...active.basicAuth });
+    } else {
+      setAuthValues({});
+      setBasicAuth({});
+    }
+  }, [open, defaults, authDocumentKey]);
+
+  function applyProfile(profileId: string | null): void {
+    if (!profileId) {
+      const next = setActiveProfileId(authDocumentKey, null);
+      setAuthStore(next);
+      setAuthValues({});
+      setBasicAuth({});
+      setNamingProfile(false);
+      return;
+    }
+    const next = setActiveProfileId(authDocumentKey, profileId);
+    setAuthStore(next);
+    const profile = next.profiles.find((item) => item.id === profileId);
+    if (profile) {
+      setAuthValues({ ...profile.authValues });
+      setBasicAuth({ ...profile.basicAuth });
+    }
+    setNamingProfile(false);
+  }
+
+  function onSaveProfile(): void {
+    if (authStore.activeProfileId) {
+      const current = authStore.profiles.find(
+        (item) => item.id === authStore.activeProfileId,
+      );
+      if (!current) {
+        return;
+      }
+      const next = upsertProfile(authDocumentKey, {
+        id: current.id,
+        name: current.name,
+        authValues,
+        basicAuth,
+      });
+      setAuthStore(next);
+      setNamingProfile(false);
+      return;
+    }
+    setNamingProfile(true);
+    setProfileNameDraft("");
+  }
+
+  function onConfirmNewProfile(): void {
+    const name = profileNameDraft.trim();
+    if (!name) {
+      return;
+    }
+    const next = upsertProfile(authDocumentKey, {
+      name,
+      authValues,
+      basicAuth,
+    });
+    setAuthStore(next);
+    setNamingProfile(false);
+    setProfileNameDraft("");
+  }
+
+  function onDeleteProfile(): void {
+    if (!authStore.activeProfileId) {
+      return;
+    }
+    const next = deleteProfile(authDocumentKey, authStore.activeProfileId);
+    setAuthStore(next);
     setAuthValues({});
     setBasicAuth({});
-    setResult(null);
-  }, [open, defaults]);
+    setNamingProfile(false);
+  }
+
+  function onClearAuthFields(): void {
+    setAuthValues({});
+    setBasicAuth({});
+  }
 
   async function onSend(): Promise<void> {
     setResult(null);
@@ -291,7 +391,7 @@ export function TryItModal({
               ) : (
                 <p className={styles.hint}>
                   Requests run in your browser only against allowed origins.
-                  Tokens are not stored.
+                  Saved auth profiles stay in this browser.
                 </p>
               )}
             </div>
@@ -314,6 +414,98 @@ export function TryItModal({
 
             {securityIds.length > 0 ? (
               <TrySection title={apiCopy.authorization} defaultOpen>
+                <div className={styles.authProfileBar}>
+                  <span className={styles.authProfileLabel}>
+                    {apiCopy.authProfile}
+                  </span>
+                  {namingProfile ? (
+                    <>
+                      <input
+                        className={styles.authProfileNameInput}
+                        value={profileNameDraft}
+                        onChange={(event) =>
+                          setProfileNameDraft(event.target.value)
+                        }
+                        placeholder={apiCopy.authProfileNamePlaceholder}
+                        disabled={!tryItEnabled}
+                        autoComplete="off"
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                            onConfirmNewProfile();
+                          }
+                          if (event.key === "Escape") {
+                            event.preventDefault();
+                            setNamingProfile(false);
+                            setProfileNameDraft("");
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className={`${styles.authProfileBtn} ${styles.authProfileBtnPrimary}`}
+                        disabled={!tryItEnabled || !profileNameDraft.trim()}
+                        onClick={onConfirmNewProfile}
+                      >
+                        {apiCopy.authProfileConfirmSave}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.authProfileBtn}
+                        disabled={!tryItEnabled}
+                        onClick={() => {
+                          setNamingProfile(false);
+                          setProfileNameDraft("");
+                        }}
+                      >
+                        {apiCopy.authProfileCancel}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <select
+                        className={styles.authProfileSelect}
+                        value={authStore.activeProfileId ?? ""}
+                        disabled={!tryItEnabled}
+                        aria-label={apiCopy.authProfile}
+                        onChange={(event) =>
+                          applyProfile(event.target.value || null)
+                        }
+                      >
+                        <option value="">{apiCopy.authProfileNone}</option>
+                        {authStore.profiles.map((profile) => (
+                          <option key={profile.id} value={profile.id}>
+                            {profile.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className={`${styles.authProfileBtn} ${styles.authProfileBtnPrimary}`}
+                        disabled={!tryItEnabled}
+                        onClick={onSaveProfile}
+                      >
+                        {apiCopy.authProfileSave}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.authProfileBtn} ${styles.authProfileBtnDanger}`}
+                        disabled={!tryItEnabled || !authStore.activeProfileId}
+                        onClick={onDeleteProfile}
+                      >
+                        {apiCopy.authProfileDelete}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.authProfileBtn}
+                        disabled={!tryItEnabled}
+                        onClick={onClearAuthFields}
+                      >
+                        {apiCopy.authProfileClear}
+                      </button>
+                    </>
+                  )}
+                </div>
                 {securityIds.map((id) => (
                   <AuthFields
                     key={id}
@@ -561,10 +753,10 @@ function AuthFields({
   id: string;
   scheme?: ApiSecurityScheme;
   authValue: string;
-  basic?: { username: string; password: string };
+  basic?: AuthBasicCreds;
   disabled: boolean;
   onAuthChange: (value: string) => void;
-  onBasicChange: (value: { username: string; password: string }) => void;
+  onBasicChange: (value: AuthBasicCreds) => void;
 }) {
   if (scheme?.type === "http" && scheme.scheme?.toLowerCase() === "basic") {
     return (

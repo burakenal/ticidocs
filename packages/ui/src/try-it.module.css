@@ -391,6 +391,100 @@
   line-height: 1.5;
 }
 
+.authProfileBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--docs-border) 70%, transparent);
+}
+
+.authProfileLabel {
+  font-size: 0.75rem;
+  font-weight: 650;
+  color: var(--docs-muted);
+  margin-right: 0.15rem;
+}
+
+.authProfileSelect,
+.authProfileNameInput {
+  appearance: none;
+  min-width: 8.5rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--docs-border);
+  border-radius: 8px;
+  background: var(--docs-surface);
+  color: var(--docs-foreground);
+  padding: 0.4rem 0.55rem;
+  font: inherit;
+  font-size: 0.78rem;
+}
+
+.authProfileSelect:focus,
+.authProfileNameInput:focus {
+  outline: 2px solid color-mix(in srgb, var(--docs-primary) 35%, transparent);
+  outline-offset: 1px;
+}
+
+.authProfileSelect:disabled,
+.authProfileNameInput:disabled,
+.authProfileBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.authProfileNameInput {
+  flex: 1 1 8rem;
+  min-width: 7rem;
+  font-family: var(--docs-font-mono);
+}
+
+.authProfileBtn {
+  appearance: none;
+  border: 1px solid var(--docs-border);
+  border-radius: 8px;
+  background: var(--docs-background);
+  color: var(--docs-foreground);
+  padding: 0.38rem 0.65rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.authProfileBtn:hover:not(:disabled) {
+  background: var(--docs-hover);
+}
+
+.authProfileBtnPrimary {
+  border-color: color-mix(in srgb, var(--docs-primary) 40%, var(--docs-border));
+  background: color-mix(in srgb, var(--docs-primary) 12%, var(--docs-background));
+  color: var(--docs-primary-strong);
+}
+
+.authProfileBtnPrimary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--docs-primary) 18%, var(--docs-background));
+}
+
+.authProfileBtnDanger:hover:not(:disabled) {
+  color: #9f1239;
+  border-color: color-mix(in srgb, #e11d48 28%, transparent);
+  background: color-mix(in srgb, #e11d48 8%, var(--docs-background));
+}
+
+:global(html[data-theme="dark"]) .authProfileBtnDanger:hover:not(:disabled) {
+  color: #fda4af;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .authProfileBtnDanger:hover:not(:disabled) {
+    color: #fda4af;
+  }
+}
+
 .responseEmpty {
   padding: 1.1rem 1rem;
   color: color-mix(in srgb, var(--docs-code-foreground) 45%, transparent);

@@ -38,6 +38,14 @@ export const apiCopy = {
   no: "No",
   copy: "Copy",
   copied: "Copied",
+  authProfile: "Profile",
+  authProfileNone: "None",
+  authProfileSave: "Save",
+  authProfileDelete: "Delete",
+  authProfileClear: "Clear",
+  authProfileNamePlaceholder: "Profile name",
+  authProfileConfirmSave: "Confirm",
+  authProfileCancel: "Cancel",
 } as const;
 
 export type ApiCopyKey = keyof typeof apiCopy;
