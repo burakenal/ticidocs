@@ -53,6 +53,10 @@
   color: inherit;
 }
 
+.prose :global([class*="bandGrid"]) :global([class*="label"]) {
+  margin: 0 0 0.85rem;
+}
+
 .prose :global([class*="heading"]) :global([class*="title"]),
 .prose :global([class*="heading"]) :global([class*="description"]) {
   margin: 0;

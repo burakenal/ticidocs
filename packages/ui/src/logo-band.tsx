@@ -13,6 +13,8 @@ export type LogoBandItemProps = {
   badge?: string;
 };
 
+export type LogoBandVariant = "marquee" | "grid";
+
 export function LogoBandItem(_props: LogoBandItemProps) {
   // Rendered by LogoBand via Children inspection.
   return null;
@@ -27,7 +29,14 @@ function ItemFace({
   return (
     <li className={styles.item} aria-hidden={clone || undefined}>
       {src ? (
-        <img className={styles.logo} src={src} alt={clone ? "" : name} loading="lazy" />
+        <span className={styles.logoSlot}>
+          <img
+            className={styles.logo}
+            src={src}
+            alt={clone ? "" : name}
+            loading="lazy"
+          />
+        </span>
       ) : (
         <span className={styles.wordmark}>{name}</span>
       )}
@@ -66,19 +75,27 @@ function collectItems(children: ReactNode): LogoBandItemProps[] {
 
 export function LogoBand({
   label,
+  variant = "marquee",
   children,
 }: {
   label?: string;
+  /** `marquee` = full-bleed homepage strip; `grid` = contained content-page row. */
+  variant?: LogoBandVariant;
   children?: ReactNode;
 }) {
   const items = collectItems(children);
   if (items.length === 0) return null;
 
+  const isGrid = variant === "grid";
+
   return (
-    <section className={styles.band} aria-label={label ?? "Integrations"}>
+    <section
+      className={isGrid ? styles.bandGrid : styles.band}
+      aria-label={label ?? "Integrations"}
+    >
       {label ? <p className={styles.label}>{label}</p> : null}
-      <div className={styles.viewport}>
-        <ul className={styles.track}>
+      <div className={isGrid ? styles.viewportGrid : styles.viewport}>
+        <ul className={isGrid ? styles.trackGrid : styles.track}>
           {items.map((item) => (
             <ItemFace
               key={item.name}
@@ -87,15 +104,17 @@ export function LogoBand({
               badge={item.badge}
             />
           ))}
-          {items.map((item) => (
-            <ItemFace
-              key={`clone-${item.name}`}
-              name={item.name}
-              src={item.src}
-              badge={item.badge}
-              clone
-            />
-          ))}
+          {!isGrid
+            ? items.map((item) => (
+                <ItemFace
+                  key={`clone-${item.name}`}
+                  name={item.name}
+                  src={item.src}
+                  badge={item.badge}
+                  clone
+                />
+              ))
+            : null}
         </ul>
       </div>
     </section>
