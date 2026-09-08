@@ -109,6 +109,12 @@ html[data-theme="dark"] {
   }
 }
 
+@media (max-width: 860px) {
+  :root {
+    --docs-page-pad: 1.1rem;
+  }
+}
+
 *,
 *::before,
 *::after {

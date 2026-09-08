@@ -194,6 +194,27 @@
   color: var(--docs-primary-strong);
 }
 
+@media (max-width: 700px) {
+  .localeTrigger {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .localeCode,
+  .localeChevron {
+    display: none;
+  }
+
+  .localeIcon {
+    width: 15px;
+    height: 15px;
+    color: var(--docs-foreground);
+  }
+}
+
 .versionLabel {
   display: inline-flex;
   align-items: center;

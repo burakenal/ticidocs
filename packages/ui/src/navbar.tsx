@@ -82,7 +82,7 @@ export function Navbar({
           )}
         </a>
       </div>
-      <div className={styles.center}>
+      <div className={styles.right}>
         <button
           type="button"
           className={styles.searchButton}
@@ -93,8 +93,6 @@ export function Navbar({
           <span className={styles.searchLabel}>{searchCopy.buttonLabel}</span>
           <kbd className={styles.kbd}>Ctrl K</kbd>
         </button>
-      </div>
-      <div className={styles.right}>
         {versions?.length && version ? (
           <VersionSwitcher
             version={version}

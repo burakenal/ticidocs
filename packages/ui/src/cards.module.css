@@ -1,6 +1,6 @@
 .group {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16.5rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16.5rem), 1fr));
   gap: 1rem;
   margin: 1.25rem 0 2rem;
 }

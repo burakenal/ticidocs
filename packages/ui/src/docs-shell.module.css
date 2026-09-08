@@ -144,9 +144,12 @@
 }
 
 .mainHome {
-  /* Same horizontal measure as hero layout (not inset by page-pad twice). */
-  padding: 0 max(var(--docs-page-pad), calc((100% - var(--docs-max-content-home)) / 2))
-    4rem;
+  /* Shared by hero/logo-band full-bleed breakout (negative margins). */
+  --docs-home-inline-pad: max(
+    var(--docs-page-pad),
+    calc((100% - var(--docs-max-content-home)) / 2)
+  );
+  padding: 0 var(--docs-home-inline-pad) 4rem;
   width: 100%;
   max-width: none;
 }
@@ -203,7 +206,8 @@
   }
 
   .mainHome {
-    padding: 0 1.1rem 4rem;
+    --docs-home-inline-pad: 1.1rem;
+    padding: 0 var(--docs-home-inline-pad) 4rem;
   }
 
   .sidebar {
@@ -214,6 +218,7 @@
     transform: translateX(-105%);
     transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
     box-shadow: var(--docs-shadow-lg);
+    pointer-events: none;
   }
 
   .resizeHandle {
@@ -222,6 +227,7 @@
 
   .sidebarOpen {
     transform: translateX(0);
+    pointer-events: auto;
   }
 
   .backdrop {
